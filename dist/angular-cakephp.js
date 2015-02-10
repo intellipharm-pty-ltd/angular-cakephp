@@ -1,3 +1,12 @@
+/*!
+ * angular-cakephp v0.1.1
+ * http://intellipharm.com/
+ *
+ * Copyright 2015 Intellipharm
+ *
+ * Date: 2015-02-10T13:35Z
+ *
+ */
 'use strict';
 
 (function() {
@@ -345,7 +354,7 @@
 		var instance = BaseActiveRecord.extend(this, data);
 
 		// add associations (if provided)
-		_(data).forEach(function(item, key) {
+		_.forEach(data, function(item, key) {
 			if (_.isArray(item)) {
 				var result_array = UtilService.getAssociationArray(item, key);
 				if (!_.isEmpty(result_array)) {
@@ -357,7 +366,7 @@
 					instance[key] = result_item;
 				}
 			}
-		});
+		}, this);
 
 		// return new instance of child
 		return instance;
@@ -810,6 +819,41 @@
 (function() {
 
 	//---------------------------------------------------
+	// DataModelHttpRequest Service
+	//---------------------------------------------------
+
+	var DataModelHttpRequestService = function($q) {
+
+		/**
+		 * prepareRequest
+		 */
+		this.prepareRequest = function(data) {
+
+			var result = [];
+			_.forEach(response.data, function(item) {
+
+				// format response data
+				_.merge(item, item[model.active_record_class.name]);
+				delete item[model.active_record_class.name];
+
+				// create active record instance
+				result.push(model.new(item));
+			});
+			resolve(result);
+		};
+	};
+
+	DataModelHttpRequestService.$inject = ['$q'];
+
+	angular.module('DataModel').service('DataModelHttpRequestService', DataModelHttpRequestService);
+
+})();
+
+'use strict';
+
+(function() {
+
+	//---------------------------------------------------
 	// DataModelTransformer Service
 	//---------------------------------------------------
 
@@ -830,7 +874,7 @@
 			var params_array = [];
 
 			if (!_.isUndefined(params) && !_.isNull(params) && !_.isEmpty(params)) {
-				_(params).forEach(function(item, key) {
+				_.forEach(params, function(item, key) {
 					if (key === 'contain') {
 						params_array.push(HttpQueryBuildService.build(item, 'contain'));
 					} else if (key && item) {
@@ -865,15 +909,15 @@
 			}
 
 			// remove model for all sub items too
-			_(d).forEach(function(item, key) {
+			_.forEach(d, function(item, key) {
 				if (_.isArray(item)) {
-					_(item).forEach(function(i) {
-						i = self.transformRequestData(i);
-					});
+					_.forEach(item, function(i) {
+						i = this.transformRequestData(i);
+					}, this);
 				} else if (_.isObject(item)) {
-					item = self.transformRequestData(item);
+					item = this.transformRequestData(item);
 				}
-			});
+			}, this);
 
 			return d;
 		};
@@ -887,9 +931,9 @@
 		 */
 		this.transformResponseDataList = function(response, model) {
 			var result = [];
-			_(response).forEach(function(item) {
-				result.push(self.transformResponseData(item, model));
-			});
+			_.forEach(response, function(item) {
+				result.push(this.transformResponseData(item, model));
+			}, this);
 			return result;
 		};
 
@@ -941,12 +985,12 @@
 		this.getAssociationArray = function(data, key) {
 			var result = [];
 			var model_class = key + 'Model';
-			_(data).forEach(function(item) {
-				var result_item = self.getAssociation(item, key, model_class);
+			_.forEach(data, function(item) {
+				var result_item = this.getAssociation(item, key, model_class);
 				if (result_item !== false) {
 					result.push(result_item);
 				}
-			});
+			}, this);
 			return result;
 		};
 

@@ -2,7 +2,8 @@ module.exports = function (grunt) {
 	return {
 		dist: {
 			options: {
-				sourceMap: true
+				sourceMap: true,
+				preserveComments: 'some'
 			},
 			files: {
 				'<%= config.dist %>/angular-cakephp.min.js': [
