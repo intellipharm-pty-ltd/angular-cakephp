@@ -6,7 +6,7 @@
     "Intellipharm <damian@intellipharm.com.au>"
   ],
   "description": "An AngularJS data modelling framework that ties in with a CakePHP REST API",
-  "main": "dist/angular-cakephp.js",
+  "main": ["dist/angular-cakephp.js", "dist/angular-cakephp.min.js"],
   "moduleType": [
     "globals"
   ],
@@ -21,11 +21,7 @@
   ],
   "license": "MIT",
   "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "./!(dist)"
   ],
   "dependencies": {
     "pluralize": "~1.1.2",
