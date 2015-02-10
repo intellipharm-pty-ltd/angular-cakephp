@@ -318,10 +318,7 @@
 		instance.config = _.merge(_.clone(this.config), instance.config);
 
 		if (_.isNull(instance.config.api_endpoint) && instance.config.api_endpoint_auto) {
-			instance.config.api_endpoint = instance.active_record_class.name;
-			instance.config.api_endpoint = instance.config.api_endpoint.replace(/([A-Z])|([\-|\_])/g, function(_, $1) { return ' ' + ($1 || ''); });
-			instance.config.api_endpoint = instance.config.api_endpoint.replace(/\s\s+/g, '_').trim().toLowerCase();
-			instance.config.api_endpoint = pluralize(instance.config.api_endpoint);
+			instance.config.api_endpoint = pluralize(_.snakeCase(instance.active_record_class.name));
 		}
 
 		// return model instance
