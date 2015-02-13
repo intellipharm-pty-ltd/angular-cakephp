@@ -1,3 +1,12 @@
+'use strict';
+
+(function() {
+
+	angular.module('AngularCakePHP')
+		.value('AngularCakePHPApiUrl', 'http://example.com/api')
+		.value('AngularCakePHPGenerateEndPoint', false);
+
+})();
 /*!
  * angular-cakephp v0.1.2
  * http://intellipharm.com/
@@ -18,15 +27,6 @@
 	angular.module('AngularCakePHP', []);
 })();
 
-'use strict';
-
-(function() {
-
-	angular.module('AngularCakePHP')
-		.value('AngularCakePHPApiUrl', 'http://example.com/api')
-		.value('AngularCakePHPGenerateEndPoint', false);
-
-})();
 'use strict';
 
 (function() {
@@ -263,7 +263,7 @@
 
 	// settings
 	var api_url;
-	var pluralizeMethod = null;
+	var generate_endpoint;
 
 	/**
 	 * BaseModel
@@ -279,7 +279,7 @@
 	 * @param _BaseActiveRecord
 	 * @constructor
 	 */
-	function BaseModel(_$http, _$injector, _$q, _api_url, _UtilService, _HttpResponseService, _TransformerService, _BaseActiveRecord) {
+	function BaseModel(_$http, _$injector, _$q, _api_url, _generate_endpoint, _UtilService, _HttpResponseService, _TransformerService, _BaseActiveRecord) {
 
 		// services & constants
 
@@ -287,15 +287,11 @@
 		$injector 				= _$injector;
 		$q 						= _$q;
 		api_url 				= _api_url;
+		generate_endpoint 		= _generate_endpoint;
 		UtilService 			= _UtilService;
 		HttpResponseService		= _HttpResponseService;
 		TransformerService		= _TransformerService;
 		BaseActiveRecord		= _BaseActiveRecord;
-
-		// optional services
-		try {
-			pluralizeMethod = $injector.get('AngularCakePHPApiEndpointPluralize');
-		} catch (e) {}
 
 		// properties
 
@@ -307,7 +303,7 @@
 		};
 	}
 
-	BaseModel.$inject = ['$http', '$injector', '$q', 'AngularCakePHPApiUrl', 'UtilService', 'HttpResponseService', 'TransformerService', 'BaseActiveRecord'];
+	BaseModel.$inject = ['$http', '$injector', '$q', 'AngularCakePHPApiUrl', 'AngularCakePHPGenerateEndPoint', 'UtilService', 'HttpResponseService', 'TransformerService', 'BaseActiveRecord'];
 
 	//-----------------------------------------------
 	// extend & new
@@ -336,16 +332,9 @@
 		instance.active_record_class = active_record;
 		instance.config = _.merge(_.clone(this.config), instance.config);
 
-		// if no endpoint is defined in model
-		if (_.isNull(instance.config.api_endpoint)) {
-
-			// create endpoint by converting class name to snake case
-			instance.config.api_endpoint = _.snakeCase(instance.active_record_class.name);
-
-			// if pluralize nethod is provided, then use it to pluralize the end point
-			if (!_.isNull(pluralizeMethod)) {
-				instance.config.api_endpoint = pluralizeMethod(instance.config.api_endpoint);
-			}
+		// if endpoint is not provided then create using pluralize TODO: test
+		if (_.isNull(instance.config.api_endpoint) && instance.config.api_endpoint_auto) {
+			instance.config.api_endpoint = pluralize(_.snakeCase(instance.active_record_class.name));
 		}
 
 		// return model instance
@@ -403,6 +392,13 @@
 
 		var self = this;
 
+		console.log(this.config.api_endpoint);
+
+		// validate
+		if (!_.has(this.config, 'api_endpoint') || _.isNull(this.config.api_endpoint) || _.isUndefined(this.config.api_endpoint)) {
+			throw new Error(ERROR_INVALID_CONFIG);
+		}
+
 		return $q(function(resolve, reject) {
 
 			var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, params);
@@ -429,6 +425,9 @@
 		var self = this;
 
 		// validate
+		if (!_.has(this.config, 'api_endpoint') || _.isNull(this.config.api_endpoint) || _.isUndefined(this.config.api_endpoint)) {
+			throw new Error(ERROR_INVALID_CONFIG);
+		}
 		if (_.isNull(id) || _.isUndefined(id)) {
 			throw new Error(ERROR_MISSING_PARAMS);
 		}
@@ -458,6 +457,9 @@
 		var self = this;
 
 		// validate
+		if (!_.has(this.config, 'api_endpoint') || _.isNull(this.config.api_endpoint) || _.isUndefined(this.config.api_endpoint)) {
+			throw new Error(ERROR_INVALID_CONFIG);
+		}
 		if (_.isNull(data) || _.isUndefined(data)) {
 			throw new Error(ERROR_MISSING_PARAMS);
 		}
@@ -489,6 +491,9 @@
 		var self = this;
 
 		// validate
+		if (!_.has(this.config, 'api_endpoint') || _.isNull(this.config.api_endpoint) || _.isUndefined(this.config.api_endpoint)) {
+			throw new Error(ERROR_INVALID_CONFIG);
+		}
 		if (_.isNull(id) || _.isUndefined(id)) {
 			throw new Error(ERROR_MISSING_PARAMS);
 		}
@@ -522,6 +527,9 @@
 		var self = this;
 
 		// validate
+		if (!_.has(this.config, 'api_endpoint') || _.isNull(this.config.api_endpoint) || _.isUndefined(this.config.api_endpoint)) {
+			throw new Error(self.ERROR_INVALID_CONFIG);
+		}
 		if (_.isNull(id) || _.isUndefined(id)) {
 			throw new Error(self.ERROR_MISSING_PARAMS);
 		}
@@ -552,6 +560,9 @@
 		var self = this;
 
 		// validate
+		if (!_.has(this.config, 'api_endpoint') || _.isNull(this.config.api_endpoint) || _.isUndefined(this.config.api_endpoint)) {
+			throw new Error(self.ERROR_INVALID_CONFIG);
+		}
 		if (_.isNull(active_record) || _.isUndefined(active_record)) {
 			throw new Error(self.ERROR_MISSING_PARAMS);
 		}
@@ -605,6 +616,9 @@
 		http_method = http_method.toUpperCase();
 
 		// validate
+		if (!_.has(this.config, 'api_endpoint') || _.isNull(this.config.api_endpoint) || _.isUndefined(this.config.api_endpoint)) {
+			throw new Error(self.ERROR_INVALID_CONFIG);
+		}
 		if (_.isNull(action) || _.isUndefined(action)) {
 			throw new Error(self.ERROR_MISSING_PARAMS);
 		}

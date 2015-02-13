@@ -17,7 +17,8 @@ bower install angular-cakephp --save
 ##### Set API base url
 
 ```js
-angular.module('DataModel').value('DataModelApiUrl', 'http://example.com/api');
+angular.module('AngularCakePHP')
+    .value('AngularCakePHPApiUrl', 'http://example.com/api');
 ```
 
 ##### Create a model
@@ -27,7 +28,11 @@ angular.module('DataModel').value('DataModelApiUrl', 'http://example.com/api');
 (function() {
     var UserModel = function(BaseModel) {
 
-        function UserModel() {}
+        function UserModel() {
+			this.config = {
+				api_endpoint: ""
+			}
+		}
 
         function User(data) {
             this.id        = data.id;
@@ -44,7 +49,7 @@ angular.module('DataModel').value('DataModelApiUrl', 'http://example.com/api');
         return BaseModel.extend(UserModel, User);
     };
 
-    UserModel.$inject = ['BaseModel'];
+    UserModel.$inject = ['AngularCakePHPBaseModel'];
 
     angular.module('App').factory('UserModel', UserModel);
 })();
@@ -137,7 +142,7 @@ angular.module('DataModel').value('DataModelApiUrl', 'http://example.com/api');
 
         // validates the item. Alias of model.validate()
         $scope.User.validate().then(function() {});
-
+        
         // gets the class name of the model. In this case it would return 'User'
         var modelName = $scope.User.getClassName();
     };
@@ -148,6 +153,112 @@ angular.module('DataModel').value('DataModelApiUrl', 'http://example.com/api');
 })();
 
 ```
+
+
+## Data Model config options
+
+```js
+'use strict';
+(function() {
+    var UserModel = function(BaseModel) {
+
+        function UserModel() {
+			this.config = {
+				// set here
+			}
+		}
+		....
+```
+
+#### api_endpoint
+
+This will be appended to your API URL when any HTTP call is made via the model.
+eg. if your user model has an api_endpoint of users, and your API URL is set to http://www.google.com, then the result HTTP call will be http://www.google.com/users.
+
+If not set, the api_endpoint will be the snake case of your model class name.
+eg. a model called SpecialUser, will have an api_endpoint of special_user
+
+
+
+
+## Setttings
+
+provided via
+```js
+angular.module('DataModel').value('DataModelApiUrl', 'http://example.com/api');
+```
+
+##### AngularCakePHPApiUrl
+
+The URL of your API.
+
+```js
+angular.module('AngularCakePHP')
+    .value('AngularCakePHPApiUrl', 'http://example.com/api');
+```
+
+##### AngularCakePHPApiEndpointPluralize
+
+OPTIONAL
+
+Method to pluralize the api_endpoint.
+Is only called if no api_endpoint is set in teh model config.
+
+```js
+angular.module('AngularCakePHP')
+    .value('AngularCakePHPApiEndpointPluralize', function(endpoint) {
+			return endpoint +"s";
+		});
+```
+
+
+Alternatively you can use an external library like Pluralize:
+[Pluralize](https://github.com/blakeembrey/pluralize)
+
+Simply include pluralize and specify its use as follows: 
+
+```js
+angular.module('AngularCakePHP')
+    .value('AngularCakePHPApiEndpointPluralize', pluralize);
+```
+
+
+## Model API
+
+### properties
+
+active_record_class
+config
+
+### methods
+
+extend
+new
+index
+view
+add
+edit
+delete
+validate
+api
+
+
+## Active Record API
+
+### properties
+
+model
+
+### methods
+
+extend
+save
+new
+delete
+getClassName
+virtualField
+virtualFieldUpdate
+
 
 ## Inspiration
 Inspiration taken from

@@ -7,7 +7,7 @@ describe("DataModel", function() {
 	var Service;
 
 	// load module
-	beforeEach(module('DataModel'));
+	beforeEach(module('AngularCakePHP'));
 
 	// mock services
 	beforeEach(module(function($provide) {
@@ -16,7 +16,7 @@ describe("DataModel", function() {
 
 	// inject services (that we want to test)
 	beforeEach(inject(function($injector) {
-		Service = $injector.get('DataModelTransformerService');
+		Service = $injector.get('TransformerService');
 	}));
 
 	//--------------------------------------------

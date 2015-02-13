@@ -2,29 +2,27 @@
  * see documentation for how data model works
  */
 
-describe("DataModel", function() {
+describe("AngularCakePHP", function() {
 
 	var BaseModel;
 	var BaseActiveRecord;
-	var DataModelHttpReponseServiceMock;
-	var DataModelTransformerServiceMock;
+	var HttpResponseServiceMock;
 	var HttpQueryBuildServiceMock;
-	var DataModelApiUrl = "http://www.mywebsite.com/api";
+	var AngularCakePHPApiUrl = "http://www.mywebsite.com/api";
 	var provide;
-	//var provide;
 
 	// load module
-	beforeEach(module('DataModel'));
+	beforeEach(module('AngularCakePHP'));
 
 	// mock settings
 	beforeEach(module(function($provide) {
 		provide = $provide;
-		$provide.constant('DataModelApiUrl', DataModelApiUrl);
+		$provide.constant('AngularCakePHPApiUrl', AngularCakePHPApiUrl);
 	}));
 
 	// mock services
 	beforeEach(module(function($provide) {
-		DataModelHttpResponseServiceMock = {
+		HttpResponseServiceMock = {
 			handleViewResponse: function() {},
 			handleIndexResponse: function() {},
 			handleAddResponse: function() {},
@@ -32,7 +30,7 @@ describe("DataModel", function() {
 			handleDeleteResponse: function() {},
 			handleErrorResponse: function() {}
 		};
-		$provide.value('DataModelHttpResponseService', DataModelHttpResponseServiceMock);
+		$provide.value('HttpResponseService', HttpResponseServiceMock);
 
 		HttpQueryBuildServiceMock = {};
 		$provide.value('HttpQueryBuildService', HttpQueryBuildServiceMock);
@@ -42,141 +40,142 @@ describe("DataModel", function() {
 	beforeEach(inject(function($injector) {
 		injector = $injector;
 		BaseActiveRecord = $injector.get('BaseActiveRecord');
-		BaseModel = $injector.get('BaseModel');
+		BaseModel = $injector.get('AngularCakePHPBaseModel');
 	}));
 
 	//--------------------------------------------
 	// extend
 	//--------------------------------------------
 
-	//describe("BaseModel.extend", function() {
-	//
-	//	it("should throw an exception if model arg is missing", function() {
-	//		function MyModel() {}
-	//		expect(function(){ BaseModel.extend(); }).toThrow();
-	//	});
-	//
-	//	it("should throw an exception if active_record arg is missing", function() {
-	//		function MyModel() {}
-	//		expect(function(){ BaseModel.extend({}); }).toThrow();
-	//	});
-	//
-	//	it("model should be instance of BaseModel & MyModel", function() {
-	//		function MyModel() {}
-	//		function MyActiveRecord() {}
-	//		var myModel = BaseModel.extend(MyModel, MyActiveRecord);
-	//
-	//		expect(myModel instanceof BaseModel.constructor).toBeTruthy();
-	//		expect(myModel instanceof MyModel).toBeTruthy();
-	//	});
-	//
-	//	it("child should have access to BaseModel methods", function() {
-	//		function MyModel() {}
-	//		function MyActiveRecord() {}
-	//		var myModel = BaseModel.extend(MyModel, MyActiveRecord);
-	//
-	//		expect(myModel.modelTestingMethod(2)).toEqual(12);
-	//	});
-	//
-	//	it("should set BaseModel properties for specific instance", function() {
-	//		function UserModel() {}
-	//		function User() {}
-	//		var userModel = BaseModel.extend(UserModel, User);
-	//		expect(userModel.active_record_class.name).toEqual("User");
-	//
-	//		function CustomerModel() {}
-	//		function Customer() {}
-	//		var customerModel = BaseModel.extend(CustomerModel, Customer);
-	//
-	//		expect(customerModel.active_record_class.name).toEqual("Customer");
-	//		expect(userModel.active_record_class.name).toEqual("User");
-	//	});
-	//
-	//	it("should set config.api to DataModelApiUrl", function() {
-	//		expect(BaseModel.config.api).toEqual(DataModelApiUrl);
-	//	});
-	//
-	//	it("should set model.config.api_endpoint if set", function() {
-	//
-	//		function MyModel() {
-	//			this.config = {api_endpoint: "MY ENDPOINT"};
-	//		}
-	//		function MyAR() {}
-	//		var myModel = BaseModel.extend(MyModel, MyAR);
-	//		expect(myModel.config.api_endpoint).toEqual("MY ENDPOINT");
-	//	});
-	//
-	//	it("multiple instance using extend should set config.api_endpoint to provided values", function() {
-	//
-	//		function UserModel() {
-	//			this.config = {api_endpoint: "USER ENDPOINT"};
-	//		}
-	//		function User() {}
-	//		var userModel = BaseModel.extend(UserModel, User);
-	//		expect(userModel.active_record_class.name).toEqual("User");
-	//
-	//		function CustomerModel() {
-	//			this.config = {api_endpoint: "CUSTOMER ENDPOINT"};
-	//		}
-	//		function Customer() {}
-	//		var customerModel = BaseModel.extend(CustomerModel, Customer);
-	//
-	//		expect(userModel.config.api_endpoint).toEqual("USER ENDPOINT");
-	//		expect(customerModel.config.api_endpoint).toEqual("CUSTOMER ENDPOINT");
-	//	});
-	//
-	//	it("model should extend BaseModel methods", function() {
-	//
-	//		function MyModel() {}
-	//		function MyAR() {}
-	//		var myModel = BaseModel.extend(MyModel, MyAR);
-	//
-	//		expect(typeof myModel.new).toEqual('function');
-	//		expect(typeof myModel.index).toEqual('function');
-	//	});
-	//});
-	//
-	////--------------------------------------------
-	//// new
-	////--------------------------------------------
-	//
-	//describe("MyModel.new", function() {
-	//
-	//	it("active record should not be instance of BaseModel", function() {
-	//		function MyModel() {}
-	//		function MyActiveRecord() {}
-	//		var myModel = BaseModel.extend(MyModel, MyActiveRecord);
-	//		var Jim = myModel.new({name: "Jim"});
-	//
-	//		expect(Jim instanceof BaseModel.constructor).toBeFalsy();
-	//	});
-	//
-	//	it("should correctly populate active record data", function() {
-	//		function UserModel() {
-	//			this.config = {
-	//				api: "someapi"
-	//			}
-	//		}
-	//		function User(data) {
-	//			this.name = data.name;
-	//		}
-	//		var userModel = BaseModel.extend(UserModel, User);
-	//		var Jim = userModel.new({name: "Jim"});
-	//		expect(Jim.name).toEqual("Jim");
-	//	});
-	//
-	//	it("extended myModel.new should set properties to undefined if no data is provided", function() {
-	//
-	//		function MyModel() {}
-	//		function MyActiveRecord(data) {
-	//			this.name = data.name;
-	//		}
-	//		var myModel = BaseModel.extend(MyModel, MyActiveRecord);
-	//		var myActiveRecord = myModel.new();
-	//
-	//		expect(myActiveRecord.name).toBeUndefined();
-	//	});
-	//});
+	describe("BaseModel.extend", function() {
+
+		it("should throw an exception if model arg is missing", function() {
+			function MyModel() {}
+			expect(function(){ BaseModel.extend(); }).toThrow();
+		});
+
+		it("should throw an exception if active_record arg is missing", function() {
+			function MyModel() {}
+			expect(function(){ BaseModel.extend({}); }).toThrow();
+		});
+
+		it("model should be instance of BaseModel & MyModel", function() {
+			function MyModel() {}
+			function MyActiveRecord() {}
+			var myModel = BaseModel.extend(MyModel, MyActiveRecord);
+
+			expect(myModel instanceof BaseModel.constructor).toBeTruthy();
+			expect(myModel instanceof MyModel).toBeTruthy();
+		});
+
+		it("should set BaseModel properties for specific instance", function() {
+			function UserModel() {}
+			function User() {}
+			var userModel = BaseModel.extend(UserModel, User);
+			expect(userModel.active_record_class.name).toEqual("User");
+
+			function CustomerModel() {}
+			function Customer() {}
+			var customerModel = BaseModel.extend(CustomerModel, Customer);
+
+			expect(customerModel.active_record_class.name).toEqual("Customer");
+			expect(userModel.active_record_class.name).toEqual("User");
+		});
+
+		it("should set config.api to AngularCakePHPApiUrl", function() {
+			expect(BaseModel.config.api).toEqual(AngularCakePHPApiUrl);
+		});
+
+		it("should set model.config.api_endpoint if set", function() {
+
+			function MyModel() {
+				this.config = {api_endpoint: "MY ENDPOINT"};
+			}
+			function MyAR() {}
+			var myModel = BaseModel.extend(MyModel, MyAR);
+			expect(myModel.config.api_endpoint).toEqual("MY ENDPOINT");
+		});
+
+		it("multiple instance using extend should set config.api_endpoint to provided values", function() {
+
+			function UserModel() {
+				this.config = {api_endpoint: "USER ENDPOINT"};
+			}
+			function User() {}
+			var userModel = BaseModel.extend(UserModel, User);
+			expect(userModel.active_record_class.name).toEqual("User");
+
+			function CustomerModel() {
+				this.config = {api_endpoint: "CUSTOMER ENDPOINT"};
+			}
+			function Customer() {}
+			var customerModel = BaseModel.extend(CustomerModel, Customer);
+
+			expect(userModel.config.api_endpoint).toEqual("USER ENDPOINT");
+			expect(customerModel.config.api_endpoint).toEqual("CUSTOMER ENDPOINT");
+		});
+
+		it("model should extend BaseModel methods", function() {
+
+			function MyModel() {}
+			function MyAR() {}
+			var myModel = BaseModel.extend(MyModel, MyAR);
+
+			expect(typeof myModel.new).toEqual('function');
+			expect(typeof myModel.index).toEqual('function');
+		});
+
+		it("model should api_endpoint as snake case version of model name if api_endpoint is not set via model config", function() {
+
+			function MyModel() {}
+			function MyAR() {}
+			var myModel = BaseModel.extend(MyModel, MyAR);
+
+			expect(myModel.config.api_endpoint).toEqual('my_ar');
+		});
+	});
+
+	//--------------------------------------------
+	// new
+	//--------------------------------------------
+
+	describe("MyModel.new", function() {
+
+		it("active record should not be instance of BaseModel", function() {
+			function MyModel() {}
+			function MyActiveRecord() {}
+			var myModel = BaseModel.extend(MyModel, MyActiveRecord);
+			var Jim = myModel.new({name: "Jim"});
+
+			expect(Jim instanceof BaseModel.constructor).toBeFalsy();
+		});
+
+		it("should correctly populate active record data", function() {
+			function UserModel() {
+				this.config = {
+					api: "someapi"
+				}
+			}
+			function User(data) {
+				this.name = data.name;
+			}
+			var userModel = BaseModel.extend(UserModel, User);
+			var Jim = userModel.new({name: "Jim"});
+			expect(Jim.name).toEqual("Jim");
+		});
+
+		it("extended myModel.new should set properties to undefined if no data is provided", function() {
+
+			function MyModel() {}
+			function MyActiveRecord(data) {
+				this.name = data.name;
+			}
+			var myModel = BaseModel.extend(MyModel, MyActiveRecord);
+			var myActiveRecord = myModel.new();
+
+			expect(myActiveRecord.name).toBeUndefined();
+		});
+	});
 
 	//--------------------------------------------
 	// new (associations)
@@ -258,20 +257,10 @@ describe("DataModel", function() {
 
 		describe("index", function() {
 
-			it("should throw an exception if config.api_endpoint is not set", function() {
 
-				function MyModel() {}
-				function MyAR(data) {
-					this.name = data.name;
-				}
-				var myModel = BaseModel.extend(MyModel, MyAR);
+			it("should call HttpResponseService.handleIndexResponse on success", function() {
 
-				expect(function(){ myModel.index(); }).toThrow();
-			});
-
-			it("should call DataModelHttpResponseService.handleIndexResponse on success", function() {
-
-				spyOn(DataModelHttpResponseServiceMock, 'handleIndexResponse');
+				spyOn(HttpResponseServiceMock, 'handleIndexResponse');
 
 				$httpBackend.when('GET', "http://www.mywebsite.com/api/users")
 					.respond(200, {data: [{name: "user one"}]});
@@ -288,12 +277,12 @@ describe("DataModel", function() {
 				myModel.index();
 				$httpBackend.flush();
 
-				expect(DataModelHttpResponseServiceMock.handleIndexResponse).toHaveBeenCalled();
+				expect(HttpResponseServiceMock.handleIndexResponse).toHaveBeenCalled();
 			});
 
-			it("should call DataModelHttpResponseService.handleErrorResponse on error", function() {
+			it("should call HttpResponseService.handleErrorResponse on error", function() {
 
-				spyOn(DataModelHttpResponseServiceMock, 'handleErrorResponse');
+				spyOn(HttpResponseServiceMock, 'handleErrorResponse');
 
 				$httpBackend.when('GET', "http://www.mywebsite.com/api/users")
 					.respond(400, {message: "error message"});
@@ -310,7 +299,7 @@ describe("DataModel", function() {
 				myModel.index();
 				$httpBackend.flush();
 
-				expect(DataModelHttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
+				expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
 			});
 		});
 
@@ -319,17 +308,6 @@ describe("DataModel", function() {
 		//--------------------------------------------
 
 		describe("view", function() {
-
-			it("should throw an exception if config.api_endpoint is not set", function() {
-
-				function MyModel() {}
-				function MyAR(data) {
-					this.name = data.name;
-				}
-				var myModel = BaseModel.extend(MyModel, MyAR);
-
-				expect(function(){ myModel.view(1); }).toThrow();
-			});
 
 			it("should throw an exception if id param is not set", function() {
 
@@ -344,9 +322,9 @@ describe("DataModel", function() {
 				expect(function(){ myModel.view(); }).toThrow();
 			});
 
-			it("should call DataModelHttpResponseService.handleViewResponse on success", function() {
+			it("should call HttpResponseService.handleViewResponse on success", function() {
 
-				spyOn(DataModelHttpResponseServiceMock, 'handleViewResponse');
+				spyOn(HttpResponseServiceMock, 'handleViewResponse');
 
 				$httpBackend.when('GET', "http://www.mywebsite.com/api/users/1")
 					.respond(200, {data: {name: "user one"}});
@@ -363,12 +341,12 @@ describe("DataModel", function() {
 				myModel.view(1);
 				$httpBackend.flush();
 
-				expect(DataModelHttpResponseServiceMock.handleViewResponse).toHaveBeenCalled();
+				expect(HttpResponseServiceMock.handleViewResponse).toHaveBeenCalled();
 			});
 
-			it("should call DataModelHttpResponseService.handleErrorResponse on error", function() {
+			it("should call HttpResponseService.handleErrorResponse on error", function() {
 
-				spyOn(DataModelHttpResponseServiceMock, 'handleErrorResponse');
+				spyOn(HttpResponseServiceMock, 'handleErrorResponse');
 
 				$httpBackend.when('GET', "http://www.mywebsite.com/api/users/1")
 					.respond(400, {message: "error message"});
@@ -385,7 +363,7 @@ describe("DataModel", function() {
 				myModel.view(1);
 				$httpBackend.flush();
 
-				expect(DataModelHttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
+				expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
 			});
 		});
 
@@ -394,17 +372,6 @@ describe("DataModel", function() {
 		//--------------------------------------------
 
 		describe("add", function() {
-
-			it("should throw an exception if config.api_endpoint is not set", function() {
-
-				function MyModel() {}
-				function MyAR(data) {
-					this.name = data.name;
-				}
-				var myModel = BaseModel.extend(MyModel, MyAR);
-
-				expect(function(){ myModel.add({}); }).toThrow();
-			});
 
 			it("should throw an exception if data param is not set", function() {
 
@@ -419,9 +386,9 @@ describe("DataModel", function() {
 				expect(function(){ myModel.add(); }).toThrow();
 			});
 
-			it("should call DataModelHttpResponseService.handleHttpAddResponse on success", function() {
+			it("should call HttpResponseService.handleHttpAddResponse on success", function() {
 
-				spyOn(DataModelHttpResponseServiceMock, 'handleAddResponse');
+				spyOn(HttpResponseServiceMock, 'handleAddResponse');
 
 				$httpBackend.when('POST', "http://www.mywebsite.com/api/users")
 					.respond(200, {data: {name: "user one"}});
@@ -438,12 +405,12 @@ describe("DataModel", function() {
 				myModel.add({name: "new name"});
 				$httpBackend.flush();
 
-				expect(DataModelHttpResponseServiceMock.handleAddResponse).toHaveBeenCalled();
+				expect(HttpResponseServiceMock.handleAddResponse).toHaveBeenCalled();
 			});
 
-			it("should call DataModelHttpResponseService.handleErrorResponse on error", function() {
+			it("should call HttpResponseService.handleErrorResponse on error", function() {
 
-				spyOn(DataModelHttpResponseServiceMock, 'handleErrorResponse');
+				spyOn(HttpResponseServiceMock, 'handleErrorResponse');
 
 				$httpBackend.when('POST', "http://www.mywebsite.com/api/users")
 					.respond(400, {message: "error message"});
@@ -460,7 +427,7 @@ describe("DataModel", function() {
 				myModel.add({name: "new name"});
 				$httpBackend.flush();
 
-				expect(DataModelHttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
+				expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
 			});
 		});
 
@@ -469,17 +436,6 @@ describe("DataModel", function() {
 		//--------------------------------------------
 
 		describe("edit", function() {
-
-			it("should throw an exception if config.api_endpoint is not set", function() {
-
-				function MyModel() {}
-				function MyAR(data) {
-					this.name = data.name;
-				}
-				var myModel = BaseModel.extend(MyModel, MyAR);
-
-				expect(function(){ myModel.edit(1, {}); }).toThrow();
-			});
 
 			it("should throw an exception if id param is not set", function() {
 
@@ -507,9 +463,9 @@ describe("DataModel", function() {
 				expect(function(){ myModel.edit(1); }).toThrow();
 			});
 
-			it("should call DataModelHttpResponseService.handleEditResponse on success", function() {
+			it("should call HttpResponseService.handleEditResponse on success", function() {
 
-				spyOn(DataModelHttpResponseServiceMock, 'handleEditResponse');
+				spyOn(HttpResponseServiceMock, 'handleEditResponse');
 
 				$httpBackend.when('PUT', "http://www.mywebsite.com/api/users/1")
 					.respond(200, {data: {name: "user one"}});
@@ -526,12 +482,12 @@ describe("DataModel", function() {
 				myModel.edit(1, {name: "new name"});
 				$httpBackend.flush();
 
-				expect(DataModelHttpResponseServiceMock.handleEditResponse).toHaveBeenCalled();
+				expect(HttpResponseServiceMock.handleEditResponse).toHaveBeenCalled();
 			});
 
-			it("should call DataModelHttpResponseService.handleErrorResponse on error", function() {
+			it("should call HttpResponseService.handleErrorResponse on error", function() {
 
-				spyOn(DataModelHttpResponseServiceMock, 'handleErrorResponse');
+				spyOn(HttpResponseServiceMock, 'handleErrorResponse');
 
 				$httpBackend.when('PUT', "http://www.mywebsite.com/api/users/1")
 					.respond(400, {message: "error message"});
@@ -548,7 +504,7 @@ describe("DataModel", function() {
 				myModel.edit(1, {name: "new name"});
 				$httpBackend.flush();
 
-				expect(DataModelHttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
+				expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
 			});
 		});
 
@@ -557,17 +513,6 @@ describe("DataModel", function() {
 		//--------------------------------------------
 
 		describe("delete", function() {
-
-			it("should throw an exception if config.api_endpoint is not set", function() {
-
-				function MyModel() {}
-				function MyAR(data) {
-					this.name = data.name;
-				}
-				var myModel = BaseModel.extend(MyModel, MyAR);
-
-				expect(function(){ myModel.delete(1); }).toThrow();
-			});
 
 			it("should throw an exception if id param is not set", function() {
 
@@ -578,9 +523,9 @@ describe("DataModel", function() {
 				expect(function(){ myModel.delete(); }).toThrow();
 			});
 
-			it("should call DataModelHttpResponseService.handleDeleteResponse on success", function() {
+			it("should call HttpResponseService.handleDeleteResponse on success", function() {
 
-				spyOn(DataModelHttpResponseServiceMock, 'handleDeleteResponse');
+				spyOn(HttpResponseServiceMock, 'handleDeleteResponse');
 
 				$httpBackend.when('DELETE', "http://www.mywebsite.com/api/users/1")
 					.respond(200, {data: null});
@@ -597,12 +542,12 @@ describe("DataModel", function() {
 				myModel.delete(1);
 				$httpBackend.flush();
 
-				expect(DataModelHttpResponseServiceMock.handleDeleteResponse).toHaveBeenCalled();
+				expect(HttpResponseServiceMock.handleDeleteResponse).toHaveBeenCalled();
 			});
 
-			it("should call DataModelHttpResponseService.handleErrorResponse on error", function() {
+			it("should call HttpResponseService.handleErrorResponse on error", function() {
 
-				spyOn(DataModelHttpResponseServiceMock, 'handleErrorResponse');
+				spyOn(HttpResponseServiceMock, 'handleErrorResponse');
 
 				$httpBackend.when('DELETE', "http://www.mywebsite.com/api/users/1")
 					.respond(400, {message: "error message"});
@@ -619,7 +564,7 @@ describe("DataModel", function() {
 				myModel.delete(1);
 				$httpBackend.flush();
 
-				expect(DataModelHttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
+				expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
 			});
 		});
 
@@ -628,17 +573,6 @@ describe("DataModel", function() {
 		//--------------------------------------------
 
 		describe("api", function() {
-
-			it("should throw an exception if config.api_endpoint is not set", function() {
-
-				function MyModel() {}
-				function MyAR(data) {
-					this.name = data.name;
-				}
-				var myModel = BaseModel.extend(MyModel, MyAR);
-
-				expect(function(){ myModel.api(); }).toThrow();
-			});
 
 			it("should throw an exception if action param is not set", function() {
 

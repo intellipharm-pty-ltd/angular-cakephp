@@ -6,8 +6,8 @@ module.exports = {
     dist: {
     	dest: '<%= config.dist %>/angular-cakephp.js',
         src: [
-            '<%= config.lib %>/data-model.js',
-            '<%= config.lib %>/data-model-settings.js',
+            '<%= config.lib %>/angular-cakephp.js',
+            '<%= config.lib %>/angular-cakephp-settings.js',
             '<%= config.lib %>/**/*.js'
         ]
     }

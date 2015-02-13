@@ -15,18 +15,19 @@ module.exports = function(config) {
 
 		// list of files / patterns to load in the browser
 		files: [
-			//'../../bower_components/lodash/dist/lodash.min.js',
-			'../../bower_components/lodash/lodash.min.js',
-			'../../bower_components/angular/angular.min.js',
-			'../../bower_components/angular-mocks/angular-mocks.js',
-			/*'../../bower_components/observe-js/src/observe.js',*/
-			'scripts/data-model.js',
-			'scripts/data-model-settings.js',
-			'scripts/http/data-model-http-response-service.js',
-			'scripts/transformers/data-model-transformer-service.js',
-			'scripts/util/data-model-util-service.js',
-			'scripts/base/base-active-record.js',
-			'scripts/base/base-model.js',
+			'bower_components/lodash/lodash.min.js',
+			'bower_components/angular/angular.min.js',
+			'bower_components/angular-mocks/angular-mocks.js',
+			'bower_components/pluralize/pluralize.js',
+			'lib/angular-cakephp.js',
+			'lib/angular-cakephp-settings.js',
+			'lib/http/http-query-build-service.js',
+			'lib/http/http-response-service.js',
+			'lib/http/http-request-service.js',
+			'lib/transformers/transformer-service.js',
+			'lib/util/util-service.js',
+			'lib/base/base-active-record.js',
+			'lib/base/base-model.js',
 			'tests/*.js'
 		],
 
