@@ -1,12 +1,9 @@
 # angular-cakephp
-An AngularJS data modelling framework that ties in with a CakePHP REST API.
-Inspiration taken from
-  * [Restangular](https://github.com/mgonto/restangular)
-  * [Ng Active Resource](https://github.com/FacultyCreative/ngActiveResource)
-  * [Ember Data](https://github.com/emberjs/data)
 
+## Dependencies
+angular-cakephp depends on [AngularJS](https://github.com/angular/angular.js), [Lodash](https://github.com/lodash/lodash), and [Pluralize](https://github.com/blakeembrey/pluralize)
 
-# Installation
+## Installation
 
 ```js
 bower install angular-cakephp --save
@@ -15,147 +12,145 @@ bower install angular-cakephp --save
 <script src="bower_components/angular-cakephp/dist/angular-cakephp.min.js"></script>
 ```
 
-# Getting Started
+## Getting Started
 
-The base url of the api you want to hit needs to be set
+##### Set API base url
 
 ```js
 angular.module('DataModel').value('DataModelApiUrl', 'http://example.com/api');
 ```
 
-Then you just need to create your models
+##### Create a model
 
 ```js
 'use strict';
 (function() {
     var UserModel = function(BaseModel) {
 
-    function UserModel() {}
+        function UserModel() {}
 
-    function User(data) {
-      this.id       = data.id;
-      this.email    = data.email;
-      this.username = data.username;
-      this.password = data.password;
-    }
+        function User(data) {
+            this.id        = data.id;
+            this.firstname = data.firstname;
+            this.lastname  = data.lastname;
+            this.dob       = data.dob;
 
-    return BaseModel.extend(UserModel, User);
+            // creates a field that is read-only and automatically updates
+            this.virtualField('name', function() {
+                return this.firstname + ' ' + this.lastname;
+            });
+        }
+
+        return BaseModel.extend(UserModel, User);
     };
 
-  UserModel.$inject = ['BaseModel'];
+    UserModel.$inject = ['BaseModel'];
 
     angular.module('App').factory('UserModel', UserModel);
 })();
 ```
 
-And you are ready to start using it
+##### Use the model
 
 ```js
 'use strict';
 (function() {
-  var AppCtrl = function($scope, UserModel) {
-    // creates a new local active record
-    $scope.User = UserModel.new({
-      name: 'Goeffry Rush'
-    });
+    var AppCtrl = function($scope, UserModel) {
+        // creates a new local active record
+        $scope.User = UserModel.new({
+            firstname: 'Goeffry',
+            lastname: 'Rush'
+        });
 
-    // gets a list of items
-    UserModel.index({page: 2}).then(function(Users) {
-      $scope.Users = Users;
-    });
+        // gets a list of items
+        UserModel.index({page: 2}).then(function(Users) {
+            $scope.Users = Users;
+        });
 
-    // gets a single item
-    UserModel.view(1).then(function(User) {
-      $scope.User = User;
-    });
+        // gets a single item
+        UserModel.view(1, {contain: 'Comments'}).then(function(User) {
+            $scope.User = User;
+        });
 
-    UserModel.add({
-      name: 'Joe Bloggs'
-    }).then(function(User) {
-      $scope.User = User;
-    });
+        // adds an item
+        UserModel.add({
+            firstname: 'Mike',
+            surname: 'Myers'
+        }).then(function(User) {
+            $scope.User = User;
+        });
 
-    UserModel.edit(1, {
-      name: 'Michael Buble'
-    }).then(function(User) {
-      $scope.User = User;
-    });
+        // edits an existing item
+        UserModel.edit(1, {
+            firstname: 'Michael',
+            lastname: 'Buble'
+        }).then(function(User) {
+            $scope.User = User;
+        });
 
-    UserModel.delete(1).then(function() {
-      $scope.User = null;
-    });
-  };
+        // deletes an item
+        UserModel.delete(1).then(function() {
+            $scope.User = null;
+        });
 
-  AppCtrl.$inject = ['$scope', 'UserModel'];
+        // calls a validation method on the api for the model. This runs the CakePHP model validation without changing anything in the database. This reduces the client side validation. For more information see [validation](https://github.com/Intellipharm/angular-cakephp/blob/master/VALIDATE.md)
+        UserModel.validate({
+            firstname: 'Jack',
+            lastname: 'Daniels',
+            dob: 1234
+        }, [
+            'dob'
+        ]).then(function() {
+            $scope.User = null;
+        });
 
-  angular.module('App').controller('AppCtrl', AppCtrl);
+        // calls a custom method for the model
+        UserModel.api('my_custom_api_method', {}, 'POST').then(function() {
+            $scope.User = null;
+        });
+
+
+        // After getting an Active Record then you can call some of it's own functions
+        $scope.User = UserModel.new({
+            firstname: 'Ian',
+            surname: 'Mckellen'
+        });
+
+        // create a new local active record. Alias of model.new()
+        $scope.NewUser = $scope.User.new({
+            firstname: 'Heath',
+            surname: 'Ledger'
+        });
+
+        // update a value
+        $scope.User.firstname = 'Sean'
+        $scope.User.lastname = 'Bean';
+
+        // get a virtual field
+        console.log($scope.User.name); // This would return 'Sean Bean'
+
+        // saves the changes to the database. If no id exists then it calls model.add, but if it does exist it calls model.edit
+        $scope.User.save().then(function() {});
+
+        // deletes the item. Alias of model.delete()
+        $scope.User.delete().then(function() {});
+
+        // validates the item. Alias of model.validate()
+        $scope.User.validate().then(function() {});
+
+        // gets the class name of the model. In this case it would return 'User'
+        var modelName = $scope.User.getClassName();
+    };
+
+    AppCtrl.$inject = ['$scope', 'UserModel'];
+
+    angular.module('App').controller('AppCtrl', AppCtrl);
 })();
 
 ```
 
-# Features
-
-## Model Features
-A model has all the standard CakePHP rest functions ```index, view, add, edit, delete```
-
-  * ```index``` - gets a list of items - takes an object which are extra url parameters
-  * ```view``` - gets a single item - takes an id and an object which are extra url parameters
-  * ```add``` - adds an item - takes an object of the data to pass to the server
-  * ```edit``` - edits a single item - takes an id and an object of the data to pass to the server
-  * ```delete``` - deletes a single item - takes an id
-
-It also has some non-standard cake features
-  * ```new``` - creates a new LOCAL record.
-  * ```api``` - calls a custom method for the model - takes a name of the action, the parameters to pass and the http method
-  * ```validate``` - calls a validation custom method for the model. This just calls the cakephp validation method on the model without doing any changes to the database. We wrote this to minimise client side validation.
-
-## Active Record Features
-
-  * ```save``` - calls either the models ```edit``` or ```add``` depending on whether and id exists or not
-  * ```new``` - alias for model new
-  * ```delete``` - alias for model delete
-  * ```validate``` - alias for model validate
-  * ```getClassName``` - gets the name of the model class
-  * ```virtualField``` - is like cakephp's virtualField. Will create a field that is based off other fields but cannot be directly changed and won't be sent to the apied by calling UserModel.new(data)
- - this returns a populated instance of UserModel
-
-
-Future Plans
---------------------------------
-
-functionality:
-
- - contain fields with default values (not connected to server Model or DB)
- - httpValidate (which calls server validation)
- - validate (which calls JS library validation)
- - CRUD api (that interfaces with server)
- - format data on response
- - format data before request
-
-configuration:
-
- - server api address
- - validation library
- - methods
-   - new (returns new instance of model)
- - CRUD api endpoints
-   - index
-   - add
-   - edit
-   - delete
- - action sequence config:
-	eg.
-	action_sequence_config = {
-		'update': [
-     			'validate',
-     			'httpValidate',
-     			'formatRequest'
-		]
-   	};
-	then when calling model.update(data);
-        will call:
-	1) validate
-	2) httpValidate
-	3) formatRequest
-	4) update
-
+## Inspiration
+Inspiration taken from
+    * [restangular](https://github.com/mgonto/restangular)
+    * [ngActiveResource](https://github.com/FacultyCreative/ngActiveResource)
+    * [ember-data](https://github.com/emberjs/data)
