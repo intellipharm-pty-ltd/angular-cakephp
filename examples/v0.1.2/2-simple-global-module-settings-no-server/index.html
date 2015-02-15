@@ -1,36 +1,50 @@
 <html>
 <head>
-	<title>AngularCakePHP : Simple example with no server</title>
+	<title>AngularCakePHP : Global Module Settings (no server)</title>
+	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../styles/global.css">
 </head>
 <body ng-app="App" ng-controller="AppController as app">
 
-<h2>Simple Example with no server</h2>
+<div class="row">
+	<div class="col-xs-12 description">
+		<h2>Global Module Settings (no server)</h2>
 
-<p>In this example I have created a User model using the AngularCakePHP data model (scripts/user-model.js).</p>
-<p>Then I have created a few User instances, see the list below.</p>
-<p>And lastly the form below will create a new User instance with the name you provide.</p>
-<p>The newly created user is also logged in the console, so have a look at that too.</p>
+		<br/>
 
-<h3>Create New User</h3>
-<form>
-	<fieldset>
-		<label for="name">Name: </label>
-		<input id="name" type="text" ng-model="app.new_user.name" />
-	</fieldset>
-	<button type="submit" ng-click="app.createNewUser()">CREATE</button>
-</form>
+		<p>This example demonstrates global module settings, which are set using angular values.</p>
+		<p>Here we have created a User model using the AngularCakePHP data model (scripts/user-model.js),</p>
+		<p>and applied the following custom settings:</p>
+	</div>
+</div><!--/.row-->
 
-<h3>Current Users</h3>
-<ul>
-	<li ng-repeat="user in app.users">
-		{{user.name}}
-	</li>
-</ul>
+<div class="row">
+	<div class="col-sm-8 col-sm-offset-2 col-lg-6 col-lg-offset-3 example well">
+
+		<table class="table">
+			<thead>
+			<tr>
+				<th>key</th>
+				<th>value/result</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td>AngularCakePHPApiUrl</td>
+				<td>{{api}}</td>
+			</tr>
+			<tr>
+				<td>AngularCakePHPApiEndpoint</td>
+				<td>{{api_endpoint}}</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div><!--/.row-->
 
 <!-- dependencies -->
 <script src="../bower_components/lodash/lodash.min.js"></script>
 <script src="../bower_components/angular/angular.min.js"></script>
-<script src="../bower_components/pluralize/pluralize.js"></script>
 
 <!-- Angular CakePHP -->
 <script src="../../../lib/angular-cakephp.js"></script>
@@ -45,6 +59,7 @@
 
 <!-- example app -->
 <script src="scripts/app.js"></script>
+<script src="scripts/app-settings.js"></script>
 <script src="scripts/app-controller.js"></script>
 <script src="scripts/user-model.js"></script><!-- implementation of AngularCakePHP model -->
 

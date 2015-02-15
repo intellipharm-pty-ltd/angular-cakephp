@@ -1,7 +1,7 @@
 # angular-cakephp
 
 ## Dependencies
-angular-cakephp depends on [AngularJS](https://github.com/angular/angular.js), [Lodash](https://github.com/lodash/lodash), and [Pluralize](https://github.com/blakeembrey/pluralize)
+angular-cakephp depends on [AngularJS](https://github.com/angular/angular.js), [Lodash](https://github.com/lodash/lodash)
 
 ## Installation
 
@@ -155,40 +155,18 @@ angular.module('AngularCakePHP')
 ```
 
 
-## Data Model config options
+# Settings & Config
 
+## Global Module Settings
+
+set using angular values:
 ```js
-'use strict';
-(function() {
-    var UserModel = function(BaseModel) {
-
-        function UserModel() {
-			this.config = {
-				// set here
-			}
-		}
-		....
-```
-
-#### api_endpoint
-
-This will be appended to your API URL when any HTTP call is made via the model.
-eg. if your user model has an api_endpoint of users, and your API URL is set to http://www.google.com, then the result HTTP call will be http://www.google.com/users.
-
-If not set, the api_endpoint will be the snake case of your model class name.
-eg. a model called SpecialUser, will have an api_endpoint of special_user
-
-
-
-
-## Setttings
-
-provided via
-```js
-angular.module('DataModel').value('DataModelApiUrl', 'http://example.com/api');
+angular.module('YourApp').value('setting name', 'setting value');
 ```
 
 ##### AngularCakePHPApiUrl
+
+REQUIRED
 
 The URL of your API.
 
@@ -197,17 +175,17 @@ angular.module('AngularCakePHP')
     .value('AngularCakePHPApiUrl', 'http://example.com/api');
 ```
 
-##### AngularCakePHPApiEndpointPluralize
+##### AngularCakePHPApiEndpoint
 
 OPTIONAL
 
-Method to pluralize the api_endpoint.
+Function to create the api_endpoint.
 Is only called if no api_endpoint is set in teh model config.
 
 ```js
 angular.module('AngularCakePHP')
-    .value('AngularCakePHPApiEndpointPluralize', function(endpoint) {
-			return endpoint +"s";
+    .value('AngularCakePHPApiEndpoint', function(value) {
+			return value +"s";
 		});
 ```
 
@@ -219,11 +197,34 @@ Simply include pluralize and specify its use as follows:
 
 ```js
 angular.module('AngularCakePHP')
-    .value('AngularCakePHPApiEndpointPluralize', pluralize);
+    .value('AngularCakePHPApiEndpoint', pluralize);
 ```
 
 
-## Model API
+## Model Specific Config
+
+set in the model's constructor:
+```js
+function UserModel() {
+    this.config = {
+        'key': value
+    }
+}
+```
+
+##### api_endpoint
+
+This will be appended to your API URL when any HTTP call is made via the model.
+eg. if your user model has an api_endpoint of users, and your API URL is set to http://www.google.com, then the result HTTP call will be http://www.google.com/users.
+
+NOTE: If not set, the api_endpoint will be the snake case of your model class name.
+eg. a model called SpecialUser, will have an api_endpoint of special_user
+
+EXTRA: You can provide a function to generate the endpoint, see Global Module Settings above.
+
+# Class APIs
+
+## Model
 
 ### properties
 
@@ -243,7 +244,7 @@ validate
 api
 
 
-## Active Record API
+## Active Record
 
 ### properties
 

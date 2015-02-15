@@ -263,7 +263,7 @@
 
 	// settings
 	var api_url;
-	var pluralizeMethod = null;
+	var apiEndpointMethod = null;
 
 	/**
 	 * BaseModel
@@ -272,7 +272,6 @@
 	 * @param _$injector
 	 * @param _$q
 	 * @param _api_url
-	 * @param _generate_endpoint
 	 * @param _UtilService
 	 * @param _HttpResponseService
 	 * @param _TransformerService
@@ -294,7 +293,7 @@
 
 		// optional services
 		try {
-			pluralizeMethod = $injector.get('AngularCakePHPApiEndpointPluralize');
+			apiEndpointMethod = $injector.get('AngularCakePHPApiEndpoint');
 		} catch (e) {}
 
 		// properties
@@ -342,9 +341,9 @@
 			// create endpoint by converting class name to snake case
 			instance.config.api_endpoint = _.snakeCase(instance.active_record_class.name);
 
-			// if pluralize nethod is provided, then use it to pluralize the end point
-			if (!_.isNull(pluralizeMethod)) {
-				instance.config.api_endpoint = pluralizeMethod(instance.config.api_endpoint);
+			// if api_endpoint method is provided, then use it to create the endpoint
+			if (!_.isNull(apiEndpointMethod)) {
+				instance.config.api_endpoint = apiEndpointMethod(instance.config.api_endpoint);
 			}
 		}
 
