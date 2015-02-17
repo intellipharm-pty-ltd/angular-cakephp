@@ -159,19 +159,20 @@ angular.module('AngularCakePHP')
 
 ### Global Module Settings
 
-set using angular values:
+These will apply to all the models that extend AngularCakePP.
+
+Options include:
+
+ - AngularCakePHPApiUrl (required)
+ - AngularCakePHPApiEndpointTransformer (optional)
+ - AngularCakePHPUrlParamTransformer (optional)
+
+Set using angular values:
 ```js
 angular.module('YourApp').value('setting name', 'setting value');
 ```
 
- - AngularCakePHPApiUrl
- - AngularCakePHPApiEndpointTransformer
- - AngularCakePHPUrlParamTransformer
-
-
 ##### AngularCakePHPApiUrl
-
-REQUIRED
 
 The URL of your API.
 
@@ -182,8 +183,6 @@ angular.module('AngularCakePHP')
 
 ##### AngularCakePHPApiEndpointTransformer
 
-OPTIONAL
-
 Function to transform the api_endpoint.
 Is only called if no api_endpoint is set in the model config.
 
@@ -193,7 +192,6 @@ angular.module('AngularCakePHP')
 			return value +"s";
 		});
 ```
-
 
 Alternatively you can use an external library like Pluralize:
 [Pluralize](https://github.com/blakeembrey/pluralize)
@@ -207,8 +205,6 @@ angular.module('AngularCakePHP')
 
 ##### AngularCakePHPUrlParamTransformer
 
-OPTIONAL
-
 Function to transform the url params of an index, view or GET api query.
 Must return an array of url params eg. [limit: 2, page: 4, search: 'name']
 
@@ -219,10 +215,11 @@ angular.module('AngularCakePHP')
 		});
 ```
 
-
 ### Model Specific Config
 
-set in the model's constructor:
+These will apply to each specific model.
+
+Set in the model's constructor:
 ```js
 function UserModel() {
     this.config = {
@@ -230,6 +227,8 @@ function UserModel() {
     }
 }
 ```
+
+Options include:
 
  - api_endpoint
 
@@ -265,7 +264,16 @@ EXTRA: You can provide a function to generate the endpoint, see Global Module Se
  - api
 
 ##### extend
+
+Extends BaseModel
+
+@param model (the model that will extend BaseModel)
+@param active_record (The active record class that will be used when creating new instance)
+@returns model instance
+
 ##### new
+
+Creates a new instance of the model's active record class
 
 @param object data (data used to create a new active record)
 @returns object (new active record | empty object)
@@ -341,6 +349,61 @@ Makes HTTP call to specified API endpoint
  - getClassName
  - virtualField
  - virtualFieldUpdate
+ 
+##### extend
+
+Extends BaseActiveRecord
+
+@param model (the model being used to call this method)
+@param active_record (The active record class that will extend BaseActiveRecord)
+@returns active record instance
+
+##### save
+
+Relay call to the model's edit method
+
+@returns promise
+
+##### new
+
+Relay call to the model's new method
+
+@returns promise
+
+##### delete
+
+Relay call to the model's delete method
+
+@returns promise
+
+##### validate
+
+Relay call to the model's validate method
+
+@param array fields (array of fields to validate)
+@returns promise
+
+##### getClassName
+
+Returns active record class name
+
+@returns promise
+
+##### virtualField
+
+Returns computed property / virtual field by concatenating multiple properties
+
+@param string name (name of the virtual field)
+@param function valueFn (?) // TODO: remove abbreviation & name more clearly
+@returns {construct}
+
+##### virtualFieldUpdate
+
+When the field is set manually it triggers the set function defined in virtualField.
+We can set it to blank and then it triggers the valueFn to set the value
+
+@param string name (name of virtual field to update)
+@returns this
 
 
 ## Inspiration
