@@ -21,7 +21,6 @@ module.exports = function(config) {
 			'bower_components/pluralize/pluralize.js',
 			'lib/angular-cakephp.js',
 			'lib/angular-cakephp-settings.js',
-			'lib/http/http-query-build-service.js',
 			'lib/http/http-response-service.js',
 			'lib/http/http-request-service.js',
 			'lib/transformers/transformer-service.js',

@@ -8,8 +8,11 @@
 
 	angular.module('App')
 		.value('AngularCakePHPApiUrl', "http://www.google.com")
-		.value('AngularCakePHPApiEndpoint', function(value) {
+		.value('AngularCakePHPApiEndpointTransformer', function(value) {
 			return value +"s";
+		})
+		.value('AngularCakePHPUrlParamTransformer', function(params) {
+			return ['a=B','c=D'];
 		});
 
 })();

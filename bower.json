@@ -4,7 +4,8 @@
   "homepage": "https://github.com/Intellipharm/angular-cakephp",
   "authors": [
     "Intellipharm <damian@intellipharm.com.au>",
-    "Neil Russell <neilrusell6@gmail.com.au>"
+    "Neil Russell <neilrusell6@gmail.com.au>",
+    "Timothy Ruhle <timothy.ruhle@intellipharm.com.au>"
   ],
   "description": "An AngularJS data modelling framework that ties in with a CakePHP REST API",
   "main": [

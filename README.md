@@ -155,14 +155,19 @@ angular.module('AngularCakePHP')
 ```
 
 
-# Settings & Config
+## Settings & Config
 
-## Global Module Settings
+### Global Module Settings
 
 set using angular values:
 ```js
 angular.module('YourApp').value('setting name', 'setting value');
 ```
+
+ - AngularCakePHPApiUrl
+ - AngularCakePHPApiEndpointTransformer
+ - AngularCakePHPUrlParamTransformer
+
 
 ##### AngularCakePHPApiUrl
 
@@ -175,16 +180,16 @@ angular.module('AngularCakePHP')
     .value('AngularCakePHPApiUrl', 'http://example.com/api');
 ```
 
-##### AngularCakePHPApiEndpoint
+##### AngularCakePHPApiEndpointTransformer
 
 OPTIONAL
 
-Function to create the api_endpoint.
-Is only called if no api_endpoint is set in teh model config.
+Function to transform the api_endpoint.
+Is only called if no api_endpoint is set in the model config.
 
 ```js
 angular.module('AngularCakePHP')
-    .value('AngularCakePHPApiEndpoint', function(value) {
+    .value('AngularCakePHPApiEndpointTransformer', function(value) {
 			return value +"s";
 		});
 ```
@@ -200,8 +205,22 @@ angular.module('AngularCakePHP')
     .value('AngularCakePHPApiEndpoint', pluralize);
 ```
 
+##### AngularCakePHPUrlParamTransformer
 
-## Model Specific Config
+OPTIONAL
+
+Function to transform the url params of an index, view or GET api query.
+Must return an array of url params eg. [limit: 2, page: 4, search: 'name']
+
+```js
+angular.module('AngularCakePHP')
+    .value('AngularCakePHPUrlParamTransformer', function(params) {
+			// process params
+		});
+```
+
+
+### Model Specific Config
 
 set in the model's constructor:
 ```js
@@ -211,6 +230,8 @@ function UserModel() {
     }
 }
 ```
+
+ - api_endpoint
 
 ##### api_endpoint
 
@@ -222,43 +243,104 @@ eg. a model called SpecialUser, will have an api_endpoint of special_user
 
 EXTRA: You can provide a function to generate the endpoint, see Global Module Settings above.
 
-# Class APIs
+## Class APIs
 
-## Model
+### Model
 
-### properties
+#### properties
 
-active_record_class
-config
+ - active_record_class
+ - config
 
-### methods
+#### methods
 
-extend
-new
-index
-view
-add
-edit
-delete
-validate
-api
+ - extend
+ - new
+ - index
+ - view
+ - add
+ - edit
+ - delete
+ - validate
+ - api
 
+##### extend
+##### new
+
+@param object data (data used to create a new active record)
+@returns object (new active record | empty object)
+
+##### index
+
+makes GET HTTP call to API
+	 
+@param object params (a list of url parameters to pass with the HTTP request)
+@returns promise HttpResponseService.handleViewResponse
+
+##### view
+
+makes GET HTTP call to API with id
+
+@param id (unique id of the record you want to view)
+@param object params (a list of url parameters to pass with the HTTP request)
+@returns promise HttpResponseService.handleViewResponse
+
+##### add
+
+makes POST HTTP call to API
+
+@param object data (post data to be passed with HTTP request
+@returns promise HttpResponseService.handleAddResponse
+
+##### edit
+
+makes PUT HTTP call to API with id
+
+@param object data (data to be passed with HTTP PUT request)
+@returns promise HttpResponseService.handleEditResponse
+
+##### delete
+
+makes DELETE HTTP call to API with id
+
+@param id (unique id of the record you want to delete)
+@returns promise HttpResponseService.handleDeleteResponse
+
+##### validate
+
+Makes a POST HTTP call to API validation resource
+
+@param object active_record (active record to validate)
+@param array fields (array of fields to validate)
+@returns promise HttpResponseService.handleValidateResponse
+
+##### api
+
+Makes HTTP call to specified API endpoint
+
+@param string endpoint (endpoint to call)
+@param string http_method (HTTP method to use for call) (default: GET)
+@param object url_params (url params to pass with call)
+@param object post_params (post params to pass with call)
+@returns promise
 
 ## Active Record
 
-### properties
+### Model
 
-model
+#### properties
 
-### methods
+...
 
-extend
-save
-new
-delete
-getClassName
-virtualField
-virtualFieldUpdate
+#### methods
+
+ - extend
+ - save
+ - new
+ - delete
+ - getClassName
+ - virtualField
+ - virtualFieldUpdate
 
 
 ## Inspiration

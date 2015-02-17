@@ -13,6 +13,14 @@
 
 		$scope.api = UserModel.config.api;
 		$scope.api_endpoint = UserModel.config.api_endpoint;
+
+		/**
+		 * logHttpCallUrlParams
+		 */
+		this.logHttpCallUrlParams = function() {
+			var params = {a: 'b', c: 'd'};
+			UserModel.index(params);
+		};
 	};
 
 	AppController.$inject = ['$scope', 'UserModel'];

@@ -23,8 +23,9 @@
 (function() {
 
 	angular.module('AngularCakePHP')
-		.value('AngularCakePHPApiUrl', 'http://example.com/api')
-		.value('AngularCakePHPGenerateEndPoint', false);
+		.value('AngularCakePHPApiUrl', "")
+		.value('AngularCakePHPApiEndpointTransformer', null) // optional
+		.value('AngularCakePHPUrlParamTransformer', null); // optional
 
 })();
 'use strict';
@@ -263,7 +264,7 @@
 
 	// settings
 	var api_url;
-	var apiEndpointMethod = null;
+	var apiEndpointTransformer = null;
 
 	/**
 	 * BaseModel
@@ -293,7 +294,7 @@
 
 		// optional services
 		try {
-			apiEndpointMethod = $injector.get('AngularCakePHPApiEndpoint');
+			apiEndpointTransformer = $injector.get('AngularCakePHPApiEndpointTransformer');
 		} catch (e) {}
 
 		// properties
@@ -341,9 +342,9 @@
 			// create endpoint by converting class name to snake case
 			instance.config.api_endpoint = _.snakeCase(instance.active_record_class.name);
 
-			// if api_endpoint method is provided, then use it to create the endpoint
-			if (!_.isNull(apiEndpointMethod)) {
-				instance.config.api_endpoint = apiEndpointMethod(instance.config.api_endpoint);
+			// if api endpoint transformer is provided, then use it to create the endpoint
+			if (!_.isNull(apiEndpointTransformer)) {
+				instance.config.api_endpoint = apiEndpointTransformer(instance.config.api_endpoint);
 			}
 		}
 
@@ -354,8 +355,8 @@
 	/**
 	 * new
 	 *
-	 * @param data
-	 * @returns {construct.active_record_class}
+	 * @param object data (data used to create a new active record)
+	 * @returns object (new active record | empty object)
 	 */
 	BaseModel.prototype.new = function(data) {
 
@@ -394,9 +395,10 @@
 
 	/**
 	 * index
+	 * makes GET HTTP call to API
 	 *
-	 * @param params
-	 * @returns {*}
+	 * @param object params (a list of url parameters to pass with the HTTP request)
+	 * @returns promise HttpResponseService.handleIndexResponse
 	 */
 	BaseModel.prototype.index = function(params) {
 
@@ -418,10 +420,11 @@
 
 	/**
 	 * view
+	 * makes GET HTTP call to API with id
 	 *
-	 * @param id
-	 * @param params
-	 * @returns {*}
+	 * @param id (unique id of the record you want to view)
+	 * @param object params (a list of url parameters to pass with the HTTP request)
+	 * @returns promise HttpResponseService.handleViewResponse
 	 */
 	BaseModel.prototype.view = function(id, params) {
 
@@ -448,9 +451,10 @@
 
 	/**
 	 * add
+	 * makes POST HTTP call to API
 	 *
-	 * @param data
-	 * @returns {Promise}
+	 * @param object data (post data to be passed with HTTP POST request
+	 * @returns promise HttpResponseService.handleAddResponse
 	 */
 	BaseModel.prototype.add = function(data) {
 
@@ -478,10 +482,11 @@
 
 	/**
 	 * edit
+	 * makes PUT HTTP call to API with id
 	 *
 	 * @param id
-	 * @param data
-	 * @returns {Promise}
+	 * @param object data (data to be passed with HTTP PUT request)
+	 * @returns promise HttpResponseService.handleEditResponse
 	 */
 	BaseModel.prototype.edit = function(id, data) {
 
@@ -512,9 +517,10 @@
 
 	/**
 	 * delete
+	 * makes DELETE HTTP call to API with id
 	 *
-	 * @param id
-	 * @returns {Promise}
+	 * @param id (unique id of the record you want to delete)
+	 * @returns promise HttpResponseService.handleDeleteResponse
 	 */
 	BaseModel.prototype.delete = function(id) {
 
@@ -541,10 +547,11 @@
 
 	/**
 	 * validate
+	 * Makes a POST HTTP call to API validation resource
 	 *
-	 * @param active_record
-	 * @param fields
-	 * @returns {Promise}
+	 * @param object active_record (active record to validate)
+	 * @param array fields (array of fields to validate)
+	 * @returns promise HttpResponseService.handleValidateResponse
 	 */
 	BaseModel.prototype.validate = function(active_record, fields) {
 
@@ -581,14 +588,15 @@
 
 	/**
 	 * api
-	 * custom api action call
+	 * Makes HTTP call to specified API endpoint
 	 *
-	 * @param action
-	 * @param params
-	 * @param http_method
-	 * @returns {Promise}
+	 * @param string endpoint (endpoint to call)
+	 * @param string http_method (HTTP method to use for call) (default: GET)
+	 * @param object url_params (url params to pass with call)
+	 * @param object post_params (post params to pass with call)
+	 * @returns promise
 	 */
-	BaseModel.prototype.api = function(action, params, http_method) {
+	BaseModel.prototype.api = function(end_point, http_method, url_params, post_params) {
 
 		var self = this;
 
@@ -596,114 +604,44 @@
 		if (_.isUndefined(http_method)) {
 			http_method = 'GET';
 		}
-		if (_.isUndefined(params)) {
-			params = {};
+		if (_.isUndefined(url_params)) {
+			url_params = {};
+		}
+		if (_.isUndefined(post_params)) {
+			post_params = {};
 		}
 
 		// format params
 		http_method = http_method.toUpperCase();
 
 		// validate
-		if (_.isNull(action) || _.isUndefined(action)) {
+		if (_.isNull(end_point) || _.isUndefined(end_point)) {
 			throw new Error(self.ERROR_MISSING_PARAMS);
 		}
 
-		// format get params
-		var get_params = null;
-		var post_params = [];
-		if (http_method === 'GET') {
-			get_params = []; // TODO: convert params to url args
-		} else {
-			post_params = params;
-		}
+		// format url params
+		url_params = '';// TODO: url param conversion
 
 		// format url
-		var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint + '/' + action, get_params);
+		var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint + '/' + end_point, url_params);
 
-		return $http({
-			url: url,
-			data: post_params,
-			method: http_method
-		});
+		// http call params
+		var http_params = {
+			method: http_method,
+			url: url
+		};
+
+		if (http_method === 'POST') {
+			http_params.data = post_params;
+		}
+
+		// make call
+		return $http(http_params);
 	};
 
 	angular.module('AngularCakePHP').service('AngularCakePHPBaseModel', BaseModel);
 })();
 
-'use strict';
-
-(function() {
-
-	//----------------------------------
-	// HttpQueryBuild Service
-	//----------------------------------
-
-	var HttpQueryBuildService = function() {
-
-		/**
-		 * build
-		 *
-		 * @param data
-		 * @param key
-		 * @returns {string}
-		 */
-		this.build = function(data, key) {
-			var key_str = !_.isUndefined(key) ? key : "";
-			var result = buildProcess(data, key_str, "");
-
-			return result.substring(1, result.length);
-		};
-
-		/**
-		 * buildProcess
-		 *
-		 * @param data
-		 * @param key_str
-		 * @param result
-		 * @param caseA
-		 * @returns {*}
-		 */
-		var buildProcess = function(data, key_str, result, caseA) {
-			caseA = _.isUndefined(caseA) ? false : caseA;
-
-			if (typeof data === 'string') {
-				data = data.split(',');
-			}
-
-			for (var key in data) {
-				if (_.isArray(data[key])) {
-
-					// TODO: make this part recursive
-					for (var i=0; i<data[key].length; i++) {
-
-						if (_.isObject(data[key][i])) {
-							for (var sub_key in data[key][i]) {
-								result += "&" + key_str + '[' + key + '][' + sub_key + ']=' + data[key][i][sub_key];
-							}
-						} else {
-							result += "&" + key_str + '[' + key + '][' + i + ']=' + data[key][i];
-						}
-					}
-				} else if (_.isArray(data) && _.isObject(data[key])) {
-					result = buildProcess(data[key], key_str, result);
-				} else if (_.isObject(data[key])) {
-					result += "&" + key_str + '['+key+']';
-					result = buildProcess(data[key], key_str, result, true);
-				} else {
-					if (caseA) {
-						result += '['+key+']=' + data[key];
-					}else {
-						result += "&" + key_str + '['+key+']=' + data[key];
-					}
-				}
-			}
-			return result;
-		};
-	};
-
-	angular.module('AngularCakePHP').service('HttpQueryBuildService', HttpQueryBuildService);
-
-})();
 'use strict';
 
 (function() {
@@ -887,9 +825,16 @@
 	// Transformer Service
 	//---------------------------------------------------
 
-	var TransformerService = function(HttpQueryBuildService) {
+	var TransformerService = function($injector) {
 
 		var self = this;
+
+		var urlParamTransformer = null;
+
+		// optional services
+		try {
+			urlParamTransformer = $injector.get('AngularCakePHPUrlParamTransformer');
+		} catch (e) {}
 
 		/**
 		 * transformRequestUrl
@@ -901,24 +846,35 @@
 		 * @returns {string}
 		 */
 		this.transformRequestUrl = function(api, api_endpoint, params, id) {
+
+			// create url params array
 			var params_array = [];
 
 			if (!_.isUndefined(params) && !_.isNull(params) && !_.isEmpty(params)) {
-				_.forEach(params, function(item, key) {
-					if (key === 'contain') {
-						params_array.push(HttpQueryBuildService.build(item, 'contain'));
-					} else if (key && item) {
-						params_array.push(key + '=' + item);
-					}
-				});
+
+				// transform url params (custom)
+				if (!_.isNull(urlParamTransformer)) {
+					params_array = urlParamTransformer(params);
+				}
+
+				// transform url params (default)
+				else {
+					_.forEach(params, function(item, key) {
+
+						if (key && item) {
+							params_array.push(key + '=' + item);
+						}
+					});
+				}
 			}
 
+			// create url params string
 			var params_str = '';
 			if (params_array.length > 0) {
 				params_str = '?' + params_array.join('&');
 			}
 
-
+			// create request url
 			var id_str = !_.isUndefined(id) && !_.isNull(id) ? '/' + id : '';
 			var result = api + '/' + api_endpoint + id_str + params_str;
 			result = result.replace(/([^:]\/)\/+/g, '$1'); // replace double slashes (exluding ://)
@@ -985,7 +941,7 @@
 		};
 	};
 
-	TransformerService.$inject = ['HttpQueryBuildService'];
+	TransformerService.$inject = ['$injector'];
 
 	angular.module('AngularCakePHP').service('TransformerService', TransformerService);
 

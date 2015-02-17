@@ -23,7 +23,7 @@
 		this.createNewUser = function() {
 			this.users.push(this.new_user);
 			this.new_user = UserModel.new();
-		}
+		};
 	};
 
 	AppController.$inject = ['$scope', 'UserModel'];

@@ -26,16 +26,24 @@
 			<tr>
 				<th>key</th>
 				<th>value/result</th>
+				<th>notes</th>
 			</tr>
 			</thead>
 			<tbody>
 			<tr>
 				<td>AngularCakePHPApiUrl</td>
 				<td>{{api}}</td>
+				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td>AngularCakePHPApiEndpoint</td>
+				<td>AngularCakePHPApiEndpointTransformer</td>
 				<td>{{api_endpoint}}</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td>AngularCakePHPUrlParameterTransformer</td>
+				<td><button ng-click="app.logHttpCallUrlParams()">click to view in console</button></td>
+				<td>you will see a failed a get request with the transformed url params</td>
 			</tr>
 			</tbody>
 		</table>
@@ -47,15 +55,7 @@
 <script src="../bower_components/angular/angular.min.js"></script>
 
 <!-- Angular CakePHP -->
-<script src="../../../lib/angular-cakephp.js"></script>
-<script src="../../../lib/angular-cakephp-settings.js"></script>
-<script src="../../../lib/http/http-query-build-service.js"></script>
-<script src="../../../lib/http/http-response-service.js"></script>
-<script src="../../../lib/transformers/transformer-service.js"></script>
-<script src="../../../lib/util/util-service.js"></script>
-<script src="../../../lib/base/base-active-record.js"></script>
-<script src="../../../lib/base/base-model.js"></script>
-<!--<script src="../bower_components/angular-cakephp/dist/angular-cakephp.min.js"></script>-->
+<script src="../bower_components/angular-cakephp/dist/angular-cakephp.min.js"></script>
 
 <!-- example app -->
 <script src="scripts/app.js"></script>
