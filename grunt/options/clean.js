@@ -1,5 +1,5 @@
 module.exports = {
-    dist: {
+    build: {
         files: [{
             dot: true,
             src: [

@@ -3,9 +3,11 @@ module.exports = function(grunt) {
         'notify:build',
         'jshint:lib',
         'jshint:tests',
-        'clean:dist',
-        'concat:dist',
-        'uglify:dist',
+        'jshint:grunt',
+        'karma:build',
+        'clean:build',
+        'concat:build',
+        'uglify:build',
         'notify:buildComplete'
     ]);
 };
