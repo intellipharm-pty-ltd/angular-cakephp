@@ -4,12 +4,12 @@
  *
  * Copyright 2015 Intellipharm
  *
- * Date: 2015-02-10T13:35Z
+ * 2015-02-18 16:17:46
  *
  */
-'use strict';
-
 (function() {
+
+    'use strict';
 
 	//----------------------------------
 	// AngularCakePHP
@@ -18,9 +18,9 @@
 	angular.module('AngularCakePHP', []);
 })();
 
-'use strict';
-
 (function() {
+
+    'use strict';
 
 	angular.module('AngularCakePHP')
 		.value('AngularCakePHPApiUrl', "")
@@ -28,9 +28,10 @@
 		.value('AngularCakePHPUrlParamTransformer', null); // optional
 
 })();
-'use strict';
 
 (function() {
+
+    'use strict';
 
     //---------------------------------------------------
     // Base Active Record
@@ -56,17 +57,22 @@
 	 * @constructor
 	 */
 	function BaseActiveRecord() {
-		this.model;
+		this.model = null;
 	}
 
 	BaseActiveRecord.$inject = [];
 
+	//-----------------------------------------------
+	// extend
+	//-----------------------------------------------
+
 	/**
 	 * extend
+	 * Extends BaseActiveRecord
 	 *
-	 * @param model
-	 * @param active_record
-	 * @returns {construct}
+	 * @param model (the model being used to call this method)
+	 * @param active_record (The active record class that will extend BaseActiveRecord)
+	 * @returns active record instance
 	 */
 	BaseActiveRecord.prototype.extend = function(model, data) {
 
@@ -88,10 +94,15 @@
 		return instance;
 	};
 
+	//-----------------------------------------------
+	// C.R.U.D
+	//-----------------------------------------------
+
 	/**
 	 * save
+	 * Relay call to the model's edit method
 	 *
-	 * @returns {Promise}
+	 * @returns promise
 	 */
 	BaseActiveRecord.prototype.save = function() {
 
@@ -104,8 +115,9 @@
 
 	/**
 	 * new
+	 * Relay call to the model's new method
 	 *
-	 * @returns {Promise}
+	 * @returns promise
 	 */
 	BaseActiveRecord.prototype.new = function(data) {
 		return this.model.new(data);
@@ -113,38 +125,54 @@
 
 	/**
 	 * delete
+	 * Relay call to the model's delete method
 	 *
-	 * @param active_record
-	 * @returns {Promise}
+	 * @returns promise
 	 */
 	BaseActiveRecord.prototype.delete = function() {
 		return this.model.delete(this.id);
 	};
 
+	//-----------------------------------------------
+	// validation
+	//-----------------------------------------------
+
 	/**
-	 * delete
+	 * validate
+	 * Relay call to the model's validate method
 	 *
-	 * @param fields
-	 * @returns {Promise}
+	 * @param array fields (array of fields to validate)
+	 * @returns promise
 	 */
 	BaseActiveRecord.prototype.validate = function(fields) {
 		return this.model.validate(this, fields);
 	};
 
+	//-----------------------------------------------
+	// helper methods
+	//-----------------------------------------------
+
 	/**
 	 * getClassName
+	 * Returns active record class name
 	 *
-	 * @returns {Promise}
+	 * @returns promise
 	 */
 	BaseActiveRecord.prototype.getClassName = function() {
 		return this.model && this.model.active_record_class ? this.model.active_record_class.name : null;
 	};
 
+	//-----------------------------------------------
+	// virtualField
+	// TODO: fix tests & insure this is thoroughly tested (see notes below)
+	//-----------------------------------------------
+
 	/**
 	 * virtualField
+	 * Returns computed property / virtual field by concatenating multiple properties
 	 *
-	 * @param name
-	 * @param valueFn
+	 * @param string name (name of the virtual field)
+	 * @param function valueFn (?) // TODO: unabbreviate & name more clearly
 	 * @returns {construct}
 	 */
 	BaseActiveRecord.prototype.virtualField = function(name, valueFn) {
@@ -199,7 +227,7 @@
 	 * When the field is set manually it triggers the set function defined in virtualField.
 	 * We can set it to blank and then it triggers the valueFn to set the value
 	 *
-	 * @param name
+	 * @param string name (name of virtual field to update)
 	 * @returns this
 	 */
 	BaseActiveRecord.prototype.virtualFieldUpdate = function(name) {
@@ -211,7 +239,7 @@
 			throw new Error(ERROR_VIRTUAL_FIELD_NAME_NOT_STRING);
 		}
 
-		if (!name in this) {
+		if (!_.has(this, name)) {
 			throw new Error(ERROR_VIRTUAL_FIELD_NAME_NOT_FIELD);
 		}
 
@@ -227,9 +255,9 @@
 	angular.module('AngularCakePHP').service('BaseActiveRecord', BaseActiveRecord);
 })();
 
-'use strict';
-
 (function() {
+
+    'use strict';
 
     //---------------------------------------------------
     // Base Model
@@ -299,7 +327,7 @@
 
 		// properties
 
-		this.active_record_class;
+		this.active_record_class = null;
 		this.config = {
 			api: api_url,
 			api_endpoint: null,
@@ -315,28 +343,29 @@
 
 	/**
 	 * extend
+	 * Extends BaseModel
 	 *
-	 * @param model
-	 * @param active_record
-	 * @returns {construct}
+	 * @param model (the model that will extend BaseModel)
+	 * @param active_record (The active record class that will be used when creating new instance)
+	 * @returns model instance
 	 */
-	BaseModel.prototype.extend = function(model, active_record) {
+	BaseModel.prototype.extend = function(Model, active_record) {
 
-		if (_.isUndefined(model) || _.isUndefined(active_record)) {
+		if (_.isUndefined(Model) || _.isUndefined(active_record)) {
 			throw new Error(ERROR_MISSING_PARAMS);
 		}
 
-		// extend model
-		model.prototype = Object.create(BaseModel.prototype);
+		// extend Model
+		Model.prototype = Object.create(BaseModel.prototype);
 
-		// create new model instance
-		var instance = new model();
+		// create new Model instance
+		var instance = new Model();
 
 		// set instance properties
 		instance.active_record_class = active_record;
 		instance.config = _.merge(_.clone(this.config), instance.config);
 
-		// if no endpoint is defined in model
+		// if no endpoint is defined in Model
 		if (_.isNull(instance.config.api_endpoint)) {
 
 			// create endpoint by converting class name to snake case
@@ -348,12 +377,13 @@
 			}
 		}
 
-		// return model instance
+		// return Model instance
 		return instance;
 	};
 
 	/**
 	 * new
+	 * Creates a new instance of the model's active record class
 	 *
 	 * @param object data (data used to create a new active record)
 	 * @returns object (new active record | empty object)
@@ -386,7 +416,6 @@
 		// return new instance of child
 		return instance;
 	};
-
 
 
 	//-----------------------------------------------
@@ -545,6 +574,10 @@
 		});
 	};
 
+	//-----------------------------------------------
+	// validation
+	//-----------------------------------------------
+
 	/**
 	 * validate
 	 * Makes a POST HTTP call to API validation resource
@@ -585,6 +618,10 @@
 				});
 		});
 	};
+
+	//-----------------------------------------------
+	// special
+	//-----------------------------------------------
 
 	/**
 	 * api
@@ -642,9 +679,9 @@
 	angular.module('AngularCakePHP').service('AngularCakePHPBaseModel', BaseModel);
 })();
 
-'use strict';
-
 (function() {
+
+    'use strict';
 
 	//---------------------------------------------------
 	// HttpRequest Service
@@ -677,9 +714,9 @@
 
 })();
 
-'use strict';
-
 (function() {
+
+    'use strict';
 
 	//---------------------------------------------------
 	// HttpResponse Service
@@ -817,9 +854,9 @@
 
 })();
 
-'use strict';
-
 (function() {
+
+    'use strict';
 
 	//---------------------------------------------------
 	// Transformer Service
@@ -947,9 +984,9 @@
 
 })();
 
-'use strict';
-
 (function() {
+
+    'use strict';
 
 	//---------------------------------------------------
 	// Util Service

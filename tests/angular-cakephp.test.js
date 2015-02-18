@@ -163,7 +163,7 @@ describe("AngularCakePHP", function() {
 				function UserModel() {
 					this.config = {
 						api: "someapi"
-					}
+					};
 				}
 				function User(data) {
 					this.name = data.name;
