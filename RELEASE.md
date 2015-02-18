@@ -6,7 +6,6 @@ The build steps to releasing a new version. Before you can do this you need to t
 
   * Make sure all tests pass - ``` grunt test ```
   * Commit and push all changes with a meaningful message
-  * Update version and timestamp in comment in /lib/data-model.js
   * Update version in bower.json and package.json
   * Build the dist folder -  ``` grunt build ```
   * Commit and push with the message "Bumping to v\*.\*.\*"

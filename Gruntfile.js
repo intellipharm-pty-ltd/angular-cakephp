@@ -10,7 +10,8 @@ module.exports = function (grunt) {
         var gruntConfig = {config: {
             // base folders
             dist: 'dist',
-            lib: 'lib'
+            lib: 'lib',
+            pkg: grunt.file.readJSON('package.json'),
         }};
 
         // loads tasks in the 'grunt' folder
