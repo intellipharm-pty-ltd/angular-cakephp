@@ -1,0 +1,258 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Angular-cakephp</title>
+  <meta name="description" content="An AngularJS data modelling framework that ties in with a CakePHP REST API">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Angular-cakephp</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">An AngularJS data modelling framework that ties in with a CakePHP REST API</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/Intellipharm/angular-cakephp/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/Intellipharm/angular-cakephp/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/Intellipharm/angular-cakephp" class="code">View Angular-cakephp on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h1>
+<a id="angular-cakephp" class="anchor" href="#angular-cakephp" aria-hidden="true"><span class="octicon octicon-link"></span></a>angular-cakephp</h1>
+
+<h2>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<p>angular-cakephp depends on <a href="https://github.com/angular/angular.js">AngularJS</a>, and <a href="https://github.com/lodash/lodash">Lodash</a></p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<div class="highlight highlight-js"><pre>bower install angular<span class="pl-k">-</span>cakephp <span class="pl-k">--</span>save</pre></div>
+
+<div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s1"><span class="pl-pds">'</span>bower_components/angular-cakephp/dist/angular-cakephp.min.js<span class="pl-pds">'</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</pre></div>
+
+<h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<h5>
+<a id="set-module-settings" class="anchor" href="#set-module-settings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Set module settings</h5>
+
+<div class="highlight highlight-js"><pre>angular.module(<span class="pl-s1"><span class="pl-pds">'</span>AngularCakePHP<span class="pl-pds">'</span></span>)
+    <span class="pl-c">// required - the base url to the api</span>
+    .<span class="pl-sc">value</span>(<span class="pl-s1"><span class="pl-pds">'</span>AngularCakePHPApiUrl<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>http://example.com/api<span class="pl-pds">'</span></span>)
+    <span class="pl-c">// optional - will run if no model api_endpoint is explicitly set</span>
+    <span class="pl-c">// takes a function that should return the api_endpoint</span>
+    .<span class="pl-sc">value</span>(<span class="pl-s1"><span class="pl-pds">'</span>AngularCakePHPApiEndpointTransformer<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>(<span class="pl-vpf">value</span>) {
+        <span class="pl-k">return</span> value <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">'</span>s<span class="pl-pds">'</span></span>;
+    })
+    <span class="pl-c">// can be external library like pluralize</span>
+    .<span class="pl-sc">value</span>(<span class="pl-s1"><span class="pl-pds">'</span>AngularCakePHPApiEndpointTransformer<span class="pl-pds">'</span></span>, pluralize)
+    <span class="pl-c">// optional - function to transform the url params of an index, view or GET api query. Must return an array of url params eg. [limit: 2, page: 4, search: 'name']</span>
+    .<span class="pl-sc">value</span>(<span class="pl-s1"><span class="pl-pds">'</span>AngularCakePHPUrlParamTransformer<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>(<span class="pl-vpf">params</span>) {
+        <span class="pl-k">return</span> params;
+    });</pre></div>
+
+<h5>
+<a id="create-a-model" class="anchor" href="#create-a-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create a model</h5>
+
+<div class="highlight highlight-js"><pre>(<span class="pl-st">function</span>() {
+    <span class="pl-s1"><span class="pl-pds">'</span>use strict<span class="pl-pds">'</span></span>;
+
+    <span class="pl-s">var</span> <span class="pl-en">UserModel</span> <span class="pl-k">=</span> <span class="pl-st">function</span>(<span class="pl-vpf">BaseModel</span>) {
+
+        <span class="pl-st">function</span> <span class="pl-en">UserModel</span>() {
+            <span class="pl-v">this</span>.config <span class="pl-k">=</span> {
+                <span class="pl-c">// the resource to hit that will be appended to the AngularCakePHPApiUrl (i.e. http://example.com/api/users)</span>
+                <span class="pl-c">// if left blank it will snake case the model class name (e.g. SpecialUser becomes special_user). If you then need to modify the automatic api_endpoint you can use the AngularCakePHPApiEndpointTransformer setting.</span>
+                api_endpoint<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>
+            };
+        }
+
+        <span class="pl-st">function</span> <span class="pl-en">User</span>(<span class="pl-vpf">data</span>) {
+            <span class="pl-v">this</span>.<span class="pl-sc">id</span>        <span class="pl-k">=</span> data.<span class="pl-sc">id</span>;
+            <span class="pl-v">this</span>.firstname <span class="pl-k">=</span> data.firstname;
+            <span class="pl-v">this</span>.lastname  <span class="pl-k">=</span> data.lastname;
+            <span class="pl-v">this</span>.dob       <span class="pl-k">=</span> data.dob;
+
+            <span class="pl-c">// creates a field that is read-only and automatically updates</span>
+            <span class="pl-v">this</span>.virtualField(<span class="pl-s1"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>, <span class="pl-st">function</span>() {
+                <span class="pl-k">return</span> <span class="pl-v">this</span>.firstname <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span> <span class="pl-k">+</span> <span class="pl-v">this</span>.lastname;
+            });
+        }
+
+        <span class="pl-k">return</span> BaseModel.extend(UserModel, User);
+    };
+
+    UserModel.$inject <span class="pl-k">=</span> [<span class="pl-s1"><span class="pl-pds">'</span>AngularCakePHPBaseModel<span class="pl-pds">'</span></span>];
+
+    angular.module(<span class="pl-s1"><span class="pl-pds">'</span>App<span class="pl-pds">'</span></span>).factory(<span class="pl-s1"><span class="pl-pds">'</span>UserModel<span class="pl-pds">'</span></span>, UserModel);
+})();</pre></div>
+
+<h5>
+<a id="using-the-model" class="anchor" href="#using-the-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using the model</h5>
+
+<p>For more information see <a href="https://github.com/Intellipharm/angular-cakephp/blob/master/API.md">API.md</a></p>
+
+<div class="highlight highlight-js"><pre>(<span class="pl-st">function</span>() {
+    <span class="pl-s1"><span class="pl-pds">'</span>use strict<span class="pl-pds">'</span></span>;
+
+    <span class="pl-s">var</span> <span class="pl-en">AppCtrl</span> <span class="pl-k">=</span> <span class="pl-st">function</span>(<span class="pl-vpf">$scope</span>, <span class="pl-vpf">UserModel</span>) {
+        <span class="pl-c">// creates a new local active record</span>
+        $scope.User <span class="pl-k">=</span> UserModel.new({
+            firstname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Goeffry<span class="pl-pds">'</span></span>,
+            lastname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Rush<span class="pl-pds">'</span></span>
+        });
+
+        <span class="pl-c">// gets a list of items</span>
+        UserModel.<span class="pl-sc">index</span>({page<span class="pl-k">:</span> <span class="pl-c1">2</span>}).then(<span class="pl-st">function</span>(<span class="pl-vpf">Users</span>) {
+            $scope.Users <span class="pl-k">=</span> Users;
+        });
+
+        <span class="pl-c">// gets a single item</span>
+        UserModel.view(<span class="pl-c1">1</span>, {contain<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Comments<span class="pl-pds">'</span></span>}).then(<span class="pl-st">function</span>(<span class="pl-vpf">User</span>) {
+            $scope.User <span class="pl-k">=</span> User;
+        });
+
+        <span class="pl-c">// adds an item</span>
+        UserModel.<span class="pl-s3">add</span>({
+            firstname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Mike<span class="pl-pds">'</span></span>,
+            surname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Myers<span class="pl-pds">'</span></span>
+        }).then(<span class="pl-st">function</span>(<span class="pl-vpf">User</span>) {
+            $scope.User <span class="pl-k">=</span> User;
+        });
+
+        <span class="pl-c">// edits an existing item</span>
+        UserModel.edit(<span class="pl-c1">1</span>, {
+            firstname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Michael<span class="pl-pds">'</span></span>,
+            lastname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Buble<span class="pl-pds">'</span></span>
+        }).then(<span class="pl-st">function</span>(<span class="pl-vpf">User</span>) {
+            $scope.User <span class="pl-k">=</span> User;
+        });
+
+        <span class="pl-c">// deletes an item</span>
+        UserModel.delete(<span class="pl-c1">1</span>).then(<span class="pl-st">function</span>() {
+            $scope.User <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+        });
+
+        <span class="pl-c">// calls a validation method on the api for the model. This runs the CakePHP model validation without changing anything in the database. This reduces the client side validation. For more information see [validation](https://github.com/Intellipharm/angular-cakephp/blob/master/VALIDATE.md)</span>
+        UserModel.validate({
+            firstname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Jack<span class="pl-pds">'</span></span>,
+            lastname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Daniels<span class="pl-pds">'</span></span>,
+            dob<span class="pl-k">:</span> <span class="pl-c1">1234</span>
+        }, [
+            <span class="pl-s1"><span class="pl-pds">'</span>dob<span class="pl-pds">'</span></span>
+        ]).then(<span class="pl-st">function</span>() {
+            $scope.User <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+        });
+
+        <span class="pl-c">// calls a custom method for the model</span>
+        UserModel.api(<span class="pl-s1"><span class="pl-pds">'</span>my_custom_api_method<span class="pl-pds">'</span></span>, {}, <span class="pl-s1"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span>).then(<span class="pl-st">function</span>() {
+            $scope.User <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+        });
+   };
+
+    AppCtrl.$inject <span class="pl-k">=</span> [<span class="pl-s1"><span class="pl-pds">'</span>$scope<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>UserModel<span class="pl-pds">'</span></span>];
+
+    angular.module(<span class="pl-s1"><span class="pl-pds">'</span>App<span class="pl-pds">'</span></span>).controller(<span class="pl-s1"><span class="pl-pds">'</span>AppCtrl<span class="pl-pds">'</span></span>, AppCtrl);
+})();</pre></div>
+
+<h5>
+<a id="using-the-active-record" class="anchor" href="#using-the-active-record" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using the active record</h5>
+
+<p>For more information see <a href="https://github.com/Intellipharm/angular-cakephp/blob/master/API.md">API.md</a></p>
+
+<div class="highlight highlight-js"><pre>(<span class="pl-st">function</span>() {
+    <span class="pl-s1"><span class="pl-pds">'</span>use strict<span class="pl-pds">'</span></span>;
+
+    <span class="pl-s">var</span> <span class="pl-en">AppCtrl</span> <span class="pl-k">=</span> <span class="pl-st">function</span>(<span class="pl-vpf">$scope</span>, <span class="pl-vpf">UserModel</span>) {
+        <span class="pl-c">// After getting an Active Record then you can call some of it's own functions</span>
+        $scope.User <span class="pl-k">=</span> UserModel.new({
+            firstname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Ian<span class="pl-pds">'</span></span>,
+            surname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Mckellen<span class="pl-pds">'</span></span>
+        });
+
+        <span class="pl-c">// create a new local active record. Alias of model.new()</span>
+        $scope.NewUser <span class="pl-k">=</span> $scope.User.new({
+            firstname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Heath<span class="pl-pds">'</span></span>,
+            surname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Ledger<span class="pl-pds">'</span></span>
+        });
+
+        <span class="pl-c">// update a value</span>
+        $scope.User.firstname <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">'</span>Sean<span class="pl-pds">'</span></span>
+        $scope.User.lastname <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">'</span>Bean<span class="pl-pds">'</span></span>;
+
+        <span class="pl-c">// get a virtual field</span>
+        <span class="pl-en">console</span><span class="pl-s3">.log</span>($scope.User.<span class="pl-sc">name</span>); <span class="pl-c">// This would return 'Sean Bean'</span>
+
+        <span class="pl-c">// saves the changes to the database. If no id exists then it calls model.add, but if id does exist it calls model.edit</span>
+        $scope.User.save().then(<span class="pl-st">function</span>() {});
+
+        <span class="pl-c">// deletes the item. Alias of model.delete()</span>
+        $scope.User.delete().then(<span class="pl-st">function</span>() {});
+
+        <span class="pl-c">// validates the item. Alias of model.validate()</span>
+        $scope.User.validate().then(<span class="pl-st">function</span>() {});
+
+        <span class="pl-c">// gets the class name of the model. In this case it would return 'User'</span>
+        <span class="pl-s">var</span> modelName <span class="pl-k">=</span> $scope.User.getClassName();
+    };
+
+    AppCtrl.$inject <span class="pl-k">=</span> [<span class="pl-s1"><span class="pl-pds">'</span>$scope<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>UserModel<span class="pl-pds">'</span></span>];
+
+    angular.module(<span class="pl-s1"><span class="pl-pds">'</span>App<span class="pl-pds">'</span></span>).controller(<span class="pl-s1"><span class="pl-pds">'</span>AppCtrl<span class="pl-pds">'</span></span>, AppCtrl);
+})();
+</pre></div>
+
+<h2>
+<a id="inspiration" class="anchor" href="#inspiration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inspiration</h2>
+
+<p>Inspiration taken from</p>
+
+<ul>
+<li><a href="https://github.com/mgonto/restangular">restangular</a></li>
+<li><a href="https://github.com/FacultyCreative/ngActiveResource">ngActiveResource</a></li>
+<li><a href="https://github.com/emberjs/data">ember-data</a></li>
+</ul>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/Intellipharm" class="avatar"><img src="https://avatars2.githubusercontent.com/u/1195646?v=3&amp;s=60" width="48" height="48"></a> <a href="https://github.com/Intellipharm">Intellipharm</a> maintains <a href="https://github.com/Intellipharm/angular-cakephp">Angular-cakephp</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/Intellipharm/angular-cakephp/tarball/master" class="tar">tar</a><a href="https://github.com/Intellipharm/angular-cakephp/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
