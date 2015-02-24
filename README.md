@@ -86,12 +86,12 @@ For more information see [API.md](https://github.com/Intellipharm/angular-cakeph
 
         // gets a list of items
         UserModel.index({page: 2}).then(function(Users) {
-            $scope.Users = Users;
+            $scope.Users = Users.data;
         });
 
         // gets a single item
         UserModel.view(1, {contain: 'Comments'}).then(function(User) {
-            $scope.User = User;
+            $scope.User = User.data;
         });
 
         // adds an item
@@ -99,7 +99,7 @@ For more information see [API.md](https://github.com/Intellipharm/angular-cakeph
             firstname: 'Mike',
             surname: 'Myers'
         }).then(function(User) {
-            $scope.User = User;
+            $scope.User = User.data;
         });
 
         // edits an existing item
@@ -107,12 +107,12 @@ For more information see [API.md](https://github.com/Intellipharm/angular-cakeph
             firstname: 'Michael',
             lastname: 'Buble'
         }).then(function(User) {
-            $scope.User = User;
+            $scope.User = User.data;
         });
 
         // deletes an item
         UserModel.delete(1).then(function() {
-            $scope.User = null;
+            $scope.User = null.data;
         });
 
         // calls a validation method on the api for the model. This runs the CakePHP model validation without changing anything in the database. This reduces the client side validation. For more information see [validation](https://github.com/Intellipharm/angular-cakephp/blob/master/VALIDATE.md)
