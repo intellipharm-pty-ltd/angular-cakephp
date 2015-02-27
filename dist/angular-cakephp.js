@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.1.2
+ * angular-cakephp v0.2.0
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-02-20 09:15:08
+ * 2015-02-27 11:45:15
  *
  */
 (function() {
@@ -330,8 +330,7 @@
 		this.active_record_class = null;
 		this.config = {
 			api: api_url,
-			api_endpoint: null,
-			api_endpoint_auto: true
+			api_endpoint: null
 		};
 	}
 

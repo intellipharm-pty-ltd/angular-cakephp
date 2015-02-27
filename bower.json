@@ -1,6 +1,6 @@
 {
   "name": "angular-cakephp",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "homepage": "https://github.com/Intellipharm/angular-cakephp",
   "authors": [
     "Intellipharm <damian@intellipharm.com.au>",
@@ -9,7 +9,6 @@
   ],
   "description": "An AngularJS data modelling framework that ties in with a CakePHP REST API",
   "main": [
-    "dist/angular-cakephp.js",
     "dist/angular-cakephp.min.js"
   ],
   "moduleType": [
