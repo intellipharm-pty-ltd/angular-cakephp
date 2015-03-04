@@ -1,13 +1,17 @@
 {
   "name": "angular-cakephp",
+  "description": "An AngularJS data modelling framework that ties in with a CakePHP REST API",
   "version": "0.2.0",
-  "homepage": "https://github.com/Intellipharm/angular-cakephp",
+  "homepage": "https://github.com/intellipharm/angular-cakephp",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/intellipharm/angular-cakephp.git"
+  },
   "authors": [
     "Intellipharm <damian@intellipharm.com.au>",
     "Neil Russell <neilrusell6@gmail.com.au>",
     "Timothy Ruhle <timothy.ruhle@intellipharm.com.au>"
   ],
-  "description": "An AngularJS data modelling framework that ties in with a CakePHP REST API",
   "main": [
     "dist/angular-cakephp.min.js"
   ],
@@ -24,18 +28,7 @@
     "rest"
   ],
   "license": "MIT",
-  "ignore": [
-    "bower_components",
-    "grunt",
-    "lib",
-    "node_modules",
-    "tests",
-    ".gitignore",
-    "Gruntfile.js",
-    "LICENSE",
-    "bower.json",
-    "package.json"
-  ],
+  "ignore": ["./!(dist/)"],
   "dependencies": {
     "angular": "~1.3.0",
     "pluralize": "~1.1.0",
