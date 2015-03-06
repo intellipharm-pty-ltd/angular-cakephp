@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.2.0
+ * angular-cakephp v0.2.1
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-02-27 11:45:15
+ * 2015-03-06 10:29:32
  *
  */
 (function() {
@@ -84,8 +84,8 @@
 		model.active_record_class.prototype = Object.create(BaseActiveRecord.prototype);
 
 		// create new active record instance
-		//var instance = active_record;
 		var instance = new model.active_record_class(data);
+
 
 		// set instance properties
 		instance.model = model;
@@ -207,13 +207,6 @@
 				return virtualValue;
 			}
 		});
-
-		// this doesn't work in karma for some reason
-		// this also blocks associations, so we need to find a better solution
-		/*var observer = new ObjectObserver(this);
-		observer.open(function(added, removed, changed, getOldValueFn) {
-			self.virtualFieldUpdate(name);
-		});*/
 
 		// trigger the setter
 		this.virtualFieldUpdate(name);
@@ -843,7 +836,7 @@
 		 * @param config
 		 */
 		this.handleErrorResponse = function(resolve, reject, model, response, status, headers, config) {
-			reject({message: response.message});
+			reject({data: response.data, message: response.message});
 		};
 	};
 
