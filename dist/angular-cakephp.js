@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.2.1
+ * angular-cakephp v0.2.2
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-03-06 10:29:32
+ * 2015-03-06 10:36:47
  *
  */
 (function() {
