@@ -1,39 +1,39 @@
-"use strict";
+'use strict';
 
 (function () {
 
-	//---------------------------------------------------
-	// User Model
-	//---------------------------------------------------
+    //---------------------------------------------------
+    // User Model
+    //---------------------------------------------------
 
-	var UserModel = function (BaseModel) {
+    var UserModel = function (BaseModel) {
 
-		/**
-		 * UserModel
-		 * @extends BaseModel
-		 *
-		 * @constructor
-		 */
-		function UserModel() {
-			this.config = {
-				api_endpoint: "http://www.google.com"
-			}
-		}
+        /**
+         * UserModel
+         * @extends BaseModel
+         *
+         * @constructor
+         */
+        function UserModel() {
+            this.config = {
+                api_endpoint: 'http://www.google.com'
+            }
+        }
 
-		/**
-		 * User
-		 *
-		 * @param data
-		 * @constructor
-		 */
-		function User(data) {
-			this.name = data.name;
-		}
+        /**
+         * User
+         *
+         * @param data
+         * @constructor
+         */
+        function User(data) {
+            this.name = data.name;
+        }
 
-		return BaseModel.extend(UserModel, User);
-	};
+        return BaseModel.extend(UserModel, User);
+    };
 
-	UserModel.$inject = ['AngularCakePHPBaseModel'];
+    UserModel.$inject = ['AngularCakePHPBaseModel'];
 
-	angular.module('App').factory('UserModel', UserModel);
+    angular.module('App').factory('UserModel', UserModel);
 })();

@@ -2,47 +2,47 @@
  * see documentation for how data model works
  */
 
-describe("DataModel", function() {
+describe('DataModel', function() {
 
-	var Service;
+    var Service;
 
-	// load module
-	beforeEach(module('AngularCakePHP'));
+    // load module
+    beforeEach(module('AngularCakePHP'));
 
-	// mock services
-	beforeEach(module(function($provide) {
-		$provide.value('HttpQueryBuildService', {});
-	}));
+    // mock services
+    beforeEach(module(function($provide) {
+        $provide.value('HttpQueryBuildService', {});
+    }));
 
-	// inject services (that we want to test)
-	beforeEach(inject(function($injector) {
-		Service = $injector.get('TransformerService');
-	}));
+    // inject services (that we want to test)
+    beforeEach(inject(function($injector) {
+        Service = $injector.get('TransformerService');
+    }));
 
-	//--------------------------------------------
-	// transformRequestData
-	//--------------------------------------------
+    //--------------------------------------------
+    // transformRequestData
+    //--------------------------------------------
 
-	describe("transformRequestData", function() {
+    describe('transformRequestData', function() {
 
-		it("should remove model property if set", function() {
-			var request_data = {
-				a: "A",
-				model: {}
-			};
-			request_data = Service.transformRequestData(request_data);
+        it('should remove model property if set', function() {
+            var request_data = {
+                a: 'A',
+                model: {}
+            };
+            request_data = Service.transformRequestData(request_data);
 
-			//console.log("AAA: "+request_data);
-			expect(_.has(request_data, 'model')).toBeFalsy();
-		});
-	});
+            //console.log('AAA: '+request_data);
+            expect(_.has(request_data, 'model')).toBeFalsy();
+        });
+    });
 
-	//--------------------------------------------
-	// transformRequestUrl
-	//--------------------------------------------
+    //--------------------------------------------
+    // transformRequestUrl
+    //--------------------------------------------
 
-	describe("transformRequestUrl", function() {
+    describe('transformRequestUrl', function() {
 
-		// TODO: write tests here
-	});
+        // TODO: write tests here
+    });
 });

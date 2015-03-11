@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 (function () {
 
-	angular.module('App', [
-		'AngularCakePHP'
-	]);
+    angular.module('App', [
+        'AngularCakePHP'
+    ]);
 
 })();

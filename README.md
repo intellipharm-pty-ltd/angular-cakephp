@@ -20,6 +20,8 @@ bower install angular-cakephp --save
 angular.module('AngularCakePHP')
     // required - the base url to the api
     .value('AngularCakePHPApiUrl', 'http://example.com/api')
+        // optional (defaults to true) - sets the default timestamps config of all models. Can be overidden on each model
+    .value('AngularCakePHPTimestamps', true)
     // optional - will run if no model api_endpoint is explicitly set
     // takes a function that should return the api_endpoint
     .value('AngularCakePHPApiEndpointTransformer', function(value) {
@@ -45,7 +47,9 @@ angular.module('AngularCakePHP')
 			this.config = {
                 // the resource to hit that will be appended to the AngularCakePHPApiUrl (i.e. http://example.com/api/users)
                 // if left blank it will snake case the model class name (e.g. SpecialUser becomes special_user). If you then need to modify the automatic api_endpoint you can use the AngularCakePHPApiEndpointTransformer setting.
-				api_endpoint: 'users'
+				api_endpoint: 'users',
+                // optional (defaults to true) - whether or not to automatically add created and modified fields to the model
+                timestamps: true
 			};
 		}
 

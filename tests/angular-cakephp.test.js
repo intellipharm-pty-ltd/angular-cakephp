@@ -2,777 +2,922 @@
  * see documentation for how data model works
  */
 
-describe("AngularCakePHP", function() {
-
-	var BaseModel;
-	var BaseActiveRecord;
-	//var HttpResponseServiceMock;
-	//var HttpQueryBuildServiceMock;
-	var AngularCakePHPApiUrl = "http://www.mywebsite.com/api";
-	//var provide;
-
-	// load module
-	beforeEach(module('AngularCakePHP'));
-
-
-	// mock services
-	beforeEach(module(function($provide) {
-		HttpResponseServiceMock = {
-			handleViewResponse: function() {},
-			handleIndexResponse: function() {},
-			handleAddResponse: function() {},
-			handleEditResponse: function() {},
-			handleDeleteResponse: function() {},
-			handleErrorResponse: function() {}
-		};
-		$provide.value('HttpResponseService', HttpResponseServiceMock);
-
-		HttpQueryBuildServiceMock = {};
-		$provide.value('HttpQueryBuildService', HttpQueryBuildServiceMock);
-	}));
-
-
-	//--------------------------------------------
-	// config 1
-	//--------------------------------------------
-
-	describe("config 1", function() {
-
-		// mock settings
-		beforeEach(module(function($provide) {
-			provide = $provide;
-			$provide.value('AngularCakePHPApiUrl', AngularCakePHPApiUrl);
-		}));
-
-		// inject services (that we want to test)
-		beforeEach(inject(function($injector) {
-			injector = $injector;
-			BaseActiveRecord = $injector.get('BaseActiveRecord');
-			BaseModel = $injector.get('AngularCakePHPBaseModel');
-		}));
-
-		//--------------------------------------------
-		// extend
-		//--------------------------------------------
-
-		describe("BaseModel.extend", function() {
-
-
-			it("should throw an exception if model arg is missing", function() {
-				function MyModel() {}
-				expect(function(){ BaseModel.extend(); }).toThrow();
-			});
-
-			it("should throw an exception if active_record arg is missing", function() {
-				function MyModel() {}
-				expect(function(){ BaseModel.extend({}); }).toThrow();
-			});
-
-			it("model should be instance of BaseModel & MyModel", function() {
-				function MyModel() {}
-				function MyActiveRecord() {}
-				var myModel = BaseModel.extend(MyModel, MyActiveRecord);
-
-				expect(myModel instanceof BaseModel.constructor).toBeTruthy();
-				expect(myModel instanceof MyModel).toBeTruthy();
-			});
-
-			it("should set BaseModel properties for specific instance", function() {
-				function UserModel() {}
-				function User() {}
-				var userModel = BaseModel.extend(UserModel, User);
-				expect(userModel.active_record_class.name).toEqual("User");
-
-				function CustomerModel() {}
-				function Customer() {}
-				var customerModel = BaseModel.extend(CustomerModel, Customer);
-
-				expect(customerModel.active_record_class.name).toEqual("Customer");
-				expect(userModel.active_record_class.name).toEqual("User");
-			});
-
-			it("should set config.api to AngularCakePHPApiUrl", function() {
-				expect(BaseModel.config.api).toEqual(AngularCakePHPApiUrl);
-			});
-
-			it("should set model.config.api_endpoint if set", function() {
-
-				function MyModel() {
-					this.config = {api_endpoint: "MY ENDPOINT"};
-				}
-				function MyAR() {}
-				var myModel = BaseModel.extend(MyModel, MyAR);
-				expect(myModel.config.api_endpoint).toEqual("MY ENDPOINT");
-			});
-
-			it("multiple instance using extend should set config.api_endpoint to provided values", function() {
-
-				function UserModel() {
-					this.config = {api_endpoint: "USER ENDPOINT"};
-				}
-				function User() {}
-				var userModel = BaseModel.extend(UserModel, User);
-				expect(userModel.active_record_class.name).toEqual("User");
-
-				function CustomerModel() {
-					this.config = {api_endpoint: "CUSTOMER ENDPOINT"};
-				}
-				function Customer() {}
-				var customerModel = BaseModel.extend(CustomerModel, Customer);
-
-				expect(userModel.config.api_endpoint).toEqual("USER ENDPOINT");
-				expect(customerModel.config.api_endpoint).toEqual("CUSTOMER ENDPOINT");
-			});
-
-			it("model should extend BaseModel methods", function() {
-
-				function MyModel() {}
-				function MyAR() {}
-				var myModel = BaseModel.extend(MyModel, MyAR);
-
-				expect(typeof myModel.new).toEqual('function');
-				expect(typeof myModel.index).toEqual('function');
-			});
-
-			it("model should api_endpoint as snake case version of model name if api_endpoint is not set via model config", function() {
-
-				function MyModel() {}
-				function MyAR() {}
-				var myModel = BaseModel.extend(MyModel, MyAR);
-
-				expect(myModel.config.api_endpoint).toEqual('my_ar');
-			});
-		});
-
-		//--------------------------------------------
-		// new
-		//--------------------------------------------
-
-		describe("MyModel.new", function() {
-
-			it("active record should not be instance of BaseModel", function() {
-				function MyModel() {}
-				function MyActiveRecord() {}
-				var myModel = BaseModel.extend(MyModel, MyActiveRecord);
-				var Jim = myModel.new({name: "Jim"});
-
-				expect(Jim instanceof BaseModel.constructor).toBeFalsy();
-			});
-
-			it("should correctly populate active record data", function() {
-				function UserModel() {
-					this.config = {
-						api: "someapi"
-					};
-				}
-				function User(data) {
-					this.name = data.name;
-				}
-				var userModel = BaseModel.extend(UserModel, User);
-				var Jim = userModel.new({name: "Jim"});
-				expect(Jim.name).toEqual("Jim");
-			});
-
-			it("extended myModel.new should set properties to undefined if no data is provided", function() {
-
-				function MyModel() {}
-				function MyActiveRecord(data) {
-					this.name = data.name;
-				}
-				var myModel = BaseModel.extend(MyModel, MyActiveRecord);
-				var myActiveRecord = myModel.new();
-
-				expect(myActiveRecord.name).toBeUndefined();
-			});
-		});
-
-		//--------------------------------------------
-		// new (associations)
-		//--------------------------------------------
-
-		describe("MyModel.new", function() {
-
-			// mock settings
-			beforeEach(function() {
-
-				function MemberModel() {
-					this.config = {api_endpoint: "members"};
-				}
-				function Member(data) {
-					this.name = data.name;
-					this.extra = "EXTRA";
-				}
-				provide.value('MemberModel', BaseModel.extend(MemberModel, Member));
-			});
-
-			it("should create association model instances of associations", function() {
-
-				function CustomerModel() {}
-				function Customer(data) {
-					this.name = data.name;
-				}
-				var customerModel = BaseModel.extend(CustomerModel, Customer);
-				var customer = customerModel.new({name: "Jimmy", Member: {name: "Jimember"}});
-
-				expect(customer.name).toEqual("Jimmy");
-				expect(customer.Member.name).toEqual("Jimember");
-				expect(customer.Member.extra).toEqual("EXTRA");
-			});
-
-			it("should create association model instances of association arrays", function() {
-
-				function CustomerModel() {}
-				function Customer(data) {
-					this.name = data.name;
-				}
-				var customerModel = BaseModel.extend(CustomerModel, Customer);
-				var customer = customerModel.new({name: "Jimmy", Member: [{name: "Jimember"}, {name: "MemberJim"}]});
-
-				expect(customer.name).toEqual("Jimmy");
-				expect(customer.Member[0].name).toEqual("Jimember");
-				expect(customer.Member[0].extra).toEqual("EXTRA");
-				expect(customer.Member[1].name).toEqual("MemberJim");
-				expect(customer.Member[1].extra).toEqual("EXTRA");
-			});
-		});
-
-		//--------------------------------------------
-		// C.R.U.D
-		//--------------------------------------------
-
-		describe("MyModel C.R.U.D", function() {
-
-			var $q;
-			var $rootScope;
-			var $http;
-			var $httpBackend;
-			var $injector;
-
-			// inject angular services
-			beforeEach(inject(function($injector) {
-
-				// angular services
-				$q = $injector.get('$q');
-				$rootScope = $injector.get('$rootScope');
-				$http = $injector.get('$http');
-
-				// mock http responses
-				$httpBackend = $injector.get('$httpBackend');
-			}));
-
-			//--------------------------------------------
-			// index
-			//--------------------------------------------
-
-			describe("index", function() {
-
-
-				it("should call HttpResponseService.handleIndexResponse on success", function() {
-
-					spyOn(HttpResponseServiceMock, 'handleIndexResponse');
-
-					$httpBackend.when('GET', "http://www.mywebsite.com/api/users")
-						.respond(200, {data: [{name: "user one"}]});
-
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
-
-					// call method
-					myModel.index();
-					$httpBackend.flush();
-
-					expect(HttpResponseServiceMock.handleIndexResponse).toHaveBeenCalled();
-				});
-
-				it("should call api with url params", function() {
-
-					spyOn(HttpResponseServiceMock, 'handleIndexResponse');
-
-					$httpBackend.when('GET', "http://www.mywebsite.com/api/users?a=b&c=d")
-						.respond(200, {data: [{name: "user one"}]});
-
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
-
-					// call method
-					myModel.index({a: 'b', c: 'd'});
-					$httpBackend.flush();
-
-					expect(HttpResponseServiceMock.handleIndexResponse).toHaveBeenCalled();
-				});
-
-				it("should call HttpResponseService.handleErrorResponse on error", function() {
-
-					spyOn(HttpResponseServiceMock, 'handleErrorResponse');
-
-					$httpBackend.when('GET', "http://www.mywebsite.com/api/users")
-						.respond(400, {message: "error message"});
-
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
-
-					// call method
-					myModel.index();
-					$httpBackend.flush();
+describe('AngularCakePHP', function() {
+
+    var BaseModel;
+    var BaseActiveRecord;
+    //var HttpResponseServiceMock;
+    //var HttpQueryBuildServiceMock;
+    var AngularCakePHPApiUrl = 'http://www.mywebsite.com/api';
+    //var provide;
+
+    // load module
+    beforeEach(module('AngularCakePHP'));
+
+
+    // mock services
+    beforeEach(module(function($provide) {
+        HttpResponseServiceMock = {
+            handleViewResponse: function() {},
+            handleIndexResponse: function() {},
+            handleAddResponse: function() {},
+            handleEditResponse: function() {},
+            handleDeleteResponse: function() {},
+            handleErrorResponse: function() {}
+        };
+        $provide.value('HttpResponseService', HttpResponseServiceMock);
+
+        HttpQueryBuildServiceMock = {};
+        $provide.value('HttpQueryBuildService', HttpQueryBuildServiceMock);
+    }));
+
+
+    //--------------------------------------------
+    // config 1
+    //--------------------------------------------
+
+    describe('config 1', function() {
+
+        // mock settings
+        beforeEach(module(function($provide) {
+            provide = $provide;
+            $provide.value('AngularCakePHPApiUrl', AngularCakePHPApiUrl);
+        }));
+
+        // inject services (that we want to test)
+        beforeEach(inject(function($injector) {
+            injector = $injector;
+            BaseActiveRecord = $injector.get('BaseActiveRecord');
+            BaseModel = $injector.get('AngularCakePHPBaseModel');
+        }));
+
+        //--------------------------------------------
+        // extend
+        //--------------------------------------------
+
+        describe('BaseModel.extend', function() {
+
+
+            it('should throw an exception if model arg is missing', function() {
+                function MyModel() {}
+                expect(function(){ BaseModel.extend(); }).toThrow();
+            });
+
+            it('should throw an exception if active_record arg is missing', function() {
+                function MyModel() {}
+                expect(function(){ BaseModel.extend({}); }).toThrow();
+            });
+
+            it('model should be instance of BaseModel & MyModel', function() {
+                function MyModel() {}
+                function MyActiveRecord() {}
+                var myModel = BaseModel.extend(MyModel, MyActiveRecord);
+
+                expect(myModel instanceof BaseModel.constructor).toBeTruthy();
+                expect(myModel instanceof MyModel).toBeTruthy();
+            });
+
+            it('should set BaseModel properties for specific instance', function() {
+                function UserModel() {}
+                function User() {}
+                var userModel = BaseModel.extend(UserModel, User);
+                expect(userModel.active_record_class.name).toEqual('User');
+
+                function CustomerModel() {}
+                function Customer() {}
+                var customerModel = BaseModel.extend(CustomerModel, Customer);
+
+                expect(customerModel.active_record_class.name).toEqual('Customer');
+                expect(userModel.active_record_class.name).toEqual('User');
+            });
+
+            it('should set config.api to AngularCakePHPApiUrl', function() {
+                expect(BaseModel.config.api).toEqual(AngularCakePHPApiUrl);
+            });
+
+            it('should set model.config.api_endpoint if set', function() {
+
+                function MyModel() {
+                    this.config = {api_endpoint: 'MY ENDPOINT'};
+                }
+                function MyAR() {}
+                var myModel = BaseModel.extend(MyModel, MyAR);
+                expect(myModel.config.api_endpoint).toEqual('MY ENDPOINT');
+            });
+
+            it('multiple instance using extend should set config.api_endpoint to provided values', function() {
+
+                function UserModel() {
+                    this.config = {api_endpoint: 'USER ENDPOINT'};
+                }
+                function User() {}
+                var userModel = BaseModel.extend(UserModel, User);
+                expect(userModel.active_record_class.name).toEqual('User');
+
+                function CustomerModel() {
+                    this.config = {api_endpoint: 'CUSTOMER ENDPOINT'};
+                }
+                function Customer() {}
+                var customerModel = BaseModel.extend(CustomerModel, Customer);
+
+                expect(userModel.config.api_endpoint).toEqual('USER ENDPOINT');
+                expect(customerModel.config.api_endpoint).toEqual('CUSTOMER ENDPOINT');
+            });
+
+            it('model should extend BaseModel methods', function() {
+
+                function MyModel() {}
+                function MyAR() {}
+                var myModel = BaseModel.extend(MyModel, MyAR);
+
+                expect(typeof myModel.new).toEqual('function');
+                expect(typeof myModel.index).toEqual('function');
+            });
+
+            it('model should api_endpoint as snake case version of model name if api_endpoint is not set via model config', function() {
+
+                function MyModel() {}
+                function MyAR() {}
+                var myModel = BaseModel.extend(MyModel, MyAR);
+
+                expect(myModel.config.api_endpoint).toEqual('my_ar');
+            });
+        });
+
+        //--------------------------------------------
+        // new
+        //--------------------------------------------
+
+        describe('MyModel.new', function() {
+
+            it('active record should not be instance of BaseModel', function() {
+                function MyModel() {}
+                function MyActiveRecord() {}
+                var myModel = BaseModel.extend(MyModel, MyActiveRecord);
+                var Jim = myModel.new({name: 'Jim'});
+
+                expect(Jim instanceof BaseModel.constructor).toBeFalsy();
+            });
+
+            it('should correctly populate active record data', function() {
+                function UserModel() {
+                    this.config = {
+                        api: 'someapi'
+                    };
+                }
+                function User(data) {
+                    this.name = data.name;
+                }
+                var userModel = BaseModel.extend(UserModel, User);
+                var Jim = userModel.new({name: 'Jim'});
+                expect(Jim.name).toEqual('Jim');
+            });
+
+            it('extended myModel.new should set properties to undefined if no data is provided', function() {
+
+                function MyModel() {}
+                function MyActiveRecord(data) {
+                    this.name = data.name;
+                }
+                var myModel = BaseModel.extend(MyModel, MyActiveRecord);
+                var myActiveRecord = myModel.new();
+
+                expect(myActiveRecord.name).toBeUndefined();
+            });
+        });
+
+        //--------------------------------------------
+        // new (associations)
+        //--------------------------------------------
+
+        describe('MyModel.new', function() {
+
+            // mock settings
+            beforeEach(function() {
+
+                function MemberModel() {
+                    this.config = {api_endpoint: 'members'};
+                }
+                function Member(data) {
+                    this.name = data.name;
+                    this.extra = 'EXTRA';
+                }
+                provide.value('MemberModel', BaseModel.extend(MemberModel, Member));
+            });
+
+            it('should create association model instances of associations', function() {
+
+                function CustomerModel() {}
+                function Customer(data) {
+                    this.name = data.name;
+                }
+                var customerModel = BaseModel.extend(CustomerModel, Customer);
+                var customer = customerModel.new({name: 'Jimmy', Member: {name: 'Jimember'}});
+
+                expect(customer.name).toEqual('Jimmy');
+                expect(customer.Member.name).toEqual('Jimember');
+                expect(customer.Member.extra).toEqual('EXTRA');
+            });
+
+            it('should create association model instances of association arrays', function() {
+
+                function CustomerModel() {}
+                function Customer(data) {
+                    this.name = data.name;
+                }
+                var customerModel = BaseModel.extend(CustomerModel, Customer);
+                var customer = customerModel.new({name: 'Jimmy', Member: [{name: 'Jimember'}, {name: 'MemberJim'}]});
+
+                expect(customer.name).toEqual('Jimmy');
+                expect(customer.Member[0].name).toEqual('Jimember');
+                expect(customer.Member[0].extra).toEqual('EXTRA');
+                expect(customer.Member[1].name).toEqual('MemberJim');
+                expect(customer.Member[1].extra).toEqual('EXTRA');
+            });
+        });
+
+        //--------------------------------------------
+        // C.R.U.D
+        //--------------------------------------------
+
+        describe('MyModel C.R.U.D', function() {
+
+            var $q;
+            var $rootScope;
+            var $http;
+            var $httpBackend;
+            var $injector;
+
+            // inject angular services
+            beforeEach(inject(function($injector) {
+
+                // angular services
+                $q = $injector.get('$q');
+                $rootScope = $injector.get('$rootScope');
+                $http = $injector.get('$http');
+
+                // mock http responses
+                $httpBackend = $injector.get('$httpBackend');
+            }));
+
+            //--------------------------------------------
+            // index
+            //--------------------------------------------
+
+            describe('index', function() {
+
+
+                it('should call HttpResponseService.handleIndexResponse on success', function() {
+
+                    spyOn(HttpResponseServiceMock, 'handleIndexResponse');
+
+                    $httpBackend.when('GET', 'http://www.mywebsite.com/api/users')
+                        .respond(200, {data: [{name: 'user one'}]});
+
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
+
+                    // call method
+                    myModel.index();
+                    $httpBackend.flush();
+
+                    expect(HttpResponseServiceMock.handleIndexResponse).toHaveBeenCalled();
+                });
+
+                it('should call api with url params', function() {
+
+                    spyOn(HttpResponseServiceMock, 'handleIndexResponse');
+
+                    $httpBackend.when('GET', 'http://www.mywebsite.com/api/users?a=b&c=d')
+                        .respond(200, {data: [{name: 'user one'}]});
+
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
+
+                    // call method
+                    myModel.index({a: 'b', c: 'd'});
+                    $httpBackend.flush();
+
+                    expect(HttpResponseServiceMock.handleIndexResponse).toHaveBeenCalled();
+                });
+
+                it('should call HttpResponseService.handleErrorResponse on error', function() {
+
+                    spyOn(HttpResponseServiceMock, 'handleErrorResponse');
+
+                    $httpBackend.when('GET', 'http://www.mywebsite.com/api/users')
+                        .respond(400, {message: 'error message'});
+
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
+
+                    // call method
+                    myModel.index();
+                    $httpBackend.flush();
 
-					expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
-				});
-			});
-
-			//--------------------------------------------
-			// view
-			//--------------------------------------------
-
-			describe("view", function() {
-
-				it("should throw an exception if id param is not set", function() {
+                    expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
+                });
+            });
+
+            //--------------------------------------------
+            // view
+            //--------------------------------------------
+
+            describe('view', function() {
+
+                it('should throw an exception if id param is not set', function() {
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					expect(function(){ myModel.view(); }).toThrow();
-				});
-
-				it("should call HttpResponseService.handleViewResponse on success", function() {
+                    expect(function(){ myModel.view(); }).toThrow();
+                });
+
+                it('should call HttpResponseService.handleViewResponse on success', function() {
 
-					spyOn(HttpResponseServiceMock, 'handleViewResponse');
-
-					$httpBackend.when('GET', "http://www.mywebsite.com/api/users/1")
-						.respond(200, {data: {name: "user one"}});
-
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    spyOn(HttpResponseServiceMock, 'handleViewResponse');
+
+                    $httpBackend.when('GET', 'http://www.mywebsite.com/api/users/1')
+                        .respond(200, {data: {name: 'user one'}});
+
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					// call method
-					myModel.view(1);
-					$httpBackend.flush();
+                    // call method
+                    myModel.view(1);
+                    $httpBackend.flush();
 
-					expect(HttpResponseServiceMock.handleViewResponse).toHaveBeenCalled();
-				});
+                    expect(HttpResponseServiceMock.handleViewResponse).toHaveBeenCalled();
+                });
 
-				it("should call api with url params", function() {
+                it('should call api with url params', function() {
 
-					spyOn(HttpResponseServiceMock, 'handleViewResponse');
+                    spyOn(HttpResponseServiceMock, 'handleViewResponse');
 
-					$httpBackend.when('GET', "http://www.mywebsite.com/api/users/1?a=b&c=d")
-						.respond(200, {data: {name: "user one"}});
+                    $httpBackend.when('GET', 'http://www.mywebsite.com/api/users/1?a=b&c=d')
+                        .respond(200, {data: {name: 'user one'}});
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					// call method
-					myModel.view(1, {a: 'b', c: 'd'});
-					$httpBackend.flush();
+                    // call method
+                    myModel.view(1, {a: 'b', c: 'd'});
+                    $httpBackend.flush();
 
-					expect(HttpResponseServiceMock.handleViewResponse).toHaveBeenCalled();
-				});
+                    expect(HttpResponseServiceMock.handleViewResponse).toHaveBeenCalled();
+                });
 
-				it("should call HttpResponseService.handleErrorResponse on error", function() {
+                it('should call HttpResponseService.handleErrorResponse on error', function() {
 
-					spyOn(HttpResponseServiceMock, 'handleErrorResponse');
+                    spyOn(HttpResponseServiceMock, 'handleErrorResponse');
 
-					$httpBackend.when('GET', "http://www.mywebsite.com/api/users/1")
-						.respond(400, {message: "error message"});
+                    $httpBackend.when('GET', 'http://www.mywebsite.com/api/users/1')
+                        .respond(400, {message: 'error message'});
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
-
-					// call method
-					myModel.view(1);
-					$httpBackend.flush();
-
-					expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
-				});
-			});
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
+
+                    // call method
+                    myModel.view(1);
+                    $httpBackend.flush();
+
+                    expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
+                });
+            });
 
-			//--------------------------------------------
-			// add
-			//--------------------------------------------
+            //--------------------------------------------
+            // add
+            //--------------------------------------------
 
-			describe("add", function() {
+            describe('add', function() {
 
-				it("should throw an exception if data param is not set", function() {
+                it('should throw an exception if data param is not set', function() {
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					expect(function(){ myModel.add(); }).toThrow();
-				});
+                    expect(function(){ myModel.add(); }).toThrow();
+                });
 
-				it("should call HttpResponseService.handleHttpAddResponse on success", function() {
+                it('should call HttpResponseService.handleHttpAddResponse on success', function() {
 
-					spyOn(HttpResponseServiceMock, 'handleAddResponse');
+                    spyOn(HttpResponseServiceMock, 'handleAddResponse');
 
-					$httpBackend.when('POST', "http://www.mywebsite.com/api/users")
-						.respond(200, {data: {name: "user one"}});
+                    $httpBackend.when('POST', 'http://www.mywebsite.com/api/users')
+                        .respond(200, {data: {name: 'user one'}});
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					// call method
-					myModel.add({name: "new name"});
-					$httpBackend.flush();
+                    // call method
+                    myModel.add({name: 'new name'});
+                    $httpBackend.flush();
 
-					expect(HttpResponseServiceMock.handleAddResponse).toHaveBeenCalled();
-				});
+                    expect(HttpResponseServiceMock.handleAddResponse).toHaveBeenCalled();
+                });
 
-				it("should call HttpResponseService.handleErrorResponse on error", function() {
+                it('should call HttpResponseService.handleErrorResponse on error', function() {
 
-					spyOn(HttpResponseServiceMock, 'handleErrorResponse');
+                    spyOn(HttpResponseServiceMock, 'handleErrorResponse');
 
-					$httpBackend.when('POST', "http://www.mywebsite.com/api/users")
-						.respond(400, {message: "error message"});
+                    $httpBackend.when('POST', 'http://www.mywebsite.com/api/users')
+                        .respond(400, {message: 'error message'});
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					// call method
-					myModel.add({name: "new name"});
-					$httpBackend.flush();
+                    // call method
+                    myModel.add({name: 'new name'});
+                    $httpBackend.flush();
 
-					expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
-				});
-			});
+                    expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
+                });
+            });
 
-			//--------------------------------------------
-			// edit
-			//--------------------------------------------
+            //--------------------------------------------
+            // edit
+            //--------------------------------------------
 
-			describe("edit", function() {
+            describe('edit', function() {
 
-				it("should throw an exception if id param is not set", function() {
+                it('should throw an exception if id param is not set', function() {
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					expect(function(){ myModel.edit(undefined, {}); }).toThrow();
-				});
+                    expect(function(){ myModel.edit(undefined, {}); }).toThrow();
+                });
 
-				it("should throw an exception if data param is not set", function() {
+                it('should throw an exception if data param is not set', function() {
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					expect(function(){ myModel.edit(1); }).toThrow();
-				});
+                    expect(function(){ myModel.edit(1); }).toThrow();
+                });
 
-				it("should call HttpResponseService.handleEditResponse on success", function() {
+                it('should call HttpResponseService.handleEditResponse on success', function() {
 
-					spyOn(HttpResponseServiceMock, 'handleEditResponse');
+                    spyOn(HttpResponseServiceMock, 'handleEditResponse');
 
-					$httpBackend.when('PUT', "http://www.mywebsite.com/api/users/1")
-						.respond(200, {data: {name: "user one"}});
+                    $httpBackend.when('PUT', 'http://www.mywebsite.com/api/users/1')
+                        .respond(200, {data: {name: 'user one'}});
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					// call method
-					myModel.edit(1, {name: "new name"});
-					$httpBackend.flush();
+                    // call method
+                    myModel.edit(1, {name: 'new name'});
+                    $httpBackend.flush();
 
-					expect(HttpResponseServiceMock.handleEditResponse).toHaveBeenCalled();
-				});
+                    expect(HttpResponseServiceMock.handleEditResponse).toHaveBeenCalled();
+                });
 
-				it("should call HttpResponseService.handleErrorResponse on error", function() {
+                it('should call HttpResponseService.handleErrorResponse on error', function() {
 
-					spyOn(HttpResponseServiceMock, 'handleErrorResponse');
+                    spyOn(HttpResponseServiceMock, 'handleErrorResponse');
 
-					$httpBackend.when('PUT', "http://www.mywebsite.com/api/users/1")
-						.respond(400, {message: "error message"});
+                    $httpBackend.when('PUT', 'http://www.mywebsite.com/api/users/1')
+                        .respond(400, {message: 'error message'});
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					// call method
-					myModel.edit(1, {name: "new name"});
-					$httpBackend.flush();
+                    // call method
+                    myModel.edit(1, {name: 'new name'});
+                    $httpBackend.flush();
 
-					expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
-				});
-			});
+                    expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
+                });
+            });
 
-			//--------------------------------------------
-			// delete
-			//--------------------------------------------
+            //--------------------------------------------
+            // delete
+            //--------------------------------------------
 
-			describe("delete", function() {
+            describe('delete', function() {
 
-				it("should throw an exception if id param is not set", function() {
+                it('should throw an exception if id param is not set', function() {
 
-					function MyModel() {}
-					var config = {api_endpoint: "users"};
-					var myModel = BaseModel.extend(MyModel, config);
+                    function MyModel() {}
+                    var config = {api_endpoint: 'users'};
+                    var myModel = BaseModel.extend(MyModel, config);
 
-					expect(function(){ myModel.delete(); }).toThrow();
-				});
+                    expect(function(){ myModel.delete(); }).toThrow();
+                });
 
-				it("should call HttpResponseService.handleDeleteResponse on success", function() {
+                it('should call HttpResponseService.handleDeleteResponse on success', function() {
 
-					spyOn(HttpResponseServiceMock, 'handleDeleteResponse');
+                    spyOn(HttpResponseServiceMock, 'handleDeleteResponse');
 
-					$httpBackend.when('DELETE', "http://www.mywebsite.com/api/users/1")
-						.respond(200, {data: null});
+                    $httpBackend.when('DELETE', 'http://www.mywebsite.com/api/users/1')
+                        .respond(200, {data: null});
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					// call method
-					myModel.delete(1);
-					$httpBackend.flush();
+                    // call method
+                    myModel.delete(1);
+                    $httpBackend.flush();
 
-					expect(HttpResponseServiceMock.handleDeleteResponse).toHaveBeenCalled();
-				});
+                    expect(HttpResponseServiceMock.handleDeleteResponse).toHaveBeenCalled();
+                });
 
-				it("should call HttpResponseService.handleErrorResponse on error", function() {
+                it('should call HttpResponseService.handleErrorResponse on error', function() {
 
-					spyOn(HttpResponseServiceMock, 'handleErrorResponse');
+                    spyOn(HttpResponseServiceMock, 'handleErrorResponse');
 
-					$httpBackend.when('DELETE', "http://www.mywebsite.com/api/users/1")
-						.respond(400, {message: "error message"});
-
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
-
-					// call method
-					myModel.delete(1);
-					$httpBackend.flush();
-
-					expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
-				});
-			});
-
-			//--------------------------------------------
-			// api
-			//--------------------------------------------
-
-			describe("api", function() {
+                    $httpBackend.when('DELETE', 'http://www.mywebsite.com/api/users/1')
+                        .respond(400, {message: 'error message'});
+
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
+
+                    // call method
+                    myModel.delete(1);
+                    $httpBackend.flush();
+
+                    expect(HttpResponseServiceMock.handleErrorResponse).toHaveBeenCalled();
+                });
+            });
+
+            //--------------------------------------------
+            // api
+            //--------------------------------------------
+
+            describe('api', function() {
 
-				it("should throw an exception if action param is not set", function() {
-
-					function MyModel() {}
-					var config = {api_endpoint: "users"};
-					var myModel = BaseModel.extend(MyModel, config);
-
-					expect(function(){ myModel.api(); }).toThrow();
-				});
+                it('should throw an exception if action param is not set', function() {
+
+                    function MyModel() {}
+                    var config = {api_endpoint: 'users'};
+                    var myModel = BaseModel.extend(MyModel, config);
+
+                    expect(function(){ myModel.api(); }).toThrow();
+                });
 
-				it("should call api with custom_action", function() {
+                it('should call api with custom_action', function() {
 
-					$httpBackend.when('GET', "http://www.mywebsite.com/api/users/custom_action")
-						.respond(200, "hello");
+                    $httpBackend.when('GET', 'http://www.mywebsite.com/api/users/custom_action')
+                        .respond(200, 'hello');
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					// call method
-					var result;
-					myModel.api('custom_action').then(
-						function(response) {
-							result = response;
-						}
-					);
-					$httpBackend.flush();
+                    // call method
+                    var result;
+                    myModel.api('custom_action').then(
+                        function(response) {
+                            result = response;
+                        }
+                    );
+                    $httpBackend.flush();
 
-					expect(result.data).toEqual("hello");
-				});
+                    expect(result.data).toEqual('hello');
+                });
 
-				it("should call api with custom_action and specified method", function() {
+                it('should call api with custom_action and specified method', function() {
 
-					$httpBackend.when('POST', "http://www.mywebsite.com/api/users/custom_action")
-						.respond(200, "hello");
+                    $httpBackend.when('POST', 'http://www.mywebsite.com/api/users/custom_action')
+                        .respond(200, 'hello');
 
-					function MyModel() {
-						this.config = {api_endpoint: "users"};
-					}
-					function MyAR(data) {
-						this.name = data.name;
-					}
-					var myModel = BaseModel.extend(MyModel, MyAR);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
-					// call method
-					var result;
-					myModel.api('custom_action', 'POST', {}, {}).then(
-						function(response) {
-							result = response;
-						}
-					);
-					$httpBackend.flush();
-
-					expect(result.data).toEqual("hello");
-				});
-			});
-		});
-	});
-
-	//--------------------------------------------
-	// config 2
-	//--------------------------------------------
-
-	describe("config 2", function() {
-
-		// mock settings
-		beforeEach(module(function($provide) {
-			$provide.value('AngularCakePHPApiUrl', AngularCakePHPApiUrl);
-			$provide.value('AngularCakePHPApiEndpointTransformer', function(value) {
-				return value + "s";
-			});
-			$provide.value('AngularCakePHPUrlParamTransformer', function(params) {
-				return ['a=B','c=D'];
-			});
-		}));
-
-		// inject services (that we want to test)
-		beforeEach(inject(function($injector) {
-			injector = $injector;
-			BaseActiveRecord = $injector.get('BaseActiveRecord');
-			BaseModel = $injector.get('AngularCakePHPBaseModel');
-		}));
-
-		//--------------------------------------------
-		// extend (AngularCakePHPApiEndpointTransformer)
-		//--------------------------------------------
-
-		describe("BaseModel.extend", function() {
-
-			it("should pluralize the api endpoint using 'AngularCakePHPApiEndpointTransformer'.", function() {
-
-				function MyModel() {}
-				function MyAR() {}
-				var myModel = BaseModel.extend(MyModel, MyAR);
-
-				expect(myModel.config.api_endpoint).toEqual('my_ars');
-			});
-		});
-
-		//--------------------------------------------
-		// index (AngularCakePHPUrlParameterTransformer)
-		//--------------------------------------------
-
-		describe("MyModel.index", function() {
-
-			var $q;
-			var $rootScope;
-			var $http;
-			var $httpBackend;
-
-			// inject angular services
-			beforeEach(inject(function($injector) {
-
-				// angular services
-				$q = $injector.get('$q');
-				$rootScope = $injector.get('$rootScope');
-				$http = $injector.get('$http');
-
-				// mock http responses
-				$httpBackend = $injector.get('$httpBackend');
-			}));
-
-			it("should transform the url params using 'AngularCakePHPUrlParameterTransformer'.", function() {
-
-				spyOn(HttpResponseServiceMock, 'handleIndexResponse');
-
-				$httpBackend.when('GET', "http://www.mywebsite.com/api/users?a=B&c=D")
-					.respond(200, {data: [{name: "user one"}]});
-
-				function MyModel() {
-					this.config = {api_endpoint: "users"};
-				}
-				function MyAR(data) {
-					this.name = data.name;
-				}
-				var myModel = BaseModel.extend(MyModel, MyAR);
-
-				// call method
-				myModel.index({a: 'b', c: 'd'});
-				$httpBackend.flush();
-
-				expect(HttpResponseServiceMock.handleIndexResponse).toHaveBeenCalled();
-			});
-		});
-	});
+                    // call method
+                    var result;
+                    myModel.api('custom_action', 'POST', {}, {}).then(
+                        function(response) {
+                            result = response;
+                        }
+                    );
+                    $httpBackend.flush();
+
+                    expect(result.data).toEqual('hello');
+                });
+            });
+        });
+    });
+
+    //--------------------------------------------
+    // config 2
+    //--------------------------------------------
+
+    describe('config 2', function() {
+
+        // mock settings
+        beforeEach(module(function($provide) {
+            $provide.value('AngularCakePHPApiUrl', AngularCakePHPApiUrl);
+            $provide.value('AngularCakePHPApiEndpointTransformer', function(value) {
+                return value + 's';
+            });
+            $provide.value('AngularCakePHPUrlParamTransformer', function(params) {
+                return ['a=B','c=D'];
+            });
+        }));
+
+        // inject services (that we want to test)
+        beforeEach(inject(function($injector) {
+            injector = $injector;
+            BaseActiveRecord = $injector.get('BaseActiveRecord');
+            BaseModel = $injector.get('AngularCakePHPBaseModel');
+        }));
+
+        //--------------------------------------------
+        // extend (AngularCakePHPApiEndpointTransformer)
+        //--------------------------------------------
+
+        describe('BaseModel.extend', function() {
+
+            it('should pluralize the api endpoint using \'AngularCakePHPApiEndpointTransformer\'.', function() {
+
+                function MyModel() {}
+                function MyAR() {}
+                var myModel = BaseModel.extend(MyModel, MyAR);
+
+                expect(myModel.config.api_endpoint).toEqual('my_ars');
+            });
+        });
+
+        //--------------------------------------------
+        // index (AngularCakePHPUrlParameterTransformer)
+        //--------------------------------------------
+
+        describe('MyModel.index', function() {
+
+            var $q;
+            var $rootScope;
+            var $http;
+            var $httpBackend;
+
+            // inject angular services
+            beforeEach(inject(function($injector) {
+
+                // angular services
+                $q = $injector.get('$q');
+                $rootScope = $injector.get('$rootScope');
+                $http = $injector.get('$http');
+
+                // mock http responses
+                $httpBackend = $injector.get('$httpBackend');
+            }));
+
+            it('should transform the url params using \'AngularCakePHPUrlParameterTransformer\'.', function() {
+
+                spyOn(HttpResponseServiceMock, 'handleIndexResponse');
+
+                $httpBackend.when('GET', 'http://www.mywebsite.com/api/users?a=B&c=D')
+                    .respond(200, {data: [{name: 'user one'}]});
+
+                function MyModel() {
+                    this.config = {api_endpoint: 'users'};
+                }
+                function MyAR(data) {
+                    this.name = data.name;
+                }
+                var myModel = BaseModel.extend(MyModel, MyAR);
+
+                // call method
+                myModel.index({a: 'b', c: 'd'});
+                $httpBackend.flush();
+
+                expect(HttpResponseServiceMock.handleIndexResponse).toHaveBeenCalled();
+            });
+        });
+    });
+
+
+    describe('AngularCakePHPTimestamps default', function() {
+        // mock settings
+        beforeEach(module(function($provide) {
+            $provide.value('AngularCakePHPApiUrl', AngularCakePHPApiUrl);
+            //$provide.value('AngularCakePHPTimestamps', false);
+        }));
+
+        // inject services (that we want to test)
+        beforeEach(inject(function($injector) {
+            injector = $injector;
+            BaseActiveRecord = $injector.get('BaseActiveRecord');
+            BaseModel = $injector.get('AngularCakePHPBaseModel');
+        }));
+
+        it('should correctly populate created and modified', function() {
+            function UserModel() {
+                this.config = {
+                    api: 'someapi'
+                };
+            }
+            function User(data) {
+                this.name = data.name;
+            }
+            var userModel = BaseModel.extend(UserModel, User);
+            var Jim = userModel.new({name: 'Jim'});
+
+            expect('created' in Jim).toEqual(true);
+            expect('modified' in Jim).toEqual(true);
+        });
+
+        it('should correctly not populate created and modified when set to false in model', function() {
+            function UserModel() {
+                this.config = {
+                    api: 'someapi',
+                    timestamps: false
+                };
+            }
+            function User(data) {
+                this.name = data.name;
+            }
+            var userModel = BaseModel.extend(UserModel, User);
+            var Jim = userModel.new({name: 'Jim'});
+
+            expect('created' in Jim).toEqual(false);
+            expect('modified' in Jim).toEqual(false);
+        });
+    });
+
+    describe('AngularCakePHPTimestamps set to true', function() {
+        // mock settings
+        beforeEach(module(function($provide) {
+            $provide.value('AngularCakePHPApiUrl', AngularCakePHPApiUrl);
+            $provide.value('AngularCakePHPTimestamps', true);
+        }));
+
+        // inject services (that we want to test)
+        beforeEach(inject(function($injector) {
+            injector = $injector;
+            BaseActiveRecord = $injector.get('BaseActiveRecord');
+            BaseModel = $injector.get('AngularCakePHPBaseModel');
+        }));
+
+        it('should correctly populate created and modified', function() {
+            function UserModel() {
+                this.config = {
+                    api: 'someapi'
+                };
+            }
+            function User(data) {
+                this.name = data.name;
+            }
+            var userModel = BaseModel.extend(UserModel, User);
+            var Jim = userModel.new({name: 'Jim'});
+
+            expect('created' in Jim).toEqual(true);
+            expect('modified' in Jim).toEqual(true);
+        });
+
+        it('should correctly not populate created and modified when set to false in model', function() {
+            function UserModel() {
+                this.config = {
+                    api: 'someapi',
+                    timestamps: false
+                };
+            }
+            function User(data) {
+                this.name = data.name;
+            }
+            var userModel = BaseModel.extend(UserModel, User);
+            var Jim = userModel.new({name: 'Jim'});
+
+            expect('created' in Jim).toEqual(false);
+            expect('modified' in Jim).toEqual(false);
+        });
+    });
+
+    describe('AngularCakePHPTimestamps set to false', function() {
+        // mock settings
+        beforeEach(module(function($provide) {
+            $provide.value('AngularCakePHPApiUrl', AngularCakePHPApiUrl);
+            $provide.value('AngularCakePHPTimestamps', false);
+        }));
+
+        // inject services (that we want to test)
+        beforeEach(inject(function($injector) {
+            injector = $injector;
+            BaseActiveRecord = $injector.get('BaseActiveRecord');
+            BaseModel = $injector.get('AngularCakePHPBaseModel');
+        }));
+
+        it('should correctly not populate created and modified', function() {
+            function UserModel() {
+                this.config = {
+                    api: 'someapi'
+                };
+            }
+            function User(data) {
+                this.name = data.name;
+            }
+            var userModel = BaseModel.extend(UserModel, User);
+            var Jim = userModel.new({name: 'Jim'});
+
+            expect('created' in Jim).toEqual(false);
+            expect('modified' in Jim).toEqual(false);
+        });
+
+        it('should correctly populate created and modified when set to true in model', function() {
+            function UserModel() {
+                this.config = {
+                    api: 'someapi',
+                    timestamps: true
+                };
+            }
+            function User(data) {
+                this.name = data.name;
+            }
+            var userModel = BaseModel.extend(UserModel, User);
+            var Jim = userModel.new({name: 'Jim'});
+
+            expect('created' in Jim).toEqual(true);
+            expect('modified' in Jim).toEqual(true);
+        });
+    });
 });
