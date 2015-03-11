@@ -1,7 +1,7 @@
 {
   "name": "angular-cakephp",
   "description": "An AngularJS data modelling framework that ties in with a CakePHP REST API",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "homepage": "https://github.com/intellipharm/angular-cakephp",
   "repository": {
     "type": "git",
