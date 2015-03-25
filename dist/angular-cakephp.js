@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.3.0
+ * angular-cakephp v0.3.1
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-03-11 10:54:31
+ * 2015-03-25 11:00:23
  *
  */
 (function() {
@@ -19,15 +19,22 @@
 })();
 
 (function() {
-
     'use strict';
 
     angular.module('AngularCakePHP')
         .value('AngularCakePHPApiUrl', '')
         .value('AngularCakePHPTimestamps', true) // optional
         .value('AngularCakePHPApiEndpointTransformer', null) // optional
-        .value('AngularCakePHPUrlParamTransformer', null); // optional
-
+        .value('AngularCakePHPUrlParamTransformer', null) // optional
+        .value('AngularCakePHPApiIndexResponseTransformer', null) // optional
+        .value('AngularCakePHPApiViewResponseTransformer', null) // optional
+        .value('AngularCakePHPApiEditResponseTransformer', null) // optional
+        .value('AngularCakePHPApiAddResponseTransformer', null) // optional
+        .value('AngularCakePHPApiDeleteResponseTransformer', null) // optional
+        .value('AngularCakePHPApiValidateResponseTransformer', null) // optional
+        .value('AngularCakePHPApiValidateErrorResponseTransformer', null) // optional
+        .value('AngularCakePHPApiErrorResponseTransformer', null) // optional
+    ;
 })();
 
 (function() {
@@ -74,7 +81,6 @@
      * @returns active record instance
      */
     BaseActiveRecord.prototype.extend = function(model, data) {
-
         if (_.isUndefined(model) || !_.has(model, 'active_record_class')  || _.isUndefined(model.active_record_class) || _.isUndefined(data)) {
             throw new Error(ERROR_MISSING_PARAMS);
         }
@@ -722,7 +728,10 @@
     // HttpResponse Service
     //---------------------------------------------------
 
-    var HttpResponseService = function(TransformerService) {
+    var HttpResponseService = function(
+        TransformerService,
+        $injector
+    ) {
 
 
         /**
@@ -737,8 +746,14 @@
          * @param config
          */
         this.handleIndexResponse = function(resolve, reject, model, response, status, headers, config) {
-            var data = TransformerService.transformResponseDataList(response.data, model);
-            resolve({data: data});
+            var data = TransformerService.transformResponseDataList(response.data, model),
+                angularCakePHPApiIndexResponseTransformer = $injector.get('AngularCakePHPApiIndexResponseTransformer');
+
+            if (_.isFunction(angularCakePHPApiIndexResponseTransformer)) {
+                angularCakePHPApiIndexResponseTransformer(resolve, reject, model, response, status, headers, config);
+            } else {
+                resolve({data: data});
+            }
         };
 
         /**
@@ -753,8 +768,14 @@
          * @param config
          */
         this.handleViewResponse = function(resolve, reject, model, response, status, headers, config) {
-            var data = TransformerService.transformResponseData(response.data, model);
-            resolve({data: data});
+            var data = TransformerService.transformResponseData(response.data, model),
+                angularCakePHPApiViewResponseTransformer = $injector.get('AngularCakePHPApiViewResponseTransformer');
+
+            if (_.isFunction(angularCakePHPApiViewResponseTransformer)) {
+                angularCakePHPApiViewResponseTransformer(resolve, reject, model, response, status, headers, config);
+            } else {
+                resolve({data: data});
+            }
         };
 
         /**
@@ -769,7 +790,13 @@
          * @param config
          */
         this.handleAddResponse = function(resolve, reject, model, response, status, headers, config) {
-            resolve({message: response.message, data: response.data});
+            var angularCakePHPApiEditResponseTransformer = $injector.get('AngularCakePHPApiEditResponseTransformer');
+
+            if (_.isFunction(angularCakePHPApiEditResponseTransformer)) {
+                angularCakePHPApiEditResponseTransformer(resolve, reject, model, response, status, headers, config);
+            } else {
+                resolve({message: response.message, data: response.data});
+            }
         };
 
         /**
@@ -784,7 +811,13 @@
          * @param config
          */
         this.handleEditResponse = function(resolve, reject, model, response, status, headers, config) {
-            resolve({message: response.message});
+            var angularCakePHPApiAddResponseTransformer = $injector.get('AngularCakePHPApiAddResponseTransformer');
+
+            if (_.isFunction(angularCakePHPApiAddResponseTransformer)) {
+                angularCakePHPApiAddResponseTransformer(resolve, reject, model, response, status, headers, config);
+            } else {
+                resolve({message: response.message});
+            }
         };
 
         /**
@@ -799,7 +832,13 @@
          * @param config
          */
         this.handleDeleteResponse = function(resolve, reject, model, response, status, headers, config) {
-            resolve({message: response.message});
+            var angularCakePHPApiDeleteResponseTransformer = $injector.get('AngularCakePHPApiDeleteResponseTransformer');
+
+            if (_.isFunction(angularCakePHPApiDeleteResponseTransformer)) {
+                angularCakePHPApiDeleteResponseTransformer(resolve, reject, model, response, status, headers, config);
+            } else {
+                resolve({message: response.message});
+            }
         };
 
         /**
@@ -814,7 +853,13 @@
          * @param config
          */
         this.handleValidateResponse = function(resolve, reject, model, response, status, headers, config) {
-            resolve({message: response.message});
+            var angularCakePHPApiValidateResponseTransformer = $injector.get('AngularCakePHPApiValidateResponseTransformer');
+
+            if (_.isFunction(angularCakePHPApiValidateResponseTransformer)) {
+                angularCakePHPApiValidateResponseTransformer(resolve, reject, model, response, status, headers, config);
+            } else {
+                resolve({message: response.message});
+            }
         };
 
         /**
@@ -829,7 +874,13 @@
          * @param config
          */
         this.handleValidateErrorResponse = function(resolve, reject, model, response, status, headers, config) {
-            reject({data: response.data, message: response.message});
+            var angularCakePHPApiValidateErrorResponseTransformer = $injector.get('AngularCakePHPApiValidateErrorResponseTransformer');
+
+            if (_.isFunction(angularCakePHPApiValidateErrorResponseTransformer)) {
+                angularCakePHPApiValidateErrorResponseTransformer(resolve, reject, model, response, status, headers, config);
+            } else {
+                reject({data: response.data, message: response.message});
+            }
         };
 
         /**
@@ -844,11 +895,20 @@
          * @param config
          */
         this.handleErrorResponse = function(resolve, reject, model, response, status, headers, config) {
-            reject({data: response.data, message: response.message});
+            var angularCakePHPApiErrorResponseTransformer = $injector.get('AngularCakePHPApiIndexResponseTransformer');
+
+            if (_.isFunction(angularCakePHPApiErrorResponseTransformer)) {
+                angularCakePHPApiIndexResponseTransformer(resolve, reject, model, response, status, headers, config);
+            } else {
+                reject({data: response.data, message: response.message});
+            }
         };
     };
 
-    HttpResponseService.$inject = ['TransformerService'];
+    HttpResponseService.$inject = [
+        'TransformerService',
+        '$injector'
+    ];
 
     angular.module('AngularCakePHP').service('HttpResponseService', HttpResponseService);
 
