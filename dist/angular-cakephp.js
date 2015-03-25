@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.3.1
+ * angular-cakephp v0.3.2
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-03-25 11:00:23
+ * 2015-03-25 11:08:34
  *
  */
 (function() {
@@ -895,10 +895,10 @@
          * @param config
          */
         this.handleErrorResponse = function(resolve, reject, model, response, status, headers, config) {
-            var angularCakePHPApiErrorResponseTransformer = $injector.get('AngularCakePHPApiIndexResponseTransformer');
+            var angularCakePHPApiErrorResponseTransformer = $injector.get('AngularCakePHPApiErrorResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiErrorResponseTransformer)) {
-                angularCakePHPApiIndexResponseTransformer(resolve, reject, model, response, status, headers, config);
+                angularCakePHPApiErrorResponseTransformer(resolve, reject, model, response, status, headers, config);
             } else {
                 reject({data: response.data, message: response.message});
             }
