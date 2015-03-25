@@ -32,6 +32,17 @@ angular.module('AngularCakePHP')
     // optional - function to transform the url params of an index, view or GET api query. Must return an array of url params eg. [limit: 2, page: 4, search: 'name']
     .value('AngularCakePHPUrlParamTransformer', function(params) {
         return params;
+    })
+    // optional - functions that handles a response from the service and must either resolve or reject
+    .value('AngularCakePHPApiIndexResponseTransformer', null)
+    .value('AngularCakePHPApiViewResponseTransformer', null)
+    .value('AngularCakePHPApiEditResponseTransformer', null)
+    .value('AngularCakePHPApiAddResponseTransformer', null)
+    .value('AngularCakePHPApiDeleteResponseTransformer', null)
+    .value('AngularCakePHPApiValidateResponseTransformer', null)
+    .value('AngularCakePHPApiValidateErrorResponseTransformer', null)
+    .value('AngularCakePHPApiErrorResponseTransformer', function(resolve, reject, model, response, status, headers, config) {
+        resolve(response);
     });
 ```
 
@@ -177,7 +188,7 @@ For more information see [API.md](https://github.com/Intellipharm/angular-cakeph
 
         // validates the item. Alias of model.validate()
         $scope.User.validate().then(function() {});
-        
+
         // gets the class name of the model. In this case it would return 'User'
         var modelName = $scope.User.getClassName();
     };

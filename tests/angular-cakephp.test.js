@@ -6,14 +6,16 @@ describe('AngularCakePHP', function() {
 
     var BaseModel;
     var BaseActiveRecord;
-    //var HttpResponseServiceMock;
-    //var HttpQueryBuildServiceMock;
     var AngularCakePHPApiUrl = 'http://www.mywebsite.com/api';
-    //var provide;
 
     // load module
     beforeEach(module('AngularCakePHP'));
 
+    // mock settings
+    beforeEach(module(function($provide) {
+        provide = $provide;
+        $provide.constant('AngularCakePHPApiUrl', AngularCakePHPApiUrl);
+    }));
 
     // mock services
     beforeEach(module(function($provide) {
