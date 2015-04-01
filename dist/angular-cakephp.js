@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.3.2
+ * angular-cakephp v0.3.3
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-03-25 11:08:34
+ * 2015-04-02 09:09:38
  *
  */
 (function() {
@@ -198,7 +198,6 @@
         if (typeof name !== 'string') {
             throw new Error(ERROR_VIRTUAL_FIELD_NAME_NOT_STRING);
         }
-
 
         if (!valueFn) {
             throw new Error(ERROR_VIRTUAL_FIELD_VALUE);
@@ -750,7 +749,7 @@
                 angularCakePHPApiIndexResponseTransformer = $injector.get('AngularCakePHPApiIndexResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiIndexResponseTransformer)) {
-                angularCakePHPApiIndexResponseTransformer(resolve, reject, model, response, status, headers, config);
+                angularCakePHPApiIndexResponseTransformer(resolve, reject, model, response, status, headers, config, data);
             } else {
                 resolve({data: data});
             }
@@ -772,7 +771,7 @@
                 angularCakePHPApiViewResponseTransformer = $injector.get('AngularCakePHPApiViewResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiViewResponseTransformer)) {
-                angularCakePHPApiViewResponseTransformer(resolve, reject, model, response, status, headers, config);
+                angularCakePHPApiViewResponseTransformer(resolve, reject, model, response, status, headers, config, data);
             } else {
                 resolve({data: data});
             }
@@ -793,7 +792,7 @@
             var angularCakePHPApiEditResponseTransformer = $injector.get('AngularCakePHPApiEditResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiEditResponseTransformer)) {
-                angularCakePHPApiEditResponseTransformer(resolve, reject, model, response, status, headers, config);
+                angularCakePHPApiEditResponseTransformer(resolve, reject, model, response, status, headers, config, data);
             } else {
                 resolve({message: response.message, data: response.data});
             }
@@ -814,7 +813,7 @@
             var angularCakePHPApiAddResponseTransformer = $injector.get('AngularCakePHPApiAddResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiAddResponseTransformer)) {
-                angularCakePHPApiAddResponseTransformer(resolve, reject, model, response, status, headers, config);
+                angularCakePHPApiAddResponseTransformer(resolve, reject, model, response, status, headers, config, data);
             } else {
                 resolve({message: response.message});
             }
@@ -835,7 +834,7 @@
             var angularCakePHPApiDeleteResponseTransformer = $injector.get('AngularCakePHPApiDeleteResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiDeleteResponseTransformer)) {
-                angularCakePHPApiDeleteResponseTransformer(resolve, reject, model, response, status, headers, config);
+                angularCakePHPApiDeleteResponseTransformer(resolve, reject, model, response, status, headers, config, data);
             } else {
                 resolve({message: response.message});
             }
@@ -856,7 +855,7 @@
             var angularCakePHPApiValidateResponseTransformer = $injector.get('AngularCakePHPApiValidateResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiValidateResponseTransformer)) {
-                angularCakePHPApiValidateResponseTransformer(resolve, reject, model, response, status, headers, config);
+                angularCakePHPApiValidateResponseTransformer(resolve, reject, model, response, status, headers, config, data);
             } else {
                 resolve({message: response.message});
             }
@@ -877,7 +876,7 @@
             var angularCakePHPApiValidateErrorResponseTransformer = $injector.get('AngularCakePHPApiValidateErrorResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiValidateErrorResponseTransformer)) {
-                angularCakePHPApiValidateErrorResponseTransformer(resolve, reject, model, response, status, headers, config);
+                angularCakePHPApiValidateErrorResponseTransformer(resolve, reject, model, response, status, headers, config, data);
             } else {
                 reject({data: response.data, message: response.message});
             }
@@ -898,7 +897,7 @@
             var angularCakePHPApiErrorResponseTransformer = $injector.get('AngularCakePHPApiErrorResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiErrorResponseTransformer)) {
-                angularCakePHPApiErrorResponseTransformer(resolve, reject, model, response, status, headers, config);
+                angularCakePHPApiErrorResponseTransformer(resolve, reject, model, response, status, headers, config, data);
             } else {
                 reject({data: response.data, message: response.message});
             }
