@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.3.3
+ * angular-cakephp v0.3.4
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-04-02 09:09:38
+ * 2015-04-07 11:52:27
  *
  */
 (function() {
@@ -158,6 +158,19 @@
      */
     BaseActiveRecord.prototype.validate = function(fields) {
         return this.model.validate(this, fields);
+    };
+
+    /**
+     * api
+     * Relay call to the model's api method
+     *
+     * @param string endpoint (endpoint to call)
+     * @param string http_method (HTTP method to use for call) (default: GET)
+     * @param object url_params (url params to pass with call)
+     * @returns promise
+     */
+    BaseActiveRecord.prototype.api = function(end_point, http_method, url_params) {
+        return this.model.api(end_point, http_method, url_params, this);
     };
 
     //-----------------------------------------------
