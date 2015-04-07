@@ -69,70 +69,64 @@ describe('DataModel', function() {
     //--------------------------------------------
     // save
     //--------------------------------------------
-    /*describe('BaseActiveRecord.save', function() {
-     var $q;
-     var $rootScope;
-     var $http;
-     var $httpBackend;
-     var $injector;
+    describe('BaseActiveRecord.save', function() {
+        var $q;
+        var $rootScope;
+        var $http;
+        var $httpBackend;
+        var $injector;
 
-     // inject angular services
-     beforeEach(inject(function($injector) {
+        // inject angular services
+        beforeEach(inject(function($injector) {
 
-         // angular services
-         $q = $injector.get('$q');
-         $rootScope = $injector.get('$rootScope');
-         $http = $injector.get('$http');
+            // angular services
+            $q = $injector.get('$q');
+            $rootScope = $injector.get('$rootScope');
+            $http = $injector.get('$http');
 
-         // mock http responses
-         $httpBackend = $injector.get('$httpBackend');
-     }));
+            // mock http responses
+            $httpBackend = $injector.get('$httpBackend');
+        }));
 
-     it('active record should call BaseModel save', function() {
-         spyOn(HttpResponseServiceMock, 'handleAddResponse');
+        it('active record should call BaseModel add', function() {
+            function MyModel() {
+                this.config = {api_endpoint: 'users'};
+            }
+            function MyAR(data) {
+                this.id = data.id;
+                this.name = data.name;
+            }
+            var myModel = BaseModel.extend(MyModel, MyAR);
+            var myActiveRecord = myModel.new();
 
-         $httpBackend.when('POST', 'http://www.mywebsite.com/api/users').respond(200, {});
+            spyOn(myModel, 'add');
 
-         function MyModel() {
-             this.config = {api_endpoint: 'users'};
-         }
-         function MyAR(data) {
-             this.id = data.id;
-             this.name = data.name;
-         }
-         var myModel = BaseModel.extend(MyModel, MyAR);
-         var myActiveRecord = myModel.new();
+            // call method
+            myActiveRecord.save();
 
-         // call method
-         myActiveRecord.save();
-         $httpBackend.flush();
+            expect(myModel.add).toHaveBeenCalled();
+        });
 
-         expect(HttpResponseServiceMock.handleAddResponse).toHaveBeenCalled();
-     });
+        it('active record should call BaseModel edit', function() {
+            function MyModel() {
+                this.config = {api_endpoint: 'users'};
+            }
+            function MyAR(data) {
+                this.id = data.id;
+                this.name = data.name;
+            }
+            var myModel = BaseModel.extend(MyModel, MyAR);
+            var myActiveRecord = myModel.new({
+                id: 1
+            });
 
-     it('active record should call BaseModel edit', function() {
-         spyOn(HttpResponseServiceMock, 'handleEditResponse');
+            spyOn(myModel, 'edit');
 
-         $httpBackend.when('PUT', 'http://www.mywebsite.com/api/users/1').respond(200, {});
+            // call method
+            myActiveRecord.save();
 
-         function MyModel() {
-             this.config = {api_endpoint: 'users'};
-         }
-         function MyAR(data) {
-             this.id = data.id;
-             this.name = data.name;
-         }
-         var myModel = BaseModel.extend(MyModel, MyAR);
-         var myActiveRecord = myModel.new({
-             id: 1
-         });
-
-         // call method
-         myActiveRecord.save();
-         $httpBackend.flush();
-
-         expect(HttpResponseServiceMock.handleEditResponse).toHaveBeenCalled();
-     });
+            expect(myModel.edit).toHaveBeenCalled();
+        });
     });
 
     //--------------------------------------------
@@ -158,10 +152,6 @@ describe('DataModel', function() {
         }));
 
         it('active record should call BaseModel delete', function() {
-            spyOn(HttpResponseServiceMock, 'handleDeleteResponse');
-
-            $httpBackend.when('DELETE', 'http://www.mywebsite.com/api/users/1').respond(200, {});
-
             function MyModel() {
                 this.config = {api_endpoint: 'users'};
             }
@@ -169,25 +159,100 @@ describe('DataModel', function() {
                 this.id = data.id;
                 this.name = data.name;
             }
-
             var myModel = BaseModel.extend(MyModel, MyAR);
-            var myActiveRecord = myModel.new({id: 1});
+            var myActiveRecord = myModel.new();
+
+            spyOn(myModel, 'delete');
 
             // call method
-            //myActiveRecord.delete();
-            myModel.delete(1);
-            $httpBackend.flush();
+            myActiveRecord.delete();
 
-            expect(HttpResponseServiceMock.handleDeleteResponse).toHaveBeenCalled();
+            expect(myModel.delete).toHaveBeenCalled();
         });
-    });*/
+    });
 
     //--------------------------------------------
     // validate
     //--------------------------------------------
     describe('BaseActiveRecord.validate', function() {
+        var $q;
+        var $rootScope;
+        var $http;
+        var $httpBackend;
+        var $injector;
 
+        // inject angular services
+        beforeEach(inject(function($injector) {
 
+            // angular services
+            $q = $injector.get('$q');
+            $rootScope = $injector.get('$rootScope');
+            $http = $injector.get('$http');
+
+            // mock http responses
+            $httpBackend = $injector.get('$httpBackend');
+        }));
+
+        it('active record should call BaseModel validate', function() {
+            function MyModel() {
+                this.config = {api_endpoint: 'users'};
+            }
+            function MyAR(data) {
+                this.id = data.id;
+                this.name = data.name;
+            }
+            var myModel = BaseModel.extend(MyModel, MyAR);
+            var myActiveRecord = myModel.new();
+
+            spyOn(myModel, 'validate');
+
+            // call method
+            myActiveRecord.validate();
+
+            expect(myModel.validate).toHaveBeenCalled();
+        });
+    });
+
+    //--------------------------------------------
+    // api
+    //--------------------------------------------
+    describe('BaseActiveRecord.api', function() {
+        var $q;
+        var $rootScope;
+        var $http;
+        var $httpBackend;
+        var $injector;
+
+        // inject angular services
+        beforeEach(inject(function($injector) {
+
+            // angular services
+            $q = $injector.get('$q');
+            $rootScope = $injector.get('$rootScope');
+            $http = $injector.get('$http');
+
+            // mock http responses
+            $httpBackend = $injector.get('$httpBackend');
+        }));
+
+        it('active record should call BaseModel api', function() {
+            function MyModel() {
+                this.config = {api_endpoint: 'users'};
+            }
+            function MyAR(data) {
+                this.id = data.id;
+                this.name = data.name;
+            }
+            var myModel = BaseModel.extend(MyModel, MyAR);
+            var myActiveRecord = myModel.new();
+
+            spyOn(myModel, 'api');
+
+            // call method
+            myActiveRecord.api();
+
+            expect(myModel.api).toHaveBeenCalled();
+        });
     });
 
     //--------------------------------------------
