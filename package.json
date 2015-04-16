@@ -15,6 +15,10 @@
     "grunt-contrib-uglify": "~0.8.0",
     "grunt-karma": "~0.10.1",
     "grunt-notify": "~0.4.1",
+    "jasmine-core": "~2.2.0",
+    "karma": "~0.12.0",
+    "karma-chrome-launcher": "~0.1.7",
+    "karma-jasmine": "~0.3.5",
     "load-grunt-tasks": "~3.1.0",
     "time-grunt": "~1.1.0"
   },
