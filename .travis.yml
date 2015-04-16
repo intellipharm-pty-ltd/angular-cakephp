@@ -18,4 +18,6 @@ install:
   - npm install
 # install all bower components
   - bower install
-before_script: grunt build
+before_script:
+script:
+  - grunt build
