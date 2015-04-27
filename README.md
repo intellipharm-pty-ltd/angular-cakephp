@@ -1,5 +1,11 @@
 # angular-cakephp
 
+[![Bower version](https://badge.fury.io/bo/angular-cakephp.svg)](http://badge.fury.io/bo/angular-cakephp)
+[![Build Status](https://travis-ci.org/Intellipharm/angular-cakephp.svg?branch=master)](https://travis-ci.org/Intellipharm/angular-cakephp)
+[![Code Climate](https://codeclimate.com/github/Intellipharm/angular-cakephp/badges/gpa.svg)](https://codeclimate.com/github/Intellipharm/angular-cakephp)
+[![Test Coverage](https://codeclimate.com/github/Intellipharm/angular-cakephp/badges/coverage.svg)](https://codeclimate.com/github/Intellipharm/angular-cakephp)
+
+
 ## Dependencies
 angular-cakephp depends on [AngularJS](https://github.com/angular/angular.js), and [Lodash](https://github.com/lodash/lodash)
 
