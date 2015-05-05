@@ -1,7 +1,6 @@
 module.exports = {
     options: {
-        jshintrc: true,
-        reporter: require('jshint-stylish')
+        config: '.jscsrc'
     },
     lib: ['<%= config.lib %>/**/*.js'],
     tests: ['karma.conf.js', '<%= config.tests %>/**/*.js'],

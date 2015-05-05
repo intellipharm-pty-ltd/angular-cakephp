@@ -1,0 +1,16 @@
+{
+    "curly": true,
+    "eqeqeq": true,
+    "futurehostile": true,
+    "maxdepth": 3,
+    "notypeof": true,
+    "unused": true,
+    "globals": {
+        "angular": true,
+        "_": true,
+        "console": true,
+        "module": true,
+        "require": true,
+        "process": true
+    }
+}
