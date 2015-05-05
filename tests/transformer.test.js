@@ -25,16 +25,7 @@ describe('DataModel', function() {
 
     describe('transformRequestData', function() {
 
-        it('should remove model property if set', function() {
-            var request_data = {
-                a: 'A',
-                model: {}
-            };
-            request_data = Service.transformRequestData(request_data);
-
-            //console.log('AAA: '+request_data);
-            expect(_.has(request_data, 'model')).toBeFalsy();
-        });
+        // TODO: write tests here
     });
 
     //--------------------------------------------
