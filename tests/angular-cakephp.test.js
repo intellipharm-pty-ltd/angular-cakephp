@@ -33,7 +33,6 @@ describe('AngularCakePHP', function() {
         $provide.value('HttpQueryBuildService', HttpQueryBuildServiceMock);
     }));
 
-
     //--------------------------------------------
     // config 1
     //--------------------------------------------
@@ -59,15 +58,12 @@ describe('AngularCakePHP', function() {
 
         describe('BaseModel.extend', function() {
 
-
             it('should throw an exception if model arg is missing', function() {
-                function MyModel() {}
-                expect(function(){ BaseModel.extend(); }).toThrow();
+                expect(function() { BaseModel.extend(); }).toThrow();
             });
 
             it('should throw an exception if active_record arg is missing', function() {
-                function MyModel() {}
-                expect(function(){ BaseModel.extend({}); }).toThrow();
+                expect(function() { BaseModel.extend({}); }).toThrow();
             });
 
             it('model should be instance of BaseModel & MyModel', function() {
@@ -248,7 +244,6 @@ describe('AngularCakePHP', function() {
             var $rootScope;
             var $http;
             var $httpBackend;
-            var $injector;
 
             // inject angular services
             beforeEach(inject(function($injector) {
@@ -267,7 +262,6 @@ describe('AngularCakePHP', function() {
             //--------------------------------------------
 
             describe('index', function() {
-
 
                 it('should call HttpResponseService.handleIndexResponse on success', function() {
 
@@ -352,7 +346,7 @@ describe('AngularCakePHP', function() {
                     }
                     var myModel = BaseModel.extend(MyModel, MyAR);
 
-                    expect(function(){ myModel.view(); }).toThrow();
+                    expect(function() { myModel.view(); }).toThrow();
                 });
 
                 it('should call HttpResponseService.handleViewResponse on success', function() {
@@ -438,7 +432,7 @@ describe('AngularCakePHP', function() {
                     }
                     var myModel = BaseModel.extend(MyModel, MyAR);
 
-                    expect(function(){ myModel.add(); }).toThrow();
+                    expect(function() { myModel.add(); }).toThrow();
                 });
 
                 it('should call HttpResponseService.handleHttpAddResponse on success', function() {
@@ -502,7 +496,7 @@ describe('AngularCakePHP', function() {
                     }
                     var myModel = BaseModel.extend(MyModel, MyAR);
 
-                    expect(function(){ myModel.edit(undefined, {}); }).toThrow();
+                    expect(function() { myModel.edit(undefined, {}); }).toThrow();
                 });
 
                 it('should throw an exception if data param is not set', function() {
@@ -515,7 +509,7 @@ describe('AngularCakePHP', function() {
                     }
                     var myModel = BaseModel.extend(MyModel, MyAR);
 
-                    expect(function(){ myModel.edit(1); }).toThrow();
+                    expect(function() { myModel.edit(1); }).toThrow();
                 });
 
                 it('should call HttpResponseService.handleEditResponse on success', function() {
@@ -575,7 +569,7 @@ describe('AngularCakePHP', function() {
                     var config = {api_endpoint: 'users'};
                     var myModel = BaseModel.extend(MyModel, config);
 
-                    expect(function(){ myModel.delete(); }).toThrow();
+                    expect(function() { myModel.delete(); }).toThrow();
                 });
 
                 it('should call HttpResponseService.handleDeleteResponse on success', function() {
@@ -635,7 +629,7 @@ describe('AngularCakePHP', function() {
                     var config = {api_endpoint: 'users'};
                     var myModel = BaseModel.extend(MyModel, config);
 
-                    expect(function(){ myModel.api(); }).toThrow();
+                    expect(function() { myModel.api(); }).toThrow();
                 });
 
                 it('should call api with custom_action', function() {
@@ -703,7 +697,7 @@ describe('AngularCakePHP', function() {
             $provide.value('AngularCakePHPApiEndpointTransformer', function(value) {
                 return value + 's';
             });
-            $provide.value('AngularCakePHPUrlParamTransformer', function(params) {
+            $provide.value('AngularCakePHPUrlParamTransformer', function() {
                 return ['a=B','c=D'];
             });
         }));
@@ -777,7 +771,6 @@ describe('AngularCakePHP', function() {
             });
         });
     });
-
 
     describe('AngularCakePHPTimestamps default', function() {
         // mock settings

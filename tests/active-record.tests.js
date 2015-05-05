@@ -45,25 +45,25 @@ describe('DataModel', function() {
             BaseModel = $injector.get('AngularCakePHPBaseModel');
         }));
 
-     it('active record should be instance of BaseActiveRecord & MyActiveRecord', function() {
-         function MyModel() {}
-         function MyActiveRecord() {}
-         var myModel = BaseModel.extend(MyModel, MyActiveRecord);
-         var myActiveRecord = myModel.new();
+        it('active record should be instance of BaseActiveRecord & MyActiveRecord', function() {
+            function MyModel() {}
+            function MyActiveRecord() {}
+            var myModel = BaseModel.extend(MyModel, MyActiveRecord);
+            var myActiveRecord = myModel.new();
 
-         expect(myActiveRecord instanceof BaseActiveRecord.constructor).toBeTruthy();
-         expect(myActiveRecord instanceof MyActiveRecord).toBeTruthy();
-     });
+            expect(myActiveRecord instanceof BaseActiveRecord.constructor).toBeTruthy();
+            expect(myActiveRecord instanceof MyActiveRecord).toBeTruthy();
+        });
 
-     it('model should extend BaseActiveRecord methods', function() {
-         function MyModel() {}
-         function MyActiveRecord() {}
-         var myModel = BaseModel.extend(MyModel, MyActiveRecord);
-         var myActiveRecord = myModel.new();
+        it('model should extend BaseActiveRecord methods', function() {
+            function MyModel() {}
+            function MyActiveRecord() {}
+            var myModel = BaseModel.extend(MyModel, MyActiveRecord);
+            var myActiveRecord = myModel.new();
 
-         expect(typeof myActiveRecord.virtualField).toEqual('function');
-         expect(typeof myActiveRecord.save).toEqual('function');
-     });
+            expect(typeof myActiveRecord.virtualField).toEqual('function');
+            expect(typeof myActiveRecord.save).toEqual('function');
+        });
     });
 
     //--------------------------------------------
@@ -74,7 +74,6 @@ describe('DataModel', function() {
         var $rootScope;
         var $http;
         var $httpBackend;
-        var $injector;
 
         // inject angular services
         beforeEach(inject(function($injector) {
@@ -137,7 +136,6 @@ describe('DataModel', function() {
         var $rootScope;
         var $http;
         var $httpBackend;
-        var $injector;
 
         // inject angular services
         beforeEach(inject(function($injector) {
@@ -179,7 +177,6 @@ describe('DataModel', function() {
         var $rootScope;
         var $http;
         var $httpBackend;
-        var $injector;
 
         // inject angular services
         beforeEach(inject(function($injector) {
@@ -221,7 +218,6 @@ describe('DataModel', function() {
         var $rootScope;
         var $http;
         var $httpBackend;
-        var $injector;
 
         // inject angular services
         beforeEach(inject(function($injector) {
@@ -261,9 +257,9 @@ describe('DataModel', function() {
 
     describe('virtual fields', function() {
 
-     // ----------------------
-     // virtualField
-     // ----------------------
+        // ----------------------
+        // virtualField
+        // ----------------------
 
         it('should throw exception if name not supplied', function() {
             var MyModel = function() {
@@ -370,21 +366,21 @@ describe('DataModel', function() {
             expect(myActiveRecord.name).toEqual('MY NAME');
         });
 
-     //it('should update', function() {
-     //  expect(myActiveRecord.name).toEqual('MY NAME');
-     //
-     //  myActiveRecord.firstname = 'NEW';
-     //  myActiveRecord.virtualFieldUpdate('name'); // we shouldn't need to do this but observe.js doesn't work in karma
-     //  expect(myActiveRecord.name).toEqual('NEW NAME');
-     //
-     //  myActiveRecord.surname = 'PERSON';
-     //  myActiveRecord.virtualFieldUpdate('name'); // we shouldn't need to do this but observe.js doesn't work in karma
-     //  expect(myActiveRecord.name).toEqual('NEW PERSON');
-     //});
+        //it('should update', function() {
+        //  expect(myActiveRecord.name).toEqual('MY NAME');
+        //
+        //  myActiveRecord.firstname = 'NEW';
+        //  myActiveRecord.virtualFieldUpdate('name'); // we shouldn't need to do this but observe.js doesn't work in karma
+        //  expect(myActiveRecord.name).toEqual('NEW NAME');
+        //
+        //  myActiveRecord.surname = 'PERSON';
+        //  myActiveRecord.virtualFieldUpdate('name'); // we shouldn't need to do this but observe.js doesn't work in karma
+        //  expect(myActiveRecord.name).toEqual('NEW PERSON');
+        //});
 
-     // ----------------------
-     // virtualFieldUpdate
-     // ----------------------
+        // ----------------------
+        // virtualFieldUpdate
+        // ----------------------
 
         it('should throw exception if name not supplied', function() {
             var MyModel = function() {

@@ -31,9 +31,9 @@
         var key;
 
         glob.sync('*', {cwd: path}).forEach(function(option) {
-            key = option.replace(/\.js$/,'');
+            key = option.replace(/\.js$/, '');
             object[key] = require(process.cwd() + path.replace('.', '') + option);
-            if (typeof object[key] == 'function') {
+            if (typeof object[key] === 'function') {
                 object[key] = object[key](grunt);
             }
         });
