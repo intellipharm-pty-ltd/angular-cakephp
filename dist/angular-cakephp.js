@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.3.4
+ * angular-cakephp v0.4.0
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-04-15 08:31:47
+ * 2015-05-06 09:37:54
  *
  */
 (function() {
@@ -91,16 +91,19 @@
         // create new active record instance
         var instance = new model.active_record_class(data);
 
-
         // set the standard cakephp created and modified timestamps if wanted
         if (model.config.timestamps) {
             instance.created = data.created;
             instance.modified = data.modified;
         }
 
-
         // set instance properties
-        instance.model = model;
+        Object.defineProperty(instance, 'model', {
+            configurable: false,
+            enumerable: false,
+            value: model,
+            writable: false
+        });
 
         // return active record instance
         return instance;
@@ -201,8 +204,7 @@
      * @returns {construct}
      */
     BaseActiveRecord.prototype.virtualField = function(name, valueFn) {
-        var self = this,
-            virtualValue;
+        var virtualValue;
 
         if (!name) {
             throw new Error(ERROR_VIRTUAL_FIELD_NAME);
@@ -226,7 +228,7 @@
             get: function() {
                 return virtualValue;
             },
-            set: function(value) {
+            set: function() {
                 virtualValue = valueFn.apply(this);
                 return virtualValue;
             }
@@ -281,18 +283,7 @@
     // these properties and methods will be available to all model services
     //---------------------------------------------------
 
-    var ERROR_INVALID_CONFIG            = 'Invalid Config';
-    var ERROR_MISSING_PARAMS            = 'Missing Required Params';
-    var ERROR_MODEL_DOES_NOT_EXIST      = 'Model does not exist';
-
-    // virtual field
-    var ERROR_VIRTUAL_FIELD_NAME                    = 'Name argument is required';
-    var ERROR_VIRTUAL_FIELD_NAME_NOT_STRING         = 'Name argument needs to be a string';
-    var ERROR_VIRTUAL_FIELD_NAME_NOT_FIELD          = 'Name argument is not in the object';
-    var ERROR_VIRTUAL_FIELD_NAME_NOT_VIRTUAL_FIELD  = 'Name argument is not a virtual field';
-    var ERROR_VIRTUAL_FIELD_VALUE                   = 'Value argument is required';
-    var ERROR_VIRTUAL_FIELD_VALUE_NOT_FUNCTION      = 'Value argument needs to be a function';
-
+    var ERROR_MISSING_PARAMS = 'Missing Required Params';
 
     // angular services
     var $http;
@@ -310,7 +301,6 @@
     // settings
     var api_url;
     var apiEndpointTransformer = null;
-    var timestamps;
 
     /**
      * BaseModel
@@ -434,7 +424,6 @@
         // return new instance of child
         return instance;
     };
-
 
     //-----------------------------------------------
     // C.R.U.D
@@ -705,28 +694,11 @@
     // HttpRequest Service
     //---------------------------------------------------
 
-    var HttpRequestService = function($q) {
+    var HttpRequestService = function() {
 
-        /**
-         * prepareRequest
-         */
-        this.prepareRequest = function(data) {
-
-            var result = [];
-            _(response.data).forEach(function(item) {
-
-                // format response data
-                _.merge(item, item[model.active_record_class.name]);
-                delete item[model.active_record_class.name];
-
-                // create active record instance
-                result.push(model.new(item));
-            });
-            resolve(result);
-        };
     };
 
-    HttpRequestService.$inject = ['$q'];
+    HttpRequestService.$inject = [];
 
     angular.module('AngularCakePHP').service('HttpRequestService', HttpRequestService);
 
@@ -744,7 +716,6 @@
         TransformerService,
         $injector
     ) {
-
 
         /**
          * handleIndexResponse
@@ -936,8 +907,6 @@
 
     var TransformerService = function($injector) {
 
-        var self = this;
-
         var urlParamTransformer = null;
 
         // optional services
@@ -997,24 +966,7 @@
          * @returns {*}
          */
         this.transformRequestData = function(data) {
-            var d = _.clone(data, true);
-
-            if (_.has(d, 'model')) {
-                delete d.model;
-            }
-
-            // remove model for all sub items too
-            _.forEach(d, function(item, key) {
-                if (_.isArray(item)) {
-                    _.forEach(item, function(i) {
-                        i = this.transformRequestData(i);
-                    }, this);
-                } else if (_.isObject(item)) {
-                    item = this.transformRequestData(item);
-                }
-            }, this);
-
-            return d;
+            return data;
         };
 
         /**
