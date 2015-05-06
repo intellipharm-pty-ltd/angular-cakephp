@@ -14,6 +14,7 @@
                 dist: 'dist',
                 lib: 'lib',
                 tests: 'tests',
+                coverage: 'coverage',
                 grunt: 'grunt',
                 pkg: grunt.file.readJSON('package.json'),
             }};

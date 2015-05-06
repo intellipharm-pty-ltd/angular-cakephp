@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for lib/http/http-response-service.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../prettify.css">
+    <link rel="stylesheet" href="../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">lib/http/http-response-service.js</span></h1>
+    <h2>
+        Statements: <span class="metric">9.09% <small>(4 / 44)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 16)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">10% <small>(1 / 10)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">9.09% <small>(4 / 44)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">lib/http/</a> &#187; http-response-service.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">(function() {
+&nbsp;
+    'use strict';
+&nbsp;
+    //---------------------------------------------------
+    // HttpResponse Service
+    //---------------------------------------------------
+&nbsp;
+    var HttpResponseService = <span class="fstat-no" title="function not covered" >function(</span>
+        TransformerService,
+        $injector
+    ) {
+&nbsp;
+        /**
+         * handleIndexResponse
+         *
+         * @param resolve
+         * @param reject
+         * @param model
+         * @param response
+         * @param status
+         * @param headers
+         * @param config
+         */
+<span class="cstat-no" title="statement not covered" >        this.handleIndexResponse = <span class="fstat-no" title="function not covered" >function(resolve, reject, model, response, status, headers, config) {</span></span>
+<span class="cstat-no" title="statement not covered" >            var data = TransformerService.transformResponseDataList(response.data, model),</span>
+                angularCakePHPApiIndexResponseTransformer = $injector.get('AngularCakePHPApiIndexResponseTransformer');
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (_.isFunction(angularCakePHPApiIndexResponseTransformer)) {</span>
+<span class="cstat-no" title="statement not covered" >                angularCakePHPApiIndexResponseTransformer(resolve, reject, model, response, status, headers, config, data);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                resolve({data: data});</span>
+            }
+        };
+&nbsp;
+        /**
+         * handleViewResponse
+         *
+         * @param resolve
+         * @param reject
+         * @param model
+         * @param response
+         * @param status
+         * @param headers
+         * @param config
+         */
+<span class="cstat-no" title="statement not covered" >        this.handleViewResponse = <span class="fstat-no" title="function not covered" >function(resolve, reject, model, response, status, headers, config) {</span></span>
+<span class="cstat-no" title="statement not covered" >            var data = TransformerService.transformResponseData(response.data, model),</span>
+                angularCakePHPApiViewResponseTransformer = $injector.get('AngularCakePHPApiViewResponseTransformer');
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (_.isFunction(angularCakePHPApiViewResponseTransformer)) {</span>
+<span class="cstat-no" title="statement not covered" >                angularCakePHPApiViewResponseTransformer(resolve, reject, model, response, status, headers, config, data);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                resolve({data: data});</span>
+            }
+        };
+&nbsp;
+        /**
+         * handleAddResponse
+         *
+         * @param resolve
+         * @param reject
+         * @param model
+         * @param response
+         * @param status
+         * @param headers
+         * @param config
+         */
+<span class="cstat-no" title="statement not covered" >        this.handleAddResponse = <span class="fstat-no" title="function not covered" >function(resolve, reject, model, response, status, headers, config) {</span></span>
+<span class="cstat-no" title="statement not covered" >            var angularCakePHPApiEditResponseTransformer = $injector.get('AngularCakePHPApiEditResponseTransformer');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (_.isFunction(angularCakePHPApiEditResponseTransformer)) {</span>
+<span class="cstat-no" title="statement not covered" >                angularCakePHPApiEditResponseTransformer(resolve, reject, model, response, status, headers, config, data);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                resolve({message: response.message, data: response.data});</span>
+            }
+        };
+&nbsp;
+        /**
+         * handleEditResponse
+         *
+         * @param resolve
+         * @param reject
+         * @param model
+         * @param response
+         * @param status
+         * @param headers
+         * @param config
+         */
+<span class="cstat-no" title="statement not covered" >        this.handleEditResponse = <span class="fstat-no" title="function not covered" >function(resolve, reject, model, response, status, headers, config) {</span></span>
+<span class="cstat-no" title="statement not covered" >            var angularCakePHPApiAddResponseTransformer = $injector.get('AngularCakePHPApiAddResponseTransformer');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (_.isFunction(angularCakePHPApiAddResponseTransformer)) {</span>
+<span class="cstat-no" title="statement not covered" >                angularCakePHPApiAddResponseTransformer(resolve, reject, model, response, status, headers, config, data);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                resolve({message: response.message});</span>
+            }
+        };
+&nbsp;
+        /**
+         * handleDeleteResponse
+         *
+         * @param resolve
+         * @param reject
+         * @param model
+         * @param response
+         * @param status
+         * @param headers
+         * @param config
+         */
+<span class="cstat-no" title="statement not covered" >        this.handleDeleteResponse = <span class="fstat-no" title="function not covered" >function(resolve, reject, model, response, status, headers, config) {</span></span>
+<span class="cstat-no" title="statement not covered" >            var angularCakePHPApiDeleteResponseTransformer = $injector.get('AngularCakePHPApiDeleteResponseTransformer');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (_.isFunction(angularCakePHPApiDeleteResponseTransformer)) {</span>
+<span class="cstat-no" title="statement not covered" >                angularCakePHPApiDeleteResponseTransformer(resolve, reject, model, response, status, headers, config, data);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                resolve({message: response.message});</span>
+            }
+        };
+&nbsp;
+        /**
+         * handleValidateResponse
+         *
+         * @param resolve
+         * @param reject
+         * @param model
+         * @param response
+         * @param status
+         * @param headers
+         * @param config
+         */
+<span class="cstat-no" title="statement not covered" >        this.handleValidateResponse = <span class="fstat-no" title="function not covered" >function(resolve, reject, model, response, status, headers, config) {</span></span>
+<span class="cstat-no" title="statement not covered" >            var angularCakePHPApiValidateResponseTransformer = $injector.get('AngularCakePHPApiValidateResponseTransformer');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (_.isFunction(angularCakePHPApiValidateResponseTransformer)) {</span>
+<span class="cstat-no" title="statement not covered" >                angularCakePHPApiValidateResponseTransformer(resolve, reject, model, response, status, headers, config, data);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                resolve({message: response.message});</span>
+            }
+        };
+&nbsp;
+        /**
+         * handleValidateErrorResponse
+         *
+         * @param resolve
+         * @param reject
+         * @param model
+         * @param response
+         * @param status
+         * @param headers
+         * @param config
+         */
+<span class="cstat-no" title="statement not covered" >        this.handleValidateErrorResponse = <span class="fstat-no" title="function not covered" >function(resolve, reject, model, response, status, headers, config) {</span></span>
+<span class="cstat-no" title="statement not covered" >            var angularCakePHPApiValidateErrorResponseTransformer = $injector.get('AngularCakePHPApiValidateErrorResponseTransformer');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (_.isFunction(angularCakePHPApiValidateErrorResponseTransformer)) {</span>
+<span class="cstat-no" title="statement not covered" >                angularCakePHPApiValidateErrorResponseTransformer(resolve, reject, model, response, status, headers, config, data);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                reject({data: response.data, message: response.message});</span>
+            }
+        };
+&nbsp;
+        /**
+         * handleErrorResponse
+         *
+         * @param resolve
+         * @param reject
+         * @param model
+         * @param response
+         * @param status
+         * @param headers
+         * @param config
+         */
+<span class="cstat-no" title="statement not covered" >        this.handleErrorResponse = <span class="fstat-no" title="function not covered" >function(resolve, reject, model, response, status, headers, config) {</span></span>
+<span class="cstat-no" title="statement not covered" >            var angularCakePHPApiErrorResponseTransformer = $injector.get('AngularCakePHPApiErrorResponseTransformer');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (_.isFunction(angularCakePHPApiErrorResponseTransformer)) {</span>
+<span class="cstat-no" title="statement not covered" >                angularCakePHPApiErrorResponseTransformer(resolve, reject, model, response, status, headers, config, data);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                reject({data: response.data, message: response.message});</span>
+            }
+        };
+    };
+&nbsp;
+    HttpResponseService.$inject = [
+        'TransformerService',
+        '$injector'
+    ];
+&nbsp;
+    angular.module('AngularCakePHP').service('HttpResponseService', HttpResponseService);
+&nbsp;
+})();
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed May 06 2015 10:08:07 GMT+1000 (AEST)</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>
