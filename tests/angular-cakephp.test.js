@@ -565,9 +565,13 @@ describe('AngularCakePHP', function() {
 
                 it('should throw an exception if id param is not set', function() {
 
-                    function MyModel() {}
-                    var config = {api_endpoint: 'users'};
-                    var myModel = BaseModel.extend(MyModel, config);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
                     expect(function() { myModel.delete(); }).toThrow();
                 });
@@ -625,9 +629,13 @@ describe('AngularCakePHP', function() {
 
                 it('should throw an exception if action param is not set', function() {
 
-                    function MyModel() {}
-                    var config = {api_endpoint: 'users'};
-                    var myModel = BaseModel.extend(MyModel, config);
+                    function MyModel() {
+                        this.config = {api_endpoint: 'users'};
+                    }
+                    function MyAR(data) {
+                        this.name = data.name;
+                    }
+                    var myModel = BaseModel.extend(MyModel, MyAR);
 
                     expect(function() { myModel.api(); }).toThrow();
                 });
