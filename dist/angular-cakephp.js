@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.4.0
+ * angular-cakephp v0.4.1
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-05-06 09:37:54
+ * 2015-05-08 15:05:48
  *
  */
 (function() {
@@ -358,6 +358,18 @@
      * @returns model instance
      */
     BaseModel.prototype.extend = function(Model, active_record) {
+
+        // Fix for IE and old browsers
+        if (!active_record.prototype.name) {
+            Object.defineProperty(active_record.prototype, 'name', {
+                get: function() {
+                    var funcNameRegex = /function\s([^(]{1,})\(/;
+                    var results = (funcNameRegex).exec((this).toString());
+                    return (results && results.length > 1) ? results[1].trim() : '';
+                },
+                set: function() {}
+            });
+        }
 
         if (_.isUndefined(Model) || _.isUndefined(active_record)) {
             throw new Error(ERROR_MISSING_PARAMS);
