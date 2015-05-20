@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.4.1
+ * angular-cakephp v0.4.2
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-05-08 15:05:48
+ * 2015-05-20 10:55:16
  *
  */
 (function() {
@@ -107,6 +107,20 @@
 
         // return active record instance
         return instance;
+    };
+
+    //-----------------------------------------------
+    // clone
+    //-----------------------------------------------
+
+    /**
+     * clone
+     * Extends BaseActiveRecord
+     *
+     * @returns cloned active record instance
+     */
+    BaseActiveRecord.prototype.clone = function() {
+        return this.new(this);
     };
 
     //-----------------------------------------------
@@ -675,9 +689,6 @@
             throw new Error(self.ERROR_MISSING_PARAMS);
         }
 
-        // format url params
-        url_params = '';// TODO: url param conversion
-
         // format url
         var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint + '/' + end_point, url_params);
 
@@ -960,8 +971,10 @@
 
             // create url params string
             var params_str = '';
-            if (params_array.length > 0) {
+            if (_.isArray(params_array) && params_array.length > 0) {
                 params_str = '?' + params_array.join('&');
+            } else if (params_array.length > 0) {
+                params_str = '?' + params_array;
             }
 
             // create request url
