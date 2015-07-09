@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.4.2
+ * angular-cakephp v0.4.3
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-06-11 09:13:57
+ * 2015-07-10 09:14:35
  *
  */
 (function() {
@@ -1088,7 +1088,7 @@
 
             // return false if data.id is null
             if (_.has(data, 'id') && _.isNull(data.id)) {
-                console.error(self.ERROR_NO_DATA + ': ' + model_class);
+                console.warn(self.ERROR_NO_DATA + ': ' + model_class);
                 return false;
             }
 
@@ -1097,7 +1097,7 @@
                 var result = model.new(data);
                 return result;
             } catch (error) {
-                console.error(self.ERROR_MODEL_DOES_NOT_EXIST + ': ' + model_class);
+                console.warn(self.ERROR_MODEL_DOES_NOT_EXIST + ': ' + model_class);
                 return false;
             }
         };
