@@ -4,7 +4,7 @@
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-07-10 09:14:35
+ * 2015-07-15 13:40:12
  *
  */
 (function() {
@@ -78,7 +78,7 @@
      *
      * @param model (the model being used to call this method)
      * @param active_record (The active record class that will extend BaseActiveRecord)
-     * @returns active record instance
+     * @return active record instance
      */
     BaseActiveRecord.prototype.extend = function(model, data) {
         if (_.isUndefined(model) || !_.has(model, 'active_record_class')  || _.isUndefined(model.active_record_class) || _.isUndefined(data)) {
@@ -117,7 +117,7 @@
      * clone
      * Extends BaseActiveRecord
      *
-     * @returns cloned active record instance
+     * @return cloned active record instance
      */
     BaseActiveRecord.prototype.clone = function() {
         return this.new(this);
@@ -131,22 +131,23 @@
      * save
      * Relay call to the model's edit method
      *
-     * @returns promise
+     * @param {Array} params (a list of url parameters to pass with the HTTP request)
+     * @return {promise}
      */
-    BaseActiveRecord.prototype.save = function() {
+    BaseActiveRecord.prototype.save = function(params) {
 
         if (this.id) {
-            return this.model.edit(this.id, this);
+            return this.model.edit(this.id, this, params);
         }
 
-        return this.model.add(this);
+        return this.model.add(this, params);
     };
 
     /**
      * new
      * Relay call to the model's new method
      *
-     * @returns promise
+     * @return promise
      */
     BaseActiveRecord.prototype.new = function(data) {
         return this.model.new(data);
@@ -156,7 +157,7 @@
      * delete
      * Relay call to the model's delete method
      *
-     * @returns promise
+     * @return promise
      */
     BaseActiveRecord.prototype.delete = function() {
         return this.model.delete(this.id);
@@ -171,7 +172,7 @@
      * Relay call to the model's validate method
      *
      * @param array fields (array of fields to validate)
-     * @returns promise
+     * @return promise
      */
     BaseActiveRecord.prototype.validate = function(fields) {
         return this.model.validate(this, fields);
@@ -184,7 +185,7 @@
      * @param string endpoint (endpoint to call)
      * @param string http_method (HTTP method to use for call) (default: GET)
      * @param object url_params (url params to pass with call)
-     * @returns promise
+     * @return promise
      */
     BaseActiveRecord.prototype.api = function(end_point, http_method, url_params) {
         return this.model.api(end_point, http_method, url_params, this);
@@ -198,7 +199,7 @@
      * getClassName
      * Returns active record class name
      *
-     * @returns promise
+     * @return promise
      */
     BaseActiveRecord.prototype.getClassName = function() {
         return this.model && this.model.active_record_class ? this.model.active_record_class.name : null;
@@ -215,7 +216,7 @@
      *
      * @param string name (name of the virtual field)
      * @param function valueFn (?) // TODO: unabbreviate & name more clearly
-     * @returns {construct}
+     * @return {construct}
      */
     BaseActiveRecord.prototype.virtualField = function(name, valueFn) {
         var virtualValue;
@@ -261,7 +262,7 @@
      * We can set it to blank and then it triggers the valueFn to set the value
      *
      * @param string name (name of virtual field to update)
-     * @returns this
+     * @return this
      */
     BaseActiveRecord.prototype.virtualFieldUpdate = function(name) {
         if (!name) {
@@ -367,9 +368,9 @@
      * extend
      * Extends BaseModel
      *
-     * @param model (the model that will extend BaseModel)
-     * @param active_record (The active record class that will be used when creating new instance)
-     * @returns model instance
+     * @param {Object} model (the model that will extend BaseModel)
+     * @param {Object} active_record (The active record class that will be used when creating new instance)
+     * @return {Object} model instance
      */
     BaseModel.prototype.extend = function(Model, active_record) {
 
@@ -419,8 +420,8 @@
      * new
      * Creates a new instance of the model's active record class
      *
-     * @param object data (data used to create a new active record)
-     * @returns object (new active record | empty object)
+     * @param {Object} data (data used to create a new active record)
+     * @return {Object} (new active record | empty object)
      */
     BaseModel.prototype.new = function(data) {
 
@@ -459,8 +460,8 @@
      * index
      * makes GET HTTP call to API
      *
-     * @param object params (a list of url parameters to pass with the HTTP request)
-     * @returns promise HttpResponseService.handleIndexResponse
+     * @param {Object} params (a list of url parameters to pass with the HTTP request)
+     * @return promise HttpResponseService.handleIndexResponse
      */
     BaseModel.prototype.index = function(params) {
 
@@ -484,9 +485,9 @@
      * view
      * makes GET HTTP call to API with id
      *
-     * @param id (unique id of the record you want to view)
-     * @param object params (a list of url parameters to pass with the HTTP request)
-     * @returns promise HttpResponseService.handleViewResponse
+     * @param {Integer} id (unique id of the record you want to view)
+     * @param {Object} params (a list of url parameters to pass with the HTTP request)
+     * @return {promise} HttpResponseService.handleViewResponse
      */
     BaseModel.prototype.view = function(id, params) {
 
@@ -515,10 +516,11 @@
      * add
      * makes POST HTTP call to API
      *
-     * @param object data (post data to be passed with HTTP POST request
-     * @returns promise HttpResponseService.handleAddResponse
+     * @param {Object} data (post data to be passed with HTTP POST request
+     * @param {Object} params (a list of url parameters to pass with the HTTP request)
+     * @return {promise} HttpResponseService.handleAddResponse
      */
-    BaseModel.prototype.add = function(data) {
+    BaseModel.prototype.add = function(data, params) {
 
         var self = this;
 
@@ -529,7 +531,8 @@
 
         return $q(function(resolve, reject) {
 
-            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint);
+            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, params);
+
             data = TransformerService.transformRequestData(data);
 
             $http.post(url, data)
@@ -546,11 +549,12 @@
      * edit
      * makes PUT HTTP call to API with id
      *
-     * @param id
-     * @param object data (data to be passed with HTTP PUT request)
-     * @returns promise HttpResponseService.handleEditResponse
+     * @param {Integer} id
+     * @param {Object} data (data to be passed with HTTP PUT request)
+     * @param {Object} params (a list of url parameters to pass with the HTTP request)
+     * @return {promise} HttpResponseService.handleEditResponse
      */
-    BaseModel.prototype.edit = function(id, data) {
+    BaseModel.prototype.edit = function(id, data, params) {
 
         var self = this;
 
@@ -564,7 +568,7 @@
 
         return $q(function(resolve, reject) {
 
-            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, null, id);
+            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, params, id);
             data = TransformerService.transformRequestData(data);
 
             $http.put(url, data)
@@ -581,8 +585,8 @@
      * delete
      * makes DELETE HTTP call to API with id
      *
-     * @param id (unique id of the record you want to delete)
-     * @returns promise HttpResponseService.handleDeleteResponse
+     * @param {Integer} id (unique id of the record you want to delete)
+     * @return {promise} HttpResponseService.handleDeleteResponse
      */
     BaseModel.prototype.delete = function(id) {
 
@@ -615,9 +619,9 @@
      * validate
      * Makes a POST HTTP call to API validation resource
      *
-     * @param object active_record (active record to validate)
-     * @param array fields (array of fields to validate)
-     * @returns promise HttpResponseService.handleValidateResponse
+     * @param {Object} active_record (active record to validate)
+     * @param {Array} fields (array of fields to validate)
+     * @return {promise} HttpResponseService.handleValidateResponse
      */
     BaseModel.prototype.validate = function(active_record, fields) {
 
@@ -660,11 +664,11 @@
      * api
      * Makes HTTP call to specified API endpoint
      *
-     * @param string endpoint (endpoint to call)
-     * @param string http_method (HTTP method to use for call) (default: GET)
-     * @param object url_params (url params to pass with call)
-     * @param object post_params (post params to pass with call)
-     * @returns promise
+     * @param {String} endpoint (endpoint to call)
+     * @param {String} http_method (HTTP method to use for call) (default: GET)
+     * @param {Object} url_params (url params to pass with call)
+     * @param {Object} post_params (post params to pass with call)
+     * @return {promise}
      */
     BaseModel.prototype.api = function(end_point, http_method, url_params, post_params) {
 
@@ -822,7 +826,7 @@
             if (_.isFunction(angularCakePHPApiAddResponseTransformer)) {
                 angularCakePHPApiAddResponseTransformer(resolve, reject, model, response, status, headers, config, data);
             } else {
-                resolve({message: response.message});
+                resolve({data: response.data, message: response.message});
             }
         };
 
