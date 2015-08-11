@@ -1,10 +1,10 @@
 /*!
- * angular-cakephp v0.4.3
+ * angular-cakephp v0.4.4
  * http://intellipharm.com/
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-07-15 13:40:12
+ * 2015-08-11 15:11:02
  *
  */
 (function() {
@@ -131,7 +131,7 @@
      * save
      * Relay call to the model's edit method
      *
-     * @param {Array} params (a list of url parameters to pass with the HTTP request)
+     * @param {Object} params (a list of url parameters to pass with the HTTP request)
      * @return {promise}
      */
     BaseActiveRecord.prototype.save = function(params) {
@@ -756,8 +756,9 @@
          * @param config
          */
         this.handleIndexResponse = function(resolve, reject, model, response, status, headers, config) {
-            var data = TransformerService.transformResponseDataList(response.data, model),
-                angularCakePHPApiIndexResponseTransformer = $injector.get('AngularCakePHPApiIndexResponseTransformer');
+
+            var data = TransformerService.transformResponseDataList(response.data, model);
+            var angularCakePHPApiIndexResponseTransformer = $injector.get('AngularCakePHPApiIndexResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiIndexResponseTransformer)) {
                 angularCakePHPApiIndexResponseTransformer(resolve, reject, model, response, status, headers, config, data);
@@ -778,8 +779,9 @@
          * @param config
          */
         this.handleViewResponse = function(resolve, reject, model, response, status, headers, config) {
-            var data = TransformerService.transformResponseData(response.data, model),
-                angularCakePHPApiViewResponseTransformer = $injector.get('AngularCakePHPApiViewResponseTransformer');
+
+            var data = TransformerService.transformResponseData(response.data, model);
+            var angularCakePHPApiViewResponseTransformer = $injector.get('AngularCakePHPApiViewResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiViewResponseTransformer)) {
                 angularCakePHPApiViewResponseTransformer(resolve, reject, model, response, status, headers, config, data);
@@ -800,12 +802,14 @@
          * @param config
          */
         this.handleAddResponse = function(resolve, reject, model, response, status, headers, config) {
+
+            var data = TransformerService.transformResponseData(response.data, model);
             var angularCakePHPApiEditResponseTransformer = $injector.get('AngularCakePHPApiEditResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiEditResponseTransformer)) {
                 angularCakePHPApiEditResponseTransformer(resolve, reject, model, response, status, headers, config, data);
             } else {
-                resolve({message: response.message, data: response.data});
+                resolve({data: data, message: response.message});
             }
         };
 
@@ -821,12 +825,14 @@
          * @param config
          */
         this.handleEditResponse = function(resolve, reject, model, response, status, headers, config) {
+
+            var data = TransformerService.transformResponseData(response.data, model);
             var angularCakePHPApiAddResponseTransformer = $injector.get('AngularCakePHPApiAddResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiAddResponseTransformer)) {
                 angularCakePHPApiAddResponseTransformer(resolve, reject, model, response, status, headers, config, data);
             } else {
-                resolve({data: response.data, message: response.message});
+                resolve({data: data, message: response.message});
             }
         };
 
@@ -842,10 +848,11 @@
          * @param config
          */
         this.handleDeleteResponse = function(resolve, reject, model, response, status, headers, config) {
+
             var angularCakePHPApiDeleteResponseTransformer = $injector.get('AngularCakePHPApiDeleteResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiDeleteResponseTransformer)) {
-                angularCakePHPApiDeleteResponseTransformer(resolve, reject, model, response, status, headers, config, data);
+                angularCakePHPApiDeleteResponseTransformer(resolve, reject, model, response, status, headers, config);
             } else {
                 resolve({message: response.message});
             }
@@ -863,10 +870,11 @@
          * @param config
          */
         this.handleValidateResponse = function(resolve, reject, model, response, status, headers, config) {
+
             var angularCakePHPApiValidateResponseTransformer = $injector.get('AngularCakePHPApiValidateResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiValidateResponseTransformer)) {
-                angularCakePHPApiValidateResponseTransformer(resolve, reject, model, response, status, headers, config, data);
+                angularCakePHPApiValidateResponseTransformer(resolve, reject, model, response, status, headers, config);
             } else {
                 resolve({message: response.message});
             }
@@ -884,10 +892,11 @@
          * @param config
          */
         this.handleValidateErrorResponse = function(resolve, reject, model, response, status, headers, config) {
+
             var angularCakePHPApiValidateErrorResponseTransformer = $injector.get('AngularCakePHPApiValidateErrorResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiValidateErrorResponseTransformer)) {
-                angularCakePHPApiValidateErrorResponseTransformer(resolve, reject, model, response, status, headers, config, data);
+                angularCakePHPApiValidateErrorResponseTransformer(resolve, reject, model, response, status, headers, config);
             } else {
                 reject({data: response.data, message: response.message});
             }
@@ -905,10 +914,11 @@
          * @param config
          */
         this.handleErrorResponse = function(resolve, reject, model, response, status, headers, config) {
+
             var angularCakePHPApiErrorResponseTransformer = $injector.get('AngularCakePHPApiErrorResponseTransformer');
 
             if (_.isFunction(angularCakePHPApiErrorResponseTransformer)) {
-                angularCakePHPApiErrorResponseTransformer(resolve, reject, model, response, status, headers, config, data);
+                angularCakePHPApiErrorResponseTransformer(resolve, reject, model, response, status, headers, config);
             } else {
                 reject({data: response.data, message: response.message});
             }
