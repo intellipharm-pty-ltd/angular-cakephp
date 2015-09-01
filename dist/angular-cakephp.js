@@ -4,7 +4,7 @@
  *
  * Copyright 2015 Intellipharm
  *
- * 2015-08-24 12:32:57
+ * 2015-09-02 09:23:10
  *
  */
 (function() {
@@ -132,15 +132,16 @@
      * Relay call to the model's edit method
      *
      * @param {Object} params (a list of url parameters to pass with the HTTP request)
+     * @param {Object} config (config to pass with the HTTP request)
      * @return {promise}
      */
-    BaseActiveRecord.prototype.save = function(params) {
+    BaseActiveRecord.prototype.save = function(params, config) {
 
         if (this.id) {
             return this.model.edit(this.id, this, params);
         }
 
-        return this.model.add(this, params);
+        return this.model.add(this, params, config);
     };
 
     /**
@@ -157,10 +158,11 @@
      * delete
      * Relay call to the model's delete method
      *
+     * @param {Object} config (config to pass with the HTTP request)
      * @return promise
      */
-    BaseActiveRecord.prototype.delete = function() {
-        return this.model.delete(this.id);
+    BaseActiveRecord.prototype.delete = function(config) {
+        return this.model.delete(this.id, config);
     };
 
     //-----------------------------------------------
@@ -172,10 +174,11 @@
      * Relay call to the model's validate method
      *
      * @param array fields (array of fields to validate)
+     * @param {Object} config (config to pass with the HTTP request)
      * @return promise
      */
-    BaseActiveRecord.prototype.validate = function(fields) {
-        return this.model.validate(this, fields);
+    BaseActiveRecord.prototype.validate = function(fields, config) {
+        return this.model.validate(this, fields, config);
     };
 
     /**
@@ -187,8 +190,8 @@
      * @param object url_params (url params to pass with call)
      * @return promise
      */
-    BaseActiveRecord.prototype.api = function(end_point, http_method, url_params) {
-        return this.model.api(end_point, http_method, url_params, this);
+    BaseActiveRecord.prototype.api = function(end_point, http_method, url_params, config) {
+        return this.model.api(end_point, http_method, url_params, this, config);
     };
 
     //-----------------------------------------------
@@ -460,18 +463,24 @@
      * index
      * makes GET HTTP call to API
      *
-     * @param {Object} params (a list of url parameters to pass with the HTTP request)
+     * @param {Object} url_params (a list of url parameters to pass with the HTTP request)
+     * @param {Object} config (config to pass with the HTTP request)
      * @return promise HttpResponseService.handleIndexResponse
      */
-    BaseModel.prototype.index = function(params) {
+    BaseModel.prototype.index = function(url_params, config) {
 
         var self = this;
 
+        // defaults
+        if (_.isUndefined(config)) {
+            config = {};
+        }
+
         return $q(function(resolve, reject) {
 
-            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, params);
+            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, url_params);
 
-            $http.get(url)
+            $http.get(url, config)
                 .success(function(response, status, headers, config) {
                     HttpResponseService.handleIndexResponse(resolve, reject, self, response, status, headers, config);
                 })
@@ -486,12 +495,18 @@
      * makes GET HTTP call to API with id
      *
      * @param {Integer} id (unique id of the record you want to view)
-     * @param {Object} params (a list of url parameters to pass with the HTTP request)
+     * @param {Object} url_params (a list of url parameters to pass with the HTTP request)
+     * @param {Object} config (config to pass with the HTTP request)
      * @return {promise} HttpResponseService.handleViewResponse
      */
-    BaseModel.prototype.view = function(id, params) {
+    BaseModel.prototype.view = function(id, url_params, config) {
 
         var self = this;
+
+        // defaults
+        if (_.isUndefined(config)) {
+            config = {};
+        }
 
         // validate
         if (_.isNull(id) || _.isUndefined(id)) {
@@ -500,9 +515,9 @@
 
         return $q(function(resolve, reject) {
 
-            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, params, id);
+            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, url_params, id);
 
-            $http.get(url)
+            $http.get(url, config)
                 .success(function(response, status, headers, config) {
                     HttpResponseService.handleViewResponse(resolve, reject, self, response, status, headers, config);
                 })
@@ -517,12 +532,18 @@
      * makes POST HTTP call to API
      *
      * @param {Object} data (post data to be passed with HTTP POST request
-     * @param {Object} params (a list of url parameters to pass with the HTTP request)
+     * @param {Object} url_params (a list of url parameters to pass with the HTTP request)
+     * @param {Object} config (config to pass with the HTTP request)
      * @return {promise} HttpResponseService.handleAddResponse
      */
-    BaseModel.prototype.add = function(data, params) {
+    BaseModel.prototype.add = function(data, url_params, config) {
 
         var self = this;
+
+        // defaults
+        if (_.isUndefined(config)) {
+            config = {};
+        }
 
         // validate
         if (_.isNull(data) || _.isUndefined(data)) {
@@ -531,11 +552,11 @@
 
         return $q(function(resolve, reject) {
 
-            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, params);
+            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, url_params);
 
             data = TransformerService.transformRequestData(data);
 
-            $http.post(url, data)
+            $http.post(url, data, config)
                 .success(function(response, status, headers, config) {
                     HttpResponseService.handleAddResponse(resolve, reject, self, response, status, headers, config);
                 })
@@ -551,12 +572,18 @@
      *
      * @param {Integer} id
      * @param {Object} data (data to be passed with HTTP PUT request)
-     * @param {Object} params (a list of url parameters to pass with the HTTP request)
+     * @param {Object} url_params (a list of url parameters to pass with the HTTP request)
+     * @param {Object} config (config to pass with the HTTP request)
      * @return {promise} HttpResponseService.handleEditResponse
      */
-    BaseModel.prototype.edit = function(id, data, params) {
+    BaseModel.prototype.edit = function(id, data, url_params, config) {
 
         var self = this;
+
+        // defaults
+        if (_.isUndefined(config)) {
+            config = {};
+        }
 
         // validate
         if (_.isNull(id) || _.isUndefined(id)) {
@@ -568,10 +595,10 @@
 
         return $q(function(resolve, reject) {
 
-            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, params, id);
+            var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, url_params, id);
             data = TransformerService.transformRequestData(data);
 
-            $http.put(url, data)
+            $http.put(url, data, config)
                 .success(function(response, status, headers, config) {
                     HttpResponseService.handleEditResponse(resolve, reject, self, response, status, headers, config);
                 })
@@ -586,11 +613,17 @@
      * makes DELETE HTTP call to API with id
      *
      * @param {Integer} id (unique id of the record you want to delete)
+     * @param {Object} config (config to pass with the HTTP request)
      * @return {promise} HttpResponseService.handleDeleteResponse
      */
-    BaseModel.prototype.delete = function(id) {
+    BaseModel.prototype.delete = function(id, config) {
 
         var self = this;
+
+        // defaults
+        if (_.isUndefined(config)) {
+            config = {};
+        }
 
         // validate
         if (_.isNull(id) || _.isUndefined(id)) {
@@ -601,7 +634,7 @@
 
             var url = TransformerService.transformRequestUrl(self.config.api, self.config.api_endpoint, null, id);
 
-            $http.delete(url)
+            $http.delete(url, config)
                 .success(function(response, status, headers, config) {
                     HttpResponseService.handleDeleteResponse(resolve, reject, self, response, status, headers, config);
                 })
@@ -621,11 +654,17 @@
      *
      * @param {Object} active_record (active record to validate)
      * @param {Array} fields (array of fields to validate)
+     * @param {Object} config (config to pass with the HTTP request)
      * @return {promise} HttpResponseService.handleValidateResponse
      */
-    BaseModel.prototype.validate = function(active_record, fields) {
+    BaseModel.prototype.validate = function(active_record, fields, config) {
 
         var self = this;
+
+        // defaults
+        if (_.isUndefined(config)) {
+            config = {};
+        }
 
         // validate
         if (_.isNull(active_record) || _.isUndefined(active_record)) {
@@ -646,7 +685,7 @@
             // post params
             var post_params = active_record;
 
-            $http.post(url, post_params)
+            $http.post(url, post_params, config)
                 .success(function(response, status, headers, config) {
                     HttpResponseService.handleValidateResponse(resolve, reject, self, response, status, headers, config);
                 })
@@ -668,9 +707,10 @@
      * @param {String} http_method (HTTP method to use for call) (default: GET)
      * @param {Object} url_params (url params to pass with call)
      * @param {Object} post_params (post params to pass with call)
+     * @param {Object} config (config to pass with the HTTP request)
      * @return {promise}
      */
-    BaseModel.prototype.api = function(end_point, http_method, url_params, post_params) {
+    BaseModel.prototype.api = function(end_point, http_method, url_params, post_params, config) {
 
         var self = this;
 
@@ -683,6 +723,9 @@
         }
         if (_.isUndefined(post_params)) {
             post_params = {};
+        }
+        if (_.isUndefined(config)) {
+            config = {};
         }
 
         // format params
@@ -707,7 +750,7 @@
         }
 
         // make call
-        return $http(http_params);
+        return $http(http_params, config);
     };
 
     angular.module('AngularCakePHP').service('AngularCakePHPBaseModel', BaseModel);
@@ -920,6 +963,9 @@
             if (_.isFunction(angularCakePHPApiErrorResponseTransformer)) {
                 angularCakePHPApiErrorResponseTransformer(resolve, reject, model, response, status, headers, config);
             } else {
+                if (_.isNull(response)) {
+                    return true;
+                }
                 reject({data: response.data, message: response.message});
             }
         };
