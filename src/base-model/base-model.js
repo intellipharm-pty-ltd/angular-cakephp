@@ -118,9 +118,7 @@ class BaseModel {
         if ( !_.isNull( active_record_class ) ) {
             this.activeRecordClass = active_record_class;
         }
-
-        console.log(_.clone(data, true));
-
+        
         return RestApi.edit( id, config, data, this.activeRecordClass );
     }
 

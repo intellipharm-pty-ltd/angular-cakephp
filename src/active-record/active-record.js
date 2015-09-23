@@ -77,7 +77,6 @@ export default class ActiveRecord {
      * @return {Promise}
      */
     save() {
-        console.log(_.clone(this, true));
 
         // add (no id)
         if ( !_.has( this, 'id' ) || _.isUndefined( this.id )) {
