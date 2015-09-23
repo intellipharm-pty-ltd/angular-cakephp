@@ -1,0 +1,120 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'install' ]
+2 info using npm@2.7.4
+3 info using node@v0.12.2
+4 warn package.json angular-cakephp-dev-v1@1.0.0 No description
+5 warn package.json angular-cakephp-dev-v1@1.0.0 No repository field.
+6 warn package.json angular-cakephp-dev-v1@1.0.0 No README data
+7 verbose install where, deps [ '/var/www/html/angular-cakephp/dev/v1',
+7 verbose install   [ 'browser-sync',
+7 verbose install     'del',
+7 verbose install     'gulp',
+7 verbose install     'gulp-babel',
+7 verbose install     'gulp-changed',
+7 verbose install     'phantomjs',
+7 verbose install     'gulp-karma',
+7 verbose install     'gulp-ng-annotate',
+7 verbose install     'gulp-plumber',
+7 verbose install     'gulp-rename',
+7 verbose install     'gulp-util',
+7 verbose install     'jasmine-core',
+7 verbose install     'jspm',
+7 verbose install     'karma',
+7 verbose install     'karma-babel-preprocessor',
+7 verbose install     'karma-coverage',
+7 verbose install     'karma-jasmine',
+7 verbose install     'karma-jspm',
+7 verbose install     'karma-mocha-reporter',
+7 verbose install     'karma-phantomjs-launcher',
+7 verbose install     'node-notifier',
+7 verbose install     'require-dir',
+7 verbose install     'run-sequence',
+7 verbose install     'vinyl-paths' ] ]
+8 verbose install where, peers [ '/var/www/html/angular-cakephp/dev/v1', [] ]
+9 info preinstall angular-cakephp-dev-v1@1.0.0
+10 verbose already installed skipping gulp-util@^3.0.6 /var/www/html/angular-cakephp/dev/v1
+11 verbose already installed skipping jasmine-core@~2.3.0 /var/www/html/angular-cakephp/dev/v1
+12 verbose already installed skipping jspm@^0.16.2 /var/www/html/angular-cakephp/dev/v1
+13 verbose already installed skipping karma@~0.12.0 /var/www/html/angular-cakephp/dev/v1
+14 verbose already installed skipping karma-babel-preprocessor@^5.2.2 /var/www/html/angular-cakephp/dev/v1
+15 verbose already installed skipping karma-coverage@^0.5.2 /var/www/html/angular-cakephp/dev/v1
+16 verbose already installed skipping karma-jasmine@~0.3.5 /var/www/html/angular-cakephp/dev/v1
+17 verbose already installed skipping karma-jspm@^2.0.1 /var/www/html/angular-cakephp/dev/v1
+18 verbose already installed skipping karma-mocha-reporter@^1.1.1 /var/www/html/angular-cakephp/dev/v1
+19 verbose already installed skipping karma-phantomjs-launcher@^0.2.1 /var/www/html/angular-cakephp/dev/v1
+20 verbose already installed skipping node-notifier@^4.2.3 /var/www/html/angular-cakephp/dev/v1
+21 verbose already installed skipping require-dir@^0.3.0 /var/www/html/angular-cakephp/dev/v1
+22 verbose already installed skipping run-sequence@^1.1.2 /var/www/html/angular-cakephp/dev/v1
+23 verbose already installed skipping vinyl-paths@^2.0.0 /var/www/html/angular-cakephp/dev/v1
+24 verbose already installed skipping browser-sync@^2.9.3 /var/www/html/angular-cakephp/dev/v1
+25 verbose already installed skipping del@^2.0.2 /var/www/html/angular-cakephp/dev/v1
+26 verbose already installed skipping gulp@^3.9.0 /var/www/html/angular-cakephp/dev/v1
+27 verbose already installed skipping gulp-babel@^5.2.1 /var/www/html/angular-cakephp/dev/v1
+28 verbose already installed skipping gulp-changed@^1.3.0 /var/www/html/angular-cakephp/dev/v1
+29 verbose already installed skipping phantomjs@^1.9.18 /var/www/html/angular-cakephp/dev/v1
+30 verbose already installed skipping gulp-karma@0.0.4 /var/www/html/angular-cakephp/dev/v1
+31 verbose already installed skipping gulp-ng-annotate@^1.1.0 /var/www/html/angular-cakephp/dev/v1
+32 verbose already installed skipping gulp-plumber@^1.0.1 /var/www/html/angular-cakephp/dev/v1
+33 verbose already installed skipping gulp-rename@^1.2.2 /var/www/html/angular-cakephp/dev/v1
+34 silly install resolved []
+35 info build /var/www/html/angular-cakephp/dev/v1
+36 verbose linkStuff [ false, false, false, '/var/www/html/angular-cakephp/dev' ]
+37 info linkStuff angular-cakephp-dev-v1@1.0.0
+38 verbose linkBins angular-cakephp-dev-v1@1.0.0
+39 verbose linkMans angular-cakephp-dev-v1@1.0.0
+40 verbose rebuildBundles angular-cakephp-dev-v1@1.0.0
+41 verbose rebuildBundles [ '.bin',
+41 verbose rebuildBundles   'browser-sync',
+41 verbose rebuildBundles   'del',
+41 verbose rebuildBundles   'gulp',
+41 verbose rebuildBundles   'gulp-babel',
+41 verbose rebuildBundles   'gulp-changed',
+41 verbose rebuildBundles   'gulp-karma',
+41 verbose rebuildBundles   'gulp-ng-annotate',
+41 verbose rebuildBundles   'gulp-plumber',
+41 verbose rebuildBundles   'gulp-rename',
+41 verbose rebuildBundles   'gulp-util',
+41 verbose rebuildBundles   'jasmine-core',
+41 verbose rebuildBundles   'jspm',
+41 verbose rebuildBundles   'karma',
+41 verbose rebuildBundles   'karma-babel-preprocessor',
+41 verbose rebuildBundles   'karma-coverage',
+41 verbose rebuildBundles   'karma-jasmine',
+41 verbose rebuildBundles   'karma-jspm',
+41 verbose rebuildBundles   'karma-mocha-reporter',
+41 verbose rebuildBundles   'karma-phantomjs-launcher',
+41 verbose rebuildBundles   'node-notifier',
+41 verbose rebuildBundles   'phantomjs',
+41 verbose rebuildBundles   'require-dir',
+41 verbose rebuildBundles   'run-sequence',
+41 verbose rebuildBundles   'vinyl-paths' ]
+42 info install angular-cakephp-dev-v1@1.0.0
+43 info postinstall angular-cakephp-dev-v1@1.0.0
+44 verbose unsafe-perm in lifecycle true
+45 info angular-cakephp-dev-v1@1.0.0 Failed to exec postinstall script
+46 verbose stack Error: angular-cakephp-dev-v1@1.0.0 postinstall: `jspm install`
+46 verbose stack Exit status 1
+46 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:213:16)
+46 verbose stack     at EventEmitter.emit (events.js:110:17)
+46 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/spawn.js:14:12)
+46 verbose stack     at ChildProcess.emit (events.js:110:17)
+46 verbose stack     at maybeClose (child_process.js:1015:16)
+46 verbose stack     at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+47 verbose pkgid angular-cakephp-dev-v1@1.0.0
+48 verbose cwd /var/www/html/angular-cakephp/dev/v1
+49 error Linux 3.13.0-48-generic
+50 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install"
+51 error node v0.12.2
+52 error npm  v2.7.4
+53 error code ELIFECYCLE
+54 error angular-cakephp-dev-v1@1.0.0 postinstall: `jspm install`
+54 error Exit status 1
+55 error Failed at the angular-cakephp-dev-v1@1.0.0 postinstall script 'jspm install'.
+55 error This is most likely a problem with the angular-cakephp-dev-v1 package,
+55 error not with npm itself.
+55 error Tell the author that this fails on your system:
+55 error     jspm install
+55 error You can get their info via:
+55 error     npm owner ls angular-cakephp-dev-v1
+55 error There is likely additional logging output above.
+56 verbose exit [ 1, true ]

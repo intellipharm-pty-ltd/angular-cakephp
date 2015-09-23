@@ -1,7 +1,7 @@
 {
-  "name": "angular-cakephp",
+  "name": "angular-cakephp-dev-v1",
   "version": "1.0.0",
-  "main": "dist/angular-cakephp.js",
+  "main": "dist/index.html",
   "scripts": {
     "postinstall": "jspm install"
   },
@@ -9,28 +9,19 @@
     "node": ">=0.10.0"
   },
   "dependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/Intellipharm/angular-cakephp.git"
-  },
   "devDependencies": {
+    "browser-sync": "^2.9.3",
     "del": "^2.0.2",
-    "glob": "~5.0.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.2.1",
     "gulp-changed": "^1.3.0",
-    "gulp-jscs": "^2.0.0",
-    "gulp-jshint": "^1.11.2",
+    "phantomjs": "^1.9.18",
     "gulp-karma": "0.0.4",
     "gulp-ng-annotate": "^1.1.0",
     "gulp-plumber": "^1.0.1",
     "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^1.5.2",
-    "gulp-uglify": "^1.4.1",
     "gulp-util": "^3.0.6",
-    "istanbul": "~0.3.13",
     "jasmine-core": "~2.3.0",
-    "jshint-stylish": "~2.0.0",
     "jspm": "^0.16.2",
     "karma": "~0.12.0",
     "karma-babel-preprocessor": "^5.2.2",
@@ -40,16 +31,17 @@
     "karma-mocha-reporter": "^1.1.1",
     "karma-phantomjs-launcher": "^0.2.1",
     "node-notifier": "^4.2.3",
-    "phantomjs": "^1.9.18",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.2",
     "vinyl-paths": "^2.0.0"
   },
   "jspm": {
-    "configFile": "jspm-config.js",
     "directories": {},
+    "configFile": "jspm-config.js",
     "dependencies": {
       "angular": "github:angular/bower-angular@^1.4.5",
+      "blakeembrey/pluralize": "github:blakeembrey/pluralize@^1.2.1",
+      "intellipharm/angular-cakephp": "github:intellipharm/angular-cakephp@^0.5.1",
       "lodash": "npm:lodash@^3.10.1"
     },
     "devDependencies": {

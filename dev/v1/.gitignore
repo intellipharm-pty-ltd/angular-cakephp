@@ -12,5 +12,6 @@ dist/
 
 # misc
 coverage
-tests/coverage
-_local
+
+# security
+src/app/credentials.json

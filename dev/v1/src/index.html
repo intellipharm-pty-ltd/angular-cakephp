@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" data-framework="angularjs">
+<head>
+	<meta charset="utf-8" />
+
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="apple-mobile-web-app-title" content="LoyaltyOne" />
+
+	<title>Example V1</title>
+
+	<base href="../" />
+</head>
+<body ng-controller="AppController as App">
+
+	<header class="header">
+	    <h1>{{App.title}}</h1>
+	</header>
+
+	<button type="button" name="button" ng-click="App.showcaseAccessToken()">Showcase Access Token</button>
+	<button type="button" name="button" ng-click="App.showcaseEnumerations()">Showcase Enumerations</button>
+	<button type="button" name="button" ng-click="App.showcaseValidationValid()">Showcase Validation (VALID)</button>
+	<button type="button" name="button" ng-click="App.showcaseValidationInvalid()">Showcase Validation (INVALID)</button>
+	<button type="button" name="button" ng-click="App.showcaseNew()">Showcase New</button>
+	<button type="button" name="button" ng-click="App.showcaseIndex()">Showcase Index</button>
+	<button type="button" name="button" ng-click="App.showcaseIndexTransform()">Showcase Index (transformer)</button>
+	<button type="button" name="button" ng-click="App.showcaseView()">Showcase View</button>
+	<button type="button" name="button" ng-click="App.showcaseViewTransform()">Showcase View (transformer)</button>
+	<button type="button" name="button" ng-click="App.showcaseAdd()">Showcase Add</button>
+	<button type="button" name="button" ng-click="App.showcaseEdit()">Showcase Edit</button>
+	<button type="button" name="button" ng-click="App.showcaseDelete()">Showcase Delete</button>
+	<button type="button" name="button" ng-click="App.showcaseARView()">Showcase AR View</button>
+	<button type="button" name="button" ng-click="App.showcaseARSave()">Showcase AR Save</button>
+	<button type="button" name="button" ng-click="App.showcaseARDelete()">Showcase AR Delete</button>
+
+	<script type="text/javascript" src="jspm_packages/system.js"></script>
+	<script type="text/javascript" src="jspm-config.js"></script>
+
+	<script type="text/javascript">
+		System.import('app/app');
+	</script>
+</body>
+</html>
