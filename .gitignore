@@ -3,9 +3,6 @@ node_modules
 bower_components
 jspm_packages
 
-# project
-dist/
-
 # IDE
 .idea
 .DS_STORE
