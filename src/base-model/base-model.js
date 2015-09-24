@@ -118,7 +118,7 @@ class BaseModel {
         if ( !_.isNull( active_record_class ) ) {
             this.activeRecordClass = active_record_class;
         }
-        
+
         return RestApi.edit( id, config, data, this.activeRecordClass );
     }
 

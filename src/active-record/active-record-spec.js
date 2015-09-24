@@ -1,4 +1,10 @@
-import { ActiveRecord, BaseModel } from '../angular-cakephp';
+import { ActiveRecord, BaseModel, RestApi } from '../angular-cakephp';
+
+var http_mock = () => {
+    return new Promise( ( resolve, reject ) => {
+        resolve( {} );
+    } );
+};
 
 describe( "ActiveRecord", () => {
 
@@ -226,5 +232,39 @@ describe( "ActiveRecord", () => {
             method: "GET",
             sub_path: "enumeration"
         } );
+    });
+
+    //---------------------------------------------------
+    // validate
+    //---------------------------------------------------
+
+    it("validate should call http correctly", () => {
+
+        RestApi.http = http_mock;
+        RestApi.hostname = "myhost/";
+        RestApi.pathGenerator = ( ar ) => {
+            return ar + "s";
+        };
+
+        // prepare
+        class Member extends ActiveRecord {
+            validate() {
+                let request_config = {
+                    method: "GET",
+                    sub_path: "validation"
+                };
+                return this.model.request( request_config, this );
+            }
+        }
+        let me = new Member();
+
+        // spy
+        spyOn(RestApi, 'http').and.returnValue( http_mock() );
+
+        // call
+        me.validate();
+
+        // assert
+        expect( RestApi.http ).toHaveBeenCalledWith( { method: 'GET', url: 'myhost/members/validation' } );
     });
 });

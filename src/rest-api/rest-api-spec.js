@@ -19,7 +19,7 @@ describe( "RestApi", () => {
     it("RestApi.path should be the result of RestApi.pathGenerator (which is passed the _.snakeCase of active_record_class name)", () => {
 
         // prepare
-        class AR {}
+        class AR extends ActiveRecord {}
         RestApi._active_record_class = AR;
         RestApi.pathGenerator = ( active_record_class_name ) => {
             return active_record_class_name;

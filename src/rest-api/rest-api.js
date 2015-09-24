@@ -81,7 +81,8 @@ class RestApi {
      */
     static get path() {
         if ( _.isNull( this._path ) && !_.isNull( this.pathGenerator ) && !_.isNull( this.activeRecordClass ) ) {
-            this.path = this.pathGenerator( _.snakeCase( this.activeRecordClass.name ) );
+            let _name = !_.isUndefined( this.activeRecordClass.name ) ? this.activeRecordClass.name : this.activeRecordClass.constructor.name;
+            this.path = this.pathGenerator( _.snakeCase( _name ) );
         }
         return this._path;
     }
