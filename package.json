@@ -47,7 +47,6 @@
   },
   "jspm": {
     "configFile": "jspm-config.js",
-    "directories": {},
     "dependencies": {
       "angular": "github:angular/bower-angular@^1.4.5",
       "lodash": "npm:lodash@^3.10.1"

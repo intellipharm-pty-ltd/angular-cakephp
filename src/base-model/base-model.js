@@ -154,11 +154,11 @@ class BaseModel {
      */
     static request( config = {}, active_record_class = null ) {
 
-        if ( _.isNull( active_record_class ) ) {
-            active_record_class = this.activeRecordClass;
+        if ( !_.isNull( active_record_class ) ) {
+            this.activeRecordClass = active_record_class;
         }
 
-        return RestApi.request( config, active_record_class );
+        return RestApi.request( config, this.activeRecordClass );
     }
 
     /**

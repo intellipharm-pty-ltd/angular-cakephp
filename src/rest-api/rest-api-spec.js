@@ -121,32 +121,6 @@ describe( "RestApi", () => {
         expect( RestApi.activeRecordClass ).toEqual( "BBB" );
     });
 
-    it("RestApi.request should set RestApi.responseTransformer if a value is provided", () => {
-
-        // prepare
-        RestApi.http = http_mock;
-        RestApi.url = "AAA";
-
-        // call
-        RestApi.request( {}, null, "BBB" );
-
-        // assert
-        expect( RestApi.responseTransformer ).toEqual( "BBB" );
-    });
-
-    it("RestApi.request should set RestApi.errorHandler if a value is provided", () => {
-
-        // prepare
-        RestApi.http = http_mock;
-        RestApi.url = "AAA";
-
-        // call
-        RestApi.request( {}, null, null, "BBB" );
-
-        // assert
-        expect( RestApi.errorHandler ).toEqual( "BBB" );
-    });
-
     it("RestApi.request should set RestApi.hostname if a value is provided", () => {
 
         // prepare
@@ -277,10 +251,87 @@ describe( "RestApi", () => {
     });
 
     // ASYNC test
+    it("RestApi.request should (on pass) call response handler (if provided) with http result", ( done ) => {
+
+        // spy
+        let responseHandler = jasmine.createSpy('responseHandler').and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                resolve( "AAA" );
+            } )
+        );
+
+        // prepare
+        RestApi.http = () => {
+            return new Promise( ( resolve, reject ) => {
+                resolve( "AAA" );
+            } );
+        };
+        RestApi.activeRecordClass = "BBB";
+        RestApi.url = "CCC";
+
+        // prepare assert
+        let assert = ( state, response ) => {
+            expect( state ).toEqual( "PASS" );
+            expect( responseHandler ).toHaveBeenCalledWith( "AAA" );
+            done();
+        };
+
+        // call
+        RestApi.request( {responseHandler: responseHandler} ).then(
+            ( response ) => { assert( "PASS", response ); },
+            ( response ) => { assert( "FAIL", response ); }
+        );
+    });
+
+    // ASYNC test
+    it("RestApi.request should (on pass) call response handler (if provided) not the global response handler", ( done ) => {
+
+        // spy
+        let responseHandler = jasmine.createSpy('responseHandler').and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                resolve( "AAA" );
+            } )
+        );
+        let responseHandlerGlobal = jasmine.createSpy('responseHandler').and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                resolve( "AAA" );
+            } )
+        );
+
+        // prepare
+        RestApi.http = () => {
+            return new Promise( ( resolve, reject ) => {
+                resolve( "AAA" );
+            } );
+        };
+        RestApi.activeRecordClass = "BBB";
+        RestApi.url = "CCC";
+        RestApi.responseHandler = responseHandlerGlobal;
+
+        // prepare assert
+        let assert = ( state, response ) => {
+            expect( state ).toEqual( "PASS" );
+            expect( responseHandler ).toHaveBeenCalledWith( "AAA" );
+            expect( responseHandlerGlobal ).not.toHaveBeenCalled( );
+            done();
+        };
+
+        // call
+        RestApi.request( {responseHandler: responseHandler} ).then(
+            ( response ) => { assert( "PASS", response ); },
+            ( response ) => { assert( "FAIL", response ); }
+        );
+    });
+
+    // ASYNC test
     it("RestApi.request should (on pass) call response transformer (if provided) with http result & active record class", ( done ) => {
 
         // spy
-        let responseTransformer = jasmine.createSpy('responseTransformer');
+        let responseTransformer = jasmine.createSpy('responseTransformer').and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                resolve( "AAA" );
+            } )
+        );
 
         // prepare
         RestApi.http = () => {
@@ -299,7 +350,47 @@ describe( "RestApi", () => {
         };
 
         // call
-        RestApi.request( {}, null, responseTransformer ).then(
+        RestApi.request( {responseTransformer: responseTransformer} ).then(
+            ( response ) => { assert( "PASS", response ); },
+            ( response ) => { assert( "FAIL", response ); }
+        );
+    });
+
+    // ASYNC test
+    it("RestApi.request should (on pass) call response transformer (if provided) not the global response transformer", ( done ) => {
+
+        // spy
+        let responseTransformer = jasmine.createSpy('responseTransformer').and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                resolve( "AAA" );
+            } )
+        );
+        let responseTransformerGlobal = jasmine.createSpy('responseTransformer').and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                resolve( "AAA" );
+            } )
+        );
+
+        // prepare
+        RestApi.http = () => {
+            return new Promise( ( resolve, reject ) => {
+                resolve( "AAA" );
+            } );
+        };
+        RestApi.activeRecordClass = "BBB";
+        RestApi.url = "CCC";
+        RestApi.responseTransformer = responseTransformerGlobal;
+
+        // prepare assert
+        let assert = ( state, response ) => {
+            expect( state ).toEqual( "PASS" );
+            expect( responseTransformer ).toHaveBeenCalledWith( "AAA", "BBB" );
+            expect( responseTransformerGlobal ).not.toHaveBeenCalled( );
+            done();
+        };
+
+        // call
+        RestApi.request( {responseTransformer: responseTransformer} ).then(
             ( response ) => { assert( "PASS", response ); },
             ( response ) => { assert( "FAIL", response ); }
         );
@@ -309,7 +400,11 @@ describe( "RestApi", () => {
     it("RestApi.request should call error handler with http result (on fail) if provided", ( done ) => {
 
         // spy
-        let errorHandler = jasmine.createSpy('errorHandler');
+        let errorHandler = jasmine.createSpy('errorHandler').and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                reject( "AAA" );
+            } )
+        );
 
         // prepare
         RestApi.http = () => {
@@ -327,7 +422,46 @@ describe( "RestApi", () => {
         };
 
         // call
-        RestApi.request( {}, null, null, errorHandler ).then(
+        RestApi.request( {errorHandler: errorHandler} ).then(
+            ( response ) => { assert( "PASS", response ); },
+            ( response ) => { assert( "FAIL", response ); }
+        );
+    });
+
+    // ASYNC test
+    it("RestApi.request should (on pass) call error handler (if provided) not the global error handler", ( done ) => {
+
+        // spy
+        let errorHandler = jasmine.createSpy('errorHandler').and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                reject( "AAA" );
+            } )
+        );
+        let errorHandlerGlobal = jasmine.createSpy('errorHandlerGlobal').and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                reject( "AAA" );
+            } )
+        );
+
+        // prepare
+        RestApi.http = () => {
+            return new Promise( ( resolve, reject ) => {
+                reject( "AAA" );
+            } );
+        };
+        RestApi.url = "BBB";
+        RestApi.errorHandler = errorHandlerGlobal;
+
+        // prepare assert
+        let assert = ( state, response ) => {
+            expect( state ).toEqual( "FAIL" );
+            expect( errorHandler ).toHaveBeenCalledWith( "AAA" );
+            expect( errorHandlerGlobal ).not.toHaveBeenCalled( );
+            done();
+        };
+
+        // call
+        RestApi.request( {errorHandler: errorHandler} ).then(
             ( response ) => { assert( "PASS", response ); },
             ( response ) => { assert( "FAIL", response ); }
         );
