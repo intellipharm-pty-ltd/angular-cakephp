@@ -213,27 +213,22 @@ System.register(["lodash"], function (_export) {
                 }, {
                     key: "request",
                     value: function request() {
-                        var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-                        var active_record_class = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-
                         var _this = this;
 
-                        var response_transformer = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
-                        var error_handler = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+                        var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+                        var active_record_class = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
                         if (_.isNull(this.http)) {
                             throw new Error(MESSAGE_HTTP_REQUIRED);
                         }
 
+                        // update params
+
+                        var response_handler = _.has(config, 'responseHandler') ? config.responseHandler : this.responseHandler;
+                        var response_transformer = _.has(config, 'responseTransformer') ? config.responseTransformer : this.responseTransformer;
+                        var error_handler = _.has(config, 'errorHandler') ? config.errorHandler : this.errorHandler;
+
                         // update class properties
-
-                        if (!_.isNull(response_transformer)) {
-                            this.responseTransformer = response_transformer;
-                        }
-
-                        if (!_.isNull(error_handler)) {
-                            this.errorHandler = error_handler;
-                        }
 
                         if (!_.isNull(active_record_class)) {
                             this.activeRecordClass = active_record_class;
@@ -284,25 +279,23 @@ System.register(["lodash"], function (_export) {
 
                             _promise.then(function (response) {
 
-                                // response transformer
+                                var transformed_response = response;
 
-                                var _response_transformer = _this.responseTransformer;
+                                if (!_.isNull(response_transformer) && typeof response_transformer === 'function') {
+                                    transformed_response = response_transformer(response, _this.activeRecordClass);
+                                }
 
-                                if (!_.isNull(_response_transformer) && typeof _response_transformer === 'function') {
-                                    resolve(_response_transformer(response, _this.activeRecordClass));
+                                if (!_.isNull(response_handler) && typeof response_handler === 'function') {
+                                    response_handler(transformed_response).then(resolve, reject);
                                     return;
                                 }
 
-                                // no response transformer
-                                resolve(response);
+                                resolve(transformed_response);
+                                return;
                             }, function (response) {
 
-                                // error handler
-
-                                var _error_handler = _this.errorHandler;
-
-                                if (!_.isNull(_error_handler) && typeof _error_handler === 'function') {
-                                    reject(_error_handler(response));
+                                if (!_.isNull(error_handler) && typeof error_handler === 'function') {
+                                    error_handler(response).then(resolve, reject);
                                     return;
                                 }
 
@@ -328,6 +321,7 @@ System.register(["lodash"], function (_export) {
                         this._path = null;
                         this._path_generator = null;
                         this._param_serializer = null;
+                        this._response_handler = null;
                         this._response_transformer = null;
                         this._url = null;
                     }
@@ -417,7 +411,8 @@ System.register(["lodash"], function (_export) {
                     key: "path",
                     get: function get() {
                         if (_.isNull(this._path) && !_.isNull(this.pathGenerator) && !_.isNull(this.activeRecordClass)) {
-                            this.path = this.pathGenerator(_.snakeCase(this.activeRecordClass.name));
+                            var _name = !_.isUndefined(this.activeRecordClass.name) ? this.activeRecordClass.name : this.activeRecordClass.constructor.name;
+                            this.path = this.pathGenerator(_.snakeCase(_name));
                         }
                         return this._path;
                     },
@@ -437,6 +432,18 @@ System.register(["lodash"], function (_export) {
                     },
                     set: function set(value) {
                         this._path_generator = value;
+                    }
+
+                    /**
+                     * responseHandler
+                     */
+                }, {
+                    key: "responseHandler",
+                    get: function get() {
+                        return this._response_handler;
+                    },
+                    set: function set(value) {
+                        this._response_handler = value;
                     }
 
                     /**

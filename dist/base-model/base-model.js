@@ -150,8 +150,6 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                             this.activeRecordClass = active_record_class;
                         }
 
-                        console.log(_.clone(data, true));
-
                         return RestApi.edit(id, config, data, this.activeRecordClass);
                     }
 
@@ -195,11 +193,11 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                         var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
                         var active_record_class = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
-                        if (_.isNull(active_record_class)) {
-                            active_record_class = this.activeRecordClass;
+                        if (!_.isNull(active_record_class)) {
+                            this.activeRecordClass = active_record_class;
                         }
 
-                        return RestApi.request(config, active_record_class);
+                        return RestApi.request(config, this.activeRecordClass);
                     }
 
                     /**

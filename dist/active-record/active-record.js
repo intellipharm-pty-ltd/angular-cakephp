@@ -87,7 +87,6 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                 }, {
                     key: 'save',
                     value: function save() {
-                        console.log(_.clone(this, true));
 
                         // add (no id)
                         if (!_.has(this, 'id') || _.isUndefined(this.id)) {

@@ -3,7 +3,11 @@ System.register(["../angular-cakephp"], function (_export) {
 
     var ActiveRecord, BaseModel, RestApi, http_mock;
 
+    var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
     function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+    function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
     return {
         setters: [function (_angularCakephp) {
@@ -32,9 +36,17 @@ System.register(["../angular-cakephp"], function (_export) {
 
                     // prepare
 
-                    var AR = function AR() {
-                        _classCallCheck(this, AR);
-                    };
+                    var AR = (function (_ActiveRecord) {
+                        _inherits(AR, _ActiveRecord);
+
+                        function AR() {
+                            _classCallCheck(this, AR);
+
+                            _get(Object.getPrototypeOf(AR.prototype), "constructor", this).apply(this, arguments);
+                        }
+
+                        return AR;
+                    })(ActiveRecord);
 
                     RestApi._active_record_class = AR;
                     RestApi.pathGenerator = function (active_record_class_name) {
@@ -135,32 +147,6 @@ System.register(["../angular-cakephp"], function (_export) {
 
                     // assert
                     expect(RestApi.activeRecordClass).toEqual("BBB");
-                });
-
-                it("RestApi.request should set RestApi.responseTransformer if a value is provided", function () {
-
-                    // prepare
-                    RestApi.http = http_mock;
-                    RestApi.url = "AAA";
-
-                    // call
-                    RestApi.request({}, null, "BBB");
-
-                    // assert
-                    expect(RestApi.responseTransformer).toEqual("BBB");
-                });
-
-                it("RestApi.request should set RestApi.errorHandler if a value is provided", function () {
-
-                    // prepare
-                    RestApi.http = http_mock;
-                    RestApi.url = "AAA";
-
-                    // call
-                    RestApi.request({}, null, null, "BBB");
-
-                    // assert
-                    expect(RestApi.errorHandler).toEqual("BBB");
                 });
 
                 it("RestApi.request should set RestApi.hostname if a value is provided", function () {
@@ -293,10 +279,81 @@ System.register(["../angular-cakephp"], function (_export) {
                 });
 
                 // ASYNC test
+                it("RestApi.request should (on pass) call response handler (if provided) with http result", function (done) {
+
+                    // spy
+                    var responseHandler = jasmine.createSpy('responseHandler').and.returnValue(new Promise(function (resolve, reject) {
+                        resolve("AAA");
+                    }));
+
+                    // prepare
+                    RestApi.http = function () {
+                        return new Promise(function (resolve, reject) {
+                            resolve("AAA");
+                        });
+                    };
+                    RestApi.activeRecordClass = "BBB";
+                    RestApi.url = "CCC";
+
+                    // prepare assert
+                    var assert = function assert(state, response) {
+                        expect(state).toEqual("PASS");
+                        expect(responseHandler).toHaveBeenCalledWith("AAA");
+                        done();
+                    };
+
+                    // call
+                    RestApi.request({ responseHandler: responseHandler }).then(function (response) {
+                        assert("PASS", response);
+                    }, function (response) {
+                        assert("FAIL", response);
+                    });
+                });
+
+                // ASYNC test
+                it("RestApi.request should (on pass) call response handler (if provided) not the global response handler", function (done) {
+
+                    // spy
+                    var responseHandler = jasmine.createSpy('responseHandler').and.returnValue(new Promise(function (resolve, reject) {
+                        resolve("AAA");
+                    }));
+                    var responseHandlerGlobal = jasmine.createSpy('responseHandler').and.returnValue(new Promise(function (resolve, reject) {
+                        resolve("AAA");
+                    }));
+
+                    // prepare
+                    RestApi.http = function () {
+                        return new Promise(function (resolve, reject) {
+                            resolve("AAA");
+                        });
+                    };
+                    RestApi.activeRecordClass = "BBB";
+                    RestApi.url = "CCC";
+                    RestApi.responseHandler = responseHandlerGlobal;
+
+                    // prepare assert
+                    var assert = function assert(state, response) {
+                        expect(state).toEqual("PASS");
+                        expect(responseHandler).toHaveBeenCalledWith("AAA");
+                        expect(responseHandlerGlobal).not.toHaveBeenCalled();
+                        done();
+                    };
+
+                    // call
+                    RestApi.request({ responseHandler: responseHandler }).then(function (response) {
+                        assert("PASS", response);
+                    }, function (response) {
+                        assert("FAIL", response);
+                    });
+                });
+
+                // ASYNC test
                 it("RestApi.request should (on pass) call response transformer (if provided) with http result & active record class", function (done) {
 
                     // spy
-                    var responseTransformer = jasmine.createSpy('responseTransformer');
+                    var responseTransformer = jasmine.createSpy('responseTransformer').and.returnValue(new Promise(function (resolve, reject) {
+                        resolve("AAA");
+                    }));
 
                     // prepare
                     RestApi.http = function () {
@@ -315,7 +372,44 @@ System.register(["../angular-cakephp"], function (_export) {
                     };
 
                     // call
-                    RestApi.request({}, null, responseTransformer).then(function (response) {
+                    RestApi.request({ responseTransformer: responseTransformer }).then(function (response) {
+                        assert("PASS", response);
+                    }, function (response) {
+                        assert("FAIL", response);
+                    });
+                });
+
+                // ASYNC test
+                it("RestApi.request should (on pass) call response transformer (if provided) not the global response transformer", function (done) {
+
+                    // spy
+                    var responseTransformer = jasmine.createSpy('responseTransformer').and.returnValue(new Promise(function (resolve, reject) {
+                        resolve("AAA");
+                    }));
+                    var responseTransformerGlobal = jasmine.createSpy('responseTransformer').and.returnValue(new Promise(function (resolve, reject) {
+                        resolve("AAA");
+                    }));
+
+                    // prepare
+                    RestApi.http = function () {
+                        return new Promise(function (resolve, reject) {
+                            resolve("AAA");
+                        });
+                    };
+                    RestApi.activeRecordClass = "BBB";
+                    RestApi.url = "CCC";
+                    RestApi.responseTransformer = responseTransformerGlobal;
+
+                    // prepare assert
+                    var assert = function assert(state, response) {
+                        expect(state).toEqual("PASS");
+                        expect(responseTransformer).toHaveBeenCalledWith("AAA", "BBB");
+                        expect(responseTransformerGlobal).not.toHaveBeenCalled();
+                        done();
+                    };
+
+                    // call
+                    RestApi.request({ responseTransformer: responseTransformer }).then(function (response) {
                         assert("PASS", response);
                     }, function (response) {
                         assert("FAIL", response);
@@ -326,7 +420,9 @@ System.register(["../angular-cakephp"], function (_export) {
                 it("RestApi.request should call error handler with http result (on fail) if provided", function (done) {
 
                     // spy
-                    var errorHandler = jasmine.createSpy('errorHandler');
+                    var errorHandler = jasmine.createSpy('errorHandler').and.returnValue(new Promise(function (resolve, reject) {
+                        reject("AAA");
+                    }));
 
                     // prepare
                     RestApi.http = function () {
@@ -344,7 +440,43 @@ System.register(["../angular-cakephp"], function (_export) {
                     };
 
                     // call
-                    RestApi.request({}, null, null, errorHandler).then(function (response) {
+                    RestApi.request({ errorHandler: errorHandler }).then(function (response) {
+                        assert("PASS", response);
+                    }, function (response) {
+                        assert("FAIL", response);
+                    });
+                });
+
+                // ASYNC test
+                it("RestApi.request should (on pass) call error handler (if provided) not the global error handler", function (done) {
+
+                    // spy
+                    var errorHandler = jasmine.createSpy('errorHandler').and.returnValue(new Promise(function (resolve, reject) {
+                        reject("AAA");
+                    }));
+                    var errorHandlerGlobal = jasmine.createSpy('errorHandlerGlobal').and.returnValue(new Promise(function (resolve, reject) {
+                        reject("AAA");
+                    }));
+
+                    // prepare
+                    RestApi.http = function () {
+                        return new Promise(function (resolve, reject) {
+                            reject("AAA");
+                        });
+                    };
+                    RestApi.url = "BBB";
+                    RestApi.errorHandler = errorHandlerGlobal;
+
+                    // prepare assert
+                    var assert = function assert(state, response) {
+                        expect(state).toEqual("FAIL");
+                        expect(errorHandler).toHaveBeenCalledWith("AAA");
+                        expect(errorHandlerGlobal).not.toHaveBeenCalled();
+                        done();
+                    };
+
+                    // call
+                    RestApi.request({ errorHandler: errorHandler }).then(function (response) {
                         assert("PASS", response);
                     }, function (response) {
                         assert("FAIL", response);
