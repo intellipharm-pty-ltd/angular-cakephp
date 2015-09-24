@@ -224,9 +224,41 @@ System.register(["lodash"], function (_export) {
 
                         // update params
 
-                        var response_handler = _.has(config, 'responseHandler') ? config.responseHandler : this.responseHandler;
-                        var response_transformer = _.has(config, 'responseTransformer') ? config.responseTransformer : this.responseTransformer;
-                        var error_handler = _.has(config, 'errorHandler') ? config.errorHandler : this.errorHandler;
+                        var response_handler = this.responseHandler;
+                        if (_.has(config, 'responseHandler')) {
+                            response_handler = config.responseHandler;
+                            delete config.responseHandler;
+                        }
+
+                        var response_transformer = this.responseTransformer;
+                        if (_.has(config, 'responseTransformer')) {
+                            response_transformer = config.responseTransformer;
+                            delete config.responseTransformer;
+                        }
+
+                        var success_handler = this.successHandler || response_handler;
+                        if (_.has(config, 'successHandler')) {
+                            success_handler = config.successHandler;
+                            delete config.successHandler;
+                        }
+
+                        var success_transformer = this.successTransformer || response_transformer;
+                        if (_.has(config, 'successTransformer')) {
+                            success_transformer = config.successTransformer;
+                            delete config.successTransformer;
+                        }
+
+                        var error_handler = this.errorHandler || response_handler;
+                        if (_.has(config, 'errorHandler')) {
+                            error_handler = config.errorHandler;
+                            delete config.errorHandler;
+                        }
+
+                        var error_transformer = this.errorTransformer || response_transformer;
+                        if (_.has(config, 'errorTransformer')) {
+                            error_transformer = config.errorTransformer;
+                            delete config.errorTransformer;
+                        }
 
                         // update class properties
 
@@ -281,26 +313,32 @@ System.register(["lodash"], function (_export) {
 
                                 var transformed_response = response;
 
-                                if (!_.isNull(response_transformer) && typeof response_transformer === 'function') {
-                                    transformed_response = response_transformer(response, _this.activeRecordClass);
+                                if (!_.isNull(success_transformer) && typeof success_transformer === 'function') {
+                                    transformed_response = success_transformer(response, _this.activeRecordClass);
                                 }
 
-                                if (!_.isNull(response_handler) && typeof response_handler === 'function') {
-                                    response_handler(transformed_response).then(resolve, reject);
+                                if (!_.isNull(success_handler) && typeof success_handler === 'function') {
+                                    success_handler(transformed_response).then(resolve, reject);
                                     return;
                                 }
 
+                                // no success handler
                                 resolve(transformed_response);
-                                return;
                             }, function (response) {
 
+                                var transformed_response = response;
+
+                                if (!_.isNull(error_transformer) && typeof error_transformer === 'function') {
+                                    transformed_response = error_transformer(response, _this.activeRecordClass);
+                                }
+
                                 if (!_.isNull(error_handler) && typeof error_handler === 'function') {
-                                    error_handler(response).then(resolve, reject);
+                                    error_handler(transformed_response).then(resolve, reject);
                                     return;
                                 }
 
                                 // no error handler
-                                reject(response);
+                                reject(transformed_response);
                             });
                         });
                     }
@@ -315,6 +353,7 @@ System.register(["lodash"], function (_export) {
                         // defaults
                         this._active_record_class = null;
                         this._error_handler = null;
+                        this._error_transformer = null;
                         this._headers = {};
                         this._hostname = null;
                         this._http = null;
@@ -323,6 +362,8 @@ System.register(["lodash"], function (_export) {
                         this._param_serializer = null;
                         this._response_handler = null;
                         this._response_transformer = null;
+                        this._success_handler = null;
+                        this._success_transformer = null;
                         this._url = null;
                     }
                 }, {
@@ -348,6 +389,18 @@ System.register(["lodash"], function (_export) {
                     },
                     set: function set(value) {
                         this._error_handler = value;
+                    }
+
+                    /**
+                     * errorTransformer
+                     */
+                }, {
+                    key: "errorTransformer",
+                    get: function get() {
+                        return this._error_transformer;
+                    },
+                    set: function set(value) {
+                        this._error_transformer = value;
                     }
 
                     /**
@@ -456,6 +509,30 @@ System.register(["lodash"], function (_export) {
                     },
                     set: function set(value) {
                         this._response_transformer = value;
+                    }
+
+                    /**
+                     * successHandler
+                     */
+                }, {
+                    key: "successHandler",
+                    get: function get() {
+                        return this._success_handler;
+                    },
+                    set: function set(value) {
+                        this._success_handler = value;
+                    }
+
+                    /**
+                     * successTransformer
+                     */
+                }, {
+                    key: "successTransformer",
+                    get: function get() {
+                        return this._success_transformer;
+                    },
+                    set: function set(value) {
+                        this._success_transformer = value;
                     }
 
                     /**
