@@ -23,12 +23,12 @@ class BaseModel {
     /**
      * new
      *
-     * @param  {ActiveRecord Class} active_record_class = null
+     * @param  {ActiveRecord Class} active_record_class
      * @param  {Object} data = {}
      * @param  {Boolean} map_data = null
      * @return {Promise}
      */
-    static new( data = {}, active_record_class = null, map_data = null ) {
+    static new( active_record_class, data = {}, map_data = null ) {
 
         if ( !_.isNull( active_record_class ) ) {
             this.activeRecordClass = active_record_class;
@@ -44,27 +44,27 @@ class BaseModel {
     /**
      * index
      *
+     * @param  {Class} active_record_class
      * @param  {Object} config = {}
-     * @param  {Class} active_record_class = null
      * @return {Promise}
      */
-    static index( config = {}, active_record_class = null ) {
+    static index( active_record_class, config = {} ) {
 
         if ( !_.isNull( active_record_class ) ) {
             this.activeRecordClass = active_record_class;
         }
 
-        return RestApi.index( config, this.activeRecordClass );
+        return RestApi.index( this.activeRecordClass, config );
     }
 
     /**
      * view
+     * @param  {Class} active_record_class
      * @param  {Integer} id
      * @param  {Object} config = {}
-     * @param  {Class} active_record_class = null
      * @return {Promise}
      */
-    static view( id, config = {}, active_record_class = null ) {
+    static view( active_record_class, id, config = {} ) {
 
         if ( _.isUndefined( id ) ) {
             throw new Error( MESSAGE_ID_REQURIED );
@@ -74,17 +74,17 @@ class BaseModel {
             this.activeRecordClass = active_record_class;
         }
 
-        return RestApi.view( id, config, this.activeRecordClass );
+        return RestApi.view( this.activeRecordClass, id, config );
     }
 
     /**
      * add
+     * @param  {Class} active_record_class
      * @param  {Object} data
      * @param  {Object} config = {}
-     * @param  {Class} active_record_class = null
      * @return {Promise}
      */
-    static add( data, config = {}, active_record_class = null ) {
+    static add( active_record_class, data, config = {} ) {
 
         if ( _.isUndefined( data ) ) {
             throw new Error( MESSAGE_DATA_REQURIED );
@@ -94,18 +94,18 @@ class BaseModel {
             this.activeRecordClass = active_record_class;
         }
 
-        return RestApi.add( config, data, this.activeRecordClass );
+        return RestApi.add( this.activeRecordClass, config, data );
     }
 
     /**
      * edit
+     * @param  {Class} active_record_class
      * @param  {Integer} id
      * @param  {Object} data
      * @param  {Object} config = {}
-     * @param  {Class} active_record_class = null
      * @return {Promise}
      */
-    static edit( id, data, config = {}, active_record_class = null ) {
+    static edit( active_record_class, id, data, config = {} ) {
 
         if ( _.isUndefined( id ) ) {
             throw new Error( MESSAGE_ID_REQURIED );
@@ -119,17 +119,17 @@ class BaseModel {
             this.activeRecordClass = active_record_class;
         }
 
-        return RestApi.edit( id, config, data, this.activeRecordClass );
+        return RestApi.edit( this.activeRecordClass, id, config, data );
     }
 
     /**
      * delete
+     * @param  {Class} active_record_class
      * @param  {Integer} id
      * @param  {Object} config = {}
-     * @param  {Class} active_record_class = null
      * @return {Promise}
      */
-    static delete( id, config = {}, active_record_class = null ) {
+    static delete( active_record_class, id, config = {} ) {
 
         if ( _.isUndefined( id ) ) {
             throw new Error( MESSAGE_ID_REQURIED );
@@ -139,26 +139,24 @@ class BaseModel {
             this.activeRecordClass = active_record_class;
         }
 
-        return RestApi.delete( id, config, this.activeRecordClass );
+        return RestApi.delete( this.activeRecordClass, id, config );
     }
 
     /**
      * request
      *
+     * @param  {Function} active_record_class
      * @param  {Object} config
-     * @param  {Function} active_record_class = null
-     * @param  {Function} responseTransformer = null
-     * @param  {Function} errorHandler = null
      * @return {Promise}
      * @throws {Error}
      */
-    static request( config = {}, active_record_class = null ) {
+    static request( active_record_class, config = {} ) {
 
         if ( !_.isNull( active_record_class ) ) {
             this.activeRecordClass = active_record_class;
         }
 
-        return RestApi.request( config, this.activeRecordClass );
+        return RestApi.request( this.activeRecordClass, config );
     }
 
     /**
@@ -167,7 +165,7 @@ class BaseModel {
     static reset() {
 
         // defaults
-        this._active_record_class    = null;
+        this._active_record_class = null;
     }
 }
 

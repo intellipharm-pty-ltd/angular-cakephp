@@ -34,14 +34,13 @@ System.register(["lodash"], function (_export) {
                     /**
                      * index
                      *
+                     * @param  {ActiveRecord Class} active_record_class
                      * @param  {Object} request_config = {}
-                     * @param  {ActiveRecord Class} active_record_class = null
                      * @return {Promise}
                      * @throws {Error}
                      */
-                    value: function index() {
-                        var request_config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-                        var active_record_class = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+                    value: function index(active_record_class) {
+                        var request_config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
                         // update class properties
 
@@ -56,23 +55,22 @@ System.register(["lodash"], function (_export) {
                         request_config.headers = _.has(request_config, 'headers') ? _.merge(request_config.headers, this.headers) : this.headers;
 
                         // request ...
-                        return this.request(request_config);
+                        return this.request(this.activeRecordClass, request_config);
                     }
 
                     /**
                      * view
                      *
+                     * @param  {ActiveRecord Class} active_record_class
                      * @param  {Integer} id
                      * @param  {Object} request_config = {}
-                     * @param  {ActiveRecord Class} active_record_class = null
                      * @return {Promise}
                      * @throws {Error}
                      */
                 }, {
                     key: "view",
-                    value: function view(id) {
-                        var request_config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-                        var active_record_class = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+                    value: function view(active_record_class, id) {
+                        var request_config = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
                         if (_.isNull(id) || _.isUndefined(id)) {
                             throw new Error(MESSAGE_ID_IS_REQURIED);
@@ -91,24 +89,23 @@ System.register(["lodash"], function (_export) {
                         request_config.headers = _.has(request_config, 'headers') ? _.merge(request_config.headers, this.headers) : this.headers;
 
                         // request ...
-                        return this.request(request_config);
+                        return this.request(this.activeRecordClass, request_config);
                     }
 
                     /**
                      * add
                      *
+                     * @param  {ActiveRecord Class} active_record_class
                      * @param  {Object} request_config = {}
                      * @param  {Object} request_data = {}
-                     * @param  {ActiveRecord Class} active_record_class = null
                      * @return {Promise}
                      * @throws {Error}
                      */
                 }, {
                     key: "add",
-                    value: function add() {
-                        var request_config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-                        var request_data = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-                        var active_record_class = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+                    value: function add(active_record_class) {
+                        var request_config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+                        var request_data = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
                         // update class properties
 
@@ -124,25 +121,24 @@ System.register(["lodash"], function (_export) {
                         request_config.headers = _.has(request_config, 'headers') ? _.merge(request_config.headers, this.headers) : this.headers;
 
                         // request ...
-                        return this.request(request_config);
+                        return this.request(this.activeRecordClass, request_config);
                     }
 
                     /**
                      * edit
                      *
+                     * @param  {ActiveRecord Class} active_record_class
                      * @param  {Integer} id
                      * @param  {Object} request_config = {}
                      * @param  {Object} request_data = {}
-                     * @param  {ActiveRecord Class} active_record_class = null
                      * @return {Promise}
                      * @throws {Error}
                      */
                 }, {
                     key: "edit",
-                    value: function edit(id) {
-                        var request_config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-                        var request_data = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-                        var active_record_class = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+                    value: function edit(active_record_class, id) {
+                        var request_config = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+                        var request_data = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
 
                         if (_.isNull(id) || _.isUndefined(id)) {
                             throw new Error(MESSAGE_ID_IS_REQURIED);
@@ -162,23 +158,22 @@ System.register(["lodash"], function (_export) {
                         request_config.headers = _.has(request_config, 'headers') ? _.merge(request_config.headers, this.headers) : this.headers;
 
                         // request ...
-                        return this.request(request_config);
+                        return this.request(this.activeRecordClass, request_config);
                     }
 
                     /**
                      * delete
                      *
+                     * @param  {ActiveRecord Class} active_record_class
                      * @param  {Integer} id
                      * @param  {Object} request_config = {}
-                     * @param  {ActiveRecord Class} active_record_class = null
                      * @return {Promise}
                      * @throws {Error}
                      */
                 }, {
                     key: "delete",
-                    value: function _delete(id) {
-                        var request_config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-                        var active_record_class = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+                    value: function _delete(active_record_class, id) {
+                        var request_config = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
                         if (_.isNull(id) || _.isUndefined(id)) {
                             throw new Error(MESSAGE_ID_IS_REQURIED);
@@ -197,26 +192,23 @@ System.register(["lodash"], function (_export) {
                         request_config.headers = _.has(request_config, 'headers') ? _.merge(request_config.headers, this.headers) : this.headers;
 
                         // request ...
-                        return this.request(request_config);
+                        return this.request(this.activeRecordClass, request_config);
                     }
 
                     /**
                      * request
                      *
+                     * @param  {Function} active_record_class
                      * @param  {Object} config
-                     * @param  {Function} active_record_class = null
-                     * @param  {Function} responseTransformer = null
-                     * @param  {Function} errorHandler = null
                      * @return {Promise}
                      * @throws {Error}
                      */
                 }, {
                     key: "request",
-                    value: function request() {
+                    value: function request(active_record_class) {
                         var _this = this;
 
-                        var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-                        var active_record_class = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+                        var config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
                         if (_.isNull(this.http)) {
                             throw new Error(MESSAGE_HTTP_REQUIRED);
@@ -463,7 +455,7 @@ System.register(["lodash"], function (_export) {
                 }, {
                     key: "path",
                     get: function get() {
-                        if (_.isNull(this._path) && !_.isNull(this.pathGenerator) && !_.isNull(this.activeRecordClass)) {
+                        if (!_.isNull(this.pathGenerator) && !_.isNull(this.activeRecordClass)) {
                             var _name = !_.isUndefined(this.activeRecordClass.name) ? this.activeRecordClass.name : this.activeRecordClass.constructor.name;
                             this.path = this.pathGenerator(_.snakeCase(_name));
                         }
@@ -542,17 +534,19 @@ System.register(["lodash"], function (_export) {
                     key: "url",
                     get: function get() {
 
+                        if (!_.isNull(this._url) && _.isNull(this.activeRecordClass)) {
+                            return this._url;
+                        }
+
                         var hostname = this.hostname;
                         var path = this.path;
 
-                        if (_.isNull(this._url) && (_.isNull(hostname) || _.isNull(path))) {
+                        if (_.isNull(hostname) || _.isNull(path)) {
                             throw new Error(MESSAGE_HOSTNAME_AND_PATH_REQURIED);
                         }
 
                         // create url from hostname and path
-                        if (_.isNull(this._url)) {
-                            this._url = hostname + path;
-                        }
+                        this._url = hostname + path;
 
                         return this._url;
                     },

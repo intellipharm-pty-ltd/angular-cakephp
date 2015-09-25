@@ -140,10 +140,11 @@ System.register(["../angular-cakephp"], function (_export) {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi.url = "AAA";
+                    RestApi.hostname = "AAA";
+                    RestApi.path = "AAA";
 
                     // call
-                    RestApi.request({}, "BBB");
+                    RestApi.request("BBB");
 
                     // assert
                     expect(RestApi.activeRecordClass).toEqual("BBB");
@@ -156,7 +157,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "AAA";
 
                     // call
-                    RestApi.request({ 'hostname': "BBB" });
+                    RestApi.request(null, { 'hostname': "BBB" });
 
                     // assert
                     expect(RestApi.hostname).toEqual("BBB");
@@ -172,7 +173,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "AAA";
 
                     // call
-                    RestApi.request({ 'hostname': "BBB" });
+                    RestApi.request(null, { 'hostname': "BBB" });
 
                     // assert
                     expect(RestApi.http).toHaveBeenCalledWith({ 'url': "AAA" });
@@ -185,7 +186,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "AAA";
 
                     // call
-                    RestApi.request({ 'path': "BBB" });
+                    RestApi.request(null, { 'path': "BBB" });
 
                     // assert
                     expect(RestApi.path).toEqual("BBB");
@@ -201,7 +202,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "AAA";
 
                     // call
-                    RestApi.request({ 'path': "BBB" });
+                    RestApi.request(null, { 'path': "BBB" });
 
                     // assert
                     expect(RestApi.http).toHaveBeenCalledWith({ 'url': "AAA" });
@@ -222,7 +223,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "BBB";
 
                     // call
-                    RestApi.request({ 'a': "A" });
+                    RestApi.request(null, { 'a': "A" });
 
                     // assert
                     expect(RestApi.http).toHaveBeenCalledWith({ 'a': "A", 'paramSerializer': "AAA", 'url': "BBB" });
@@ -239,7 +240,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "BBB";
 
                     // call
-                    RestApi.request({ 'a': "A", 'sub_path': "CCC" });
+                    RestApi.request(null, { 'a': "A", 'sub_path': "CCC" });
 
                     // assert
                     expect(RestApi.http).toHaveBeenCalledWith({ 'a': "A", 'paramSerializer': "AAA", 'url': "BBB/CCC" });
@@ -256,7 +257,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "AAA";
 
                     // call
-                    var p = RestApi.request();
+                    var p = RestApi.request(null);
 
                     // assert
                     expect(p.then).toBeDefined();
@@ -272,7 +273,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "AAA";
 
                     // call
-                    RestApi.request({ 'a': "A" });
+                    RestApi.request(null, { 'a': "A" });
 
                     // assert
                     expect(RestApi.http).toHaveBeenCalledWith({ 'a': "A", 'url': "AAA" });
@@ -301,7 +302,8 @@ System.register(["../angular-cakephp"], function (_export) {
                             });
                         };
                         RestApi.activeRecordClass = "BBB";
-                        RestApi.url = "CCC";
+                        RestApi.hostname = "CCC";
+                        RestApi.path = "CCC";
                         RestApi.successHandler = successHandlerGlobal;
 
                         // prepare assert
@@ -314,7 +316,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         };
 
                         // call
-                        RestApi.request({ successHandler: successHandler, responseHandler: responseHandler }).then(function (response) {
+                        RestApi.request(null, { successHandler: successHandler, responseHandler: responseHandler }).then(function (response) {
                             assert("PASS", response);
                         }, function (response) {
                             assert("FAIL", response);
@@ -342,7 +344,8 @@ System.register(["../angular-cakephp"], function (_export) {
                             });
                         };
                         RestApi.activeRecordClass = "BBB";
-                        RestApi.url = "CCC";
+                        RestApi.hostname = "CCC";
+                        RestApi.path = "CCC";
                         RestApi.successTransformer = successTransformerGlobal;
 
                         // prepare assert
@@ -355,7 +358,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         };
 
                         // call
-                        RestApi.request({ successTransformer: successTransformer, responseTransformer: responseTransformer }).then(function (response) {
+                        RestApi.request(null, { successTransformer: successTransformer, responseTransformer: responseTransformer }).then(function (response) {
                             assert("PASS", response);
                         }, function (response) {
                             assert("FAIL", response);
@@ -386,7 +389,8 @@ System.register(["../angular-cakephp"], function (_export) {
                             });
                         };
                         RestApi.activeRecordClass = "BBB";
-                        RestApi.url = "CCC";
+                        RestApi.hostname = "CCC";
+                        RestApi.path = "CCC";
                         RestApi.errorHandler = errorHandlerGlobal;
 
                         // prepare assert
@@ -399,7 +403,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         };
 
                         // call
-                        RestApi.request({ errorHandler: errorHandler, responseHandler: responseHandler }).then(function (response) {
+                        RestApi.request(null, { errorHandler: errorHandler, responseHandler: responseHandler }).then(function (response) {
                             assert("PASS", response);
                         }, function (response) {
                             assert("FAIL", response);
@@ -427,7 +431,8 @@ System.register(["../angular-cakephp"], function (_export) {
                             });
                         };
                         RestApi.activeRecordClass = "BBB";
-                        RestApi.url = "CCC";
+                        RestApi.hostname = "CCC";
+                        RestApi.path = "CCC";
                         RestApi.errorTransformer = errorTransformerGlobal;
 
                         // prepare assert
@@ -440,7 +445,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         };
 
                         // call
-                        RestApi.request({ errorTransformer: errorTransformer, responseTransformer: responseTransformer }).then(function (response) {
+                        RestApi.request(null, { errorTransformer: errorTransformer, responseTransformer: responseTransformer }).then(function (response) {
                             assert("PASS", response);
                         }, function (response) {
                             assert("FAIL", response);
@@ -468,7 +473,8 @@ System.register(["../angular-cakephp"], function (_export) {
                             });
                         };
                         RestApi.activeRecordClass = "BBB";
-                        RestApi.url = "CCC";
+                        RestApi.hostname = "CCC";
+                        RestApi.path = "CCC";
                         RestApi.responseHandler = responseHandlerGlobal;
 
                         // prepare assert
@@ -480,7 +486,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         };
 
                         // call
-                        RestApi.request({ responseHandler: responseHandler }).then(function (response) {
+                        RestApi.request(null, { responseHandler: responseHandler }).then(function (response) {
                             assert("PASS", response);
                         }, function (response) {
                             assert("FAIL", response);
@@ -505,7 +511,8 @@ System.register(["../angular-cakephp"], function (_export) {
                             });
                         };
                         RestApi.activeRecordClass = "BBB";
-                        RestApi.url = "CCC";
+                        RestApi.hostname = "CCC";
+                        RestApi.path = "CCC";
                         RestApi.responseTransformer = responseTransformerGlobal;
 
                         // prepare assert
@@ -517,7 +524,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         };
 
                         // call
-                        RestApi.request({ responseTransformer: responseTransformer }).then(function (response) {
+                        RestApi.request(null, { responseTransformer: responseTransformer }).then(function (response) {
                             assert("PASS", response);
                         }, function (response) {
                             assert("FAIL", response);
@@ -542,7 +549,8 @@ System.register(["../angular-cakephp"], function (_export) {
                             });
                         };
                         RestApi.activeRecordClass = "BBB";
-                        RestApi.url = "CCC";
+                        RestApi.hostname = "CCC";
+                        RestApi.path = "CCC";
                         RestApi.responseHandler = responseHandlerGlobal;
 
                         // prepare assert
@@ -554,7 +562,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         };
 
                         // call
-                        RestApi.request({ responseHandler: responseHandler }).then(function (response) {
+                        RestApi.request(null, { responseHandler: responseHandler }).then(function (response) {
                             assert("PASS", response);
                         }, function (response) {
                             assert("FAIL", response);
@@ -579,7 +587,8 @@ System.register(["../angular-cakephp"], function (_export) {
                             });
                         };
                         RestApi.activeRecordClass = "BBB";
-                        RestApi.url = "CCC";
+                        RestApi.hostname = "CCC";
+                        RestApi.path = "CCC";
                         RestApi.responseTransformer = responseTransformerGlobal;
 
                         // prepare assert
@@ -591,7 +600,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         };
 
                         // call
-                        RestApi.request({ responseTransformer: responseTransformer }).then(function (response) {
+                        RestApi.request(null, { responseTransformer: responseTransformer }).then(function (response) {
                             assert("PASS", response);
                         }, function (response) {
                             assert("FAIL", response);
@@ -636,10 +645,11 @@ System.register(["../angular-cakephp"], function (_export) {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi.url = "AAA";
+                    RestApi.hostname = "AAA";
+                    RestApi.path = "AAA";
 
                     // call
-                    RestApi.index({}, "BBB");
+                    RestApi.index("BBB");
 
                     // assert
                     expect(RestApi.activeRecordClass).toEqual("BBB");
@@ -659,11 +669,11 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.headers = "BBB";
 
                     // call
-                    RestApi.index({});
+                    RestApi.index(null);
 
                     // assert
                     var _expected = { 'method': "GET", 'url': "AAA", 'headers': "BBB" };
-                    expect(RestApi.request).toHaveBeenCalledWith(_expected);
+                    expect(RestApi.request).toHaveBeenCalledWith(null, _expected);
                 });
 
                 //---------------------------
@@ -677,7 +687,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "AAA";
 
                     // call
-                    var p = RestApi.index({});
+                    var p = RestApi.index(null);
 
                     // assert
                     expect(p.then).toBeDefined();
@@ -723,7 +733,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     // call & assert
 
                     try {
-                        var r = RestApi.view(123);
+                        var r = RestApi.view(null, 123);
                     } catch (error) {
                         var error_message = error.message;
                     }
@@ -741,10 +751,11 @@ System.register(["../angular-cakephp"], function (_export) {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi.url = "AAA";
+                    RestApi.hostname = "AAA";
+                    RestApi.path = "AAA";
 
                     // call
-                    RestApi.view(123, {}, "BBB");
+                    RestApi.view("BBB", 123);
 
                     // assert
                     expect(RestApi.activeRecordClass).toEqual("BBB");
@@ -764,107 +775,11 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.headers = "BBB";
 
                     // call
-                    RestApi.view(123, {});
+                    RestApi.view(null, 123);
 
                     // assert
                     var _expected = { 'method': "GET", 'url': "AAA/123", 'headers': "BBB" };
-                    expect(RestApi.request).toHaveBeenCalledWith(_expected);
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
-                });
-
-                it("description", function () {
-                    expect("A").toEqual("A");
+                    expect(RestApi.request).toHaveBeenCalledWith(null, _expected);
                 });
 
                 //---------------------------
@@ -878,7 +793,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "AAA";
 
                     // call
-                    var p = RestApi.view(123, {});
+                    var p = RestApi.view(null, 123);
 
                     // assert
                     expect(p.then).toBeDefined();
@@ -921,10 +836,11 @@ System.register(["../angular-cakephp"], function (_export) {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi.url = "AAA";
+                    RestApi.hostname = "AAA";
+                    RestApi.path = "AAA";
 
                     // call
-                    RestApi.add({}, {}, "BBB");
+                    RestApi.add("BBB");
 
                     // assert
                     expect(RestApi.activeRecordClass).toEqual("BBB");
@@ -944,11 +860,11 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.headers = "BBB";
 
                     // call
-                    RestApi.add({}, { 'a': "A" });
+                    RestApi.add(null, {}, { 'a': "A" });
 
                     // assert
                     var _expected = { 'method': "POST", 'url': "AAA", 'data': { 'a': "A" }, 'headers': "BBB" };
-                    expect(RestApi.request).toHaveBeenCalledWith(_expected);
+                    expect(RestApi.request).toHaveBeenCalledWith(null, _expected);
                 });
 
                 //---------------------------
@@ -962,7 +878,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "AAA";
 
                     // call
-                    var p = RestApi.add({});
+                    var p = RestApi.add(null);
 
                     // assert
                     expect(p.then).toBeDefined();
@@ -1008,7 +924,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     // call & assert
 
                     try {
-                        var r = RestApi.edit(123);
+                        var r = RestApi.edit(null, 123);
                     } catch (error) {
                         var error_message = error.message;
                     }
@@ -1026,10 +942,11 @@ System.register(["../angular-cakephp"], function (_export) {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi.url = "AAA";
+                    RestApi.hostname = "AAA";
+                    RestApi.path = "AAA";
 
                     // call
-                    RestApi.edit(123, {}, {}, "BBB");
+                    RestApi.edit("BBB", 123);
 
                     // assert
                     expect(RestApi.activeRecordClass).toEqual("BBB");
@@ -1049,11 +966,11 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.headers = "BBB";
 
                     // call
-                    RestApi.edit(123, {}, { 'a': "A" });
+                    RestApi.edit(null, 123, {}, { 'a': "A" });
 
                     // assert
                     var _expected = { 'method': "PUT", 'url': "AAA/123", 'data': { 'a': "A" }, 'headers': "BBB" };
-                    expect(RestApi.request).toHaveBeenCalledWith(_expected);
+                    expect(RestApi.request).toHaveBeenCalledWith(null, _expected);
                 });
 
                 //---------------------------
@@ -1067,7 +984,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.url = "AAA";
 
                     // call
-                    var p = RestApi.edit(123, {});
+                    var p = RestApi.edit(null, 123);
 
                     // assert
                     expect(p.then).toBeDefined();
@@ -1111,7 +1028,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     // call & assert
 
                     try {
-                        var r = RestApi["delete"](123);
+                        var r = RestApi["delete"](null, 123);
                     } catch (error) {
                         var error_message = error.message;
                     }
@@ -1129,10 +1046,11 @@ System.register(["../angular-cakephp"], function (_export) {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi.url = "AAA";
+                    RestApi.hostname = "AAA";
+                    RestApi.path = "AAA";
 
                     // call
-                    RestApi["delete"](123, {}, "BBB");
+                    RestApi["delete"]("BBB", 123);
 
                     // assert
                     expect(RestApi.activeRecordClass).toEqual("BBB");
@@ -1152,25 +1070,25 @@ System.register(["../angular-cakephp"], function (_export) {
                     RestApi.headers = "BBB";
 
                     // call
-                    RestApi["delete"](123, {});
+                    RestApi["delete"](null, 123);
 
                     // assert
                     var _expected = { 'method': "DELETE", 'url': "AAA/123", 'headers': "BBB" };
-                    expect(RestApi.request).toHaveBeenCalledWith(_expected);
+                    expect(RestApi.request).toHaveBeenCalledWith(null, _expected);
                 });
 
                 //---------------------------
                 // Promise
                 //---------------------------
 
-                it("RestApi.edit should return a promise", function () {
+                it("RestApi.delete should return a promise", function () {
 
                     // prepare
                     RestApi.http = http_mock;
                     RestApi.url = "AAA";
 
                     // call
-                    var p = RestApi.edit(123, {});
+                    var p = RestApi["delete"](null, 123);
 
                     // assert
                     expect(p.then).toBeDefined();

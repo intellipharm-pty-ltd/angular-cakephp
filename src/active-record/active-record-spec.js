@@ -126,14 +126,14 @@ describe( "ActiveRecord", () => {
         me.view();
 
         // assert
-        expect( me.model.view ).toHaveBeenCalledWith( 123, me );
+        expect( me.model.view ).toHaveBeenCalledWith( me, 123 );
     });
 
     //---------------------------------------------------
     // save
     //---------------------------------------------------
 
-    it("view should call model.add if no id is set", () => {
+    it("save should call model.add if no id is set", () => {
 
         // prepare
         class Member extends ActiveRecord {}
@@ -146,10 +146,10 @@ describe( "ActiveRecord", () => {
         me.save();
 
         // assert
-        expect( me.model.add ).toHaveBeenCalledWith( me );
+        expect( me.model.add ).toHaveBeenCalledWith( me, me );
     });
 
-    it("view should call model.edit if id is set", () => {
+    it("save should call model.edit if id is set", () => {
 
         // prepare
         class Member extends ActiveRecord {}
@@ -163,14 +163,14 @@ describe( "ActiveRecord", () => {
         me.save();
 
         // assert
-        expect( me.model.edit ).toHaveBeenCalledWith( 123, me );
+        expect( me.model.edit ).toHaveBeenCalledWith( me, 123, me );
     });
 
     //---------------------------------------------------
     // delete
     //---------------------------------------------------
 
-    it("view should throw an error if id is not set", () => {
+    it("delete should throw an error if id is not set", () => {
 
         // prepare
         class Member extends ActiveRecord {}
@@ -186,7 +186,7 @@ describe( "ActiveRecord", () => {
         expect( error_message ).toEqual( ActiveRecord.MESSAGE_DELETE_ERROR_NO_ID );
     });
 
-    it("view should call model.delete", () => {
+    it("delete should call model.delete", () => {
 
         // prepare
         class Member extends ActiveRecord {}
@@ -200,7 +200,7 @@ describe( "ActiveRecord", () => {
         me.delete();
 
         // assert
-        expect( me.model.delete ).toHaveBeenCalledWith( 123 );
+        expect( me.model.delete ).toHaveBeenCalledWith( me, 123 );
     });
 
     //---------------------------------------------------
@@ -253,7 +253,7 @@ describe( "ActiveRecord", () => {
                     method: "GET",
                     sub_path: "validation"
                 };
-                return this.model.request( request_config, this );
+                return this.model.request( this, request_config );
             }
         }
         let me = new Member();

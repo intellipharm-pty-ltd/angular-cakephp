@@ -30,7 +30,7 @@ System.register(["../angular-cakephp"], function (_export) {
                 it("BaseModel.new should create a new object instance if no active record class is provided", function () {
 
                     // call
-                    var a = BaseModel["new"]({ "firstname": "John" });
+                    var a = BaseModel["new"](null, { "firstname": "John" });
 
                     // assert
                     expect(a.firstname).toEqual("John");
@@ -41,7 +41,7 @@ System.register(["../angular-cakephp"], function (_export) {
                 it("BaseModel.new should create a new instance of provided active record class", function () {
 
                     // call
-                    var a = BaseModel["new"]({ "firstname": "John" }, ActiveRecord);
+                    var a = BaseModel["new"](ActiveRecord, { "firstname": "John" });
 
                     // assert
                     expect(a.firstname).toEqual("John");
@@ -62,7 +62,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         return Member;
                     })(ActiveRecord);
 
-                    var b = BaseModel["new"]({ "firstname": "John", "lastname": "Smith" }, Member, true);
+                    var b = BaseModel["new"](Member, { "firstname": "John", "lastname": "Smith" }, true);
 
                     // assert
                     expect(b.firstname).toEqual("John");
@@ -89,7 +89,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     BaseModel.activeRecordClass = Member;
 
                     // call
-                    var a = BaseModel["new"]({ "firstname": "John" });
+                    var a = BaseModel["new"](null, { "firstname": "John" });
 
                     // assert
                     expect(a.firstname).toEqual("John");
@@ -112,7 +112,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     BaseModel.activeRecordClass = NonMember;
 
                     // call
-                    var b = BaseModel["new"]({ "firstname": "John" });
+                    var b = BaseModel["new"](null, { "firstname": "John" });
 
                     // assert
                     expect(b.firstname).toEqual("John");
@@ -137,7 +137,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         return Member;
                     })(ActiveRecord);
 
-                    var a = BaseModel["new"]({ "firstname": "John", "lastname": "Smith" }, Member);
+                    var a = BaseModel["new"](Member, { "firstname": "John", "lastname": "Smith" });
 
                     // assert
                     expect(a.firstname).toEqual("John");
@@ -169,10 +169,10 @@ System.register(["../angular-cakephp"], function (_export) {
                     spyOn(RestApi, "index");
 
                     // call
-                    var a = BaseModel.index({ "a": "A" }, Member);
+                    var a = BaseModel.index(Member, { "a": "A" });
 
                     // assert
-                    expect(RestApi.index).toHaveBeenCalledWith({ "a": "A" }, Member);
+                    expect(RestApi.index).toHaveBeenCalledWith(Member, { "a": "A" });
                 });
 
                 it("BaseModel.index should call RestApi.index with provided config and predefined active record class", function () {
@@ -197,10 +197,10 @@ System.register(["../angular-cakephp"], function (_export) {
                     spyOn(RestApi, "index");
 
                     // call
-                    var a = BaseModel.index({ "a": "A" });
+                    var a = BaseModel.index(null, { "a": "A" });
 
                     // assert
-                    expect(RestApi.index).toHaveBeenCalledWith({ "a": "A" }, Member);
+                    expect(RestApi.index).toHaveBeenCalledWith(Member, { "a": "A" });
                 });
 
                 //---------------------------------------------------
@@ -235,10 +235,10 @@ System.register(["../angular-cakephp"], function (_export) {
                     spyOn(RestApi, "view");
 
                     // call
-                    var a = BaseModel.view(123, { "a": "A" }, Member);
+                    var a = BaseModel.view(Member, 123, { "a": "A" });
 
                     // assert
-                    expect(RestApi.view).toHaveBeenCalledWith(123, { "a": "A" }, Member);
+                    expect(RestApi.view).toHaveBeenCalledWith(Member, 123, { "a": "A" });
                 });
 
                 it("BaseModel.view should call RestApi.view with provided config and predefined active record class", function () {
@@ -263,10 +263,10 @@ System.register(["../angular-cakephp"], function (_export) {
                     spyOn(RestApi, "view");
 
                     // call
-                    var a = BaseModel.view(123, { "a": "A" });
+                    var a = BaseModel.view(null, 123, { "a": "A" });
 
                     // assert
-                    expect(RestApi.view).toHaveBeenCalledWith(123, { "a": "A" }, Member);
+                    expect(RestApi.view).toHaveBeenCalledWith(Member, 123, { "a": "A" });
                 });
 
                 //---------------------------------------------------
@@ -303,10 +303,10 @@ System.register(["../angular-cakephp"], function (_export) {
                     // call
                     var data = { "a": "A" };
                     var config = { "b": "B" };
-                    var a = BaseModel.add(data, config, Member);
+                    var a = BaseModel.add(Member, data, config);
 
                     // assert
-                    expect(RestApi.add).toHaveBeenCalledWith(config, data, Member);
+                    expect(RestApi.add).toHaveBeenCalledWith(Member, config, data);
                 });
 
                 it("BaseModel.add should call RestApi.add with provided config and predefined active record class", function () {
@@ -333,10 +333,10 @@ System.register(["../angular-cakephp"], function (_export) {
                     // call
                     var data = { "a": "A" };
                     var config = { "b": "B" };
-                    var a = BaseModel.add(data, config);
+                    var a = BaseModel.add(null, data, config);
 
                     // assert
-                    expect(RestApi.add).toHaveBeenCalledWith(config, data, Member);
+                    expect(RestApi.add).toHaveBeenCalledWith(Member, config, data);
                 });
 
                 //---------------------------------------------------
@@ -383,10 +383,10 @@ System.register(["../angular-cakephp"], function (_export) {
                     // call
                     var data = { "a": "A" };
                     var config = { "b": "B" };
-                    var a = BaseModel.edit(123, data, config, Member);
+                    var a = BaseModel.edit(Member, 123, data, config);
 
                     // assert
-                    expect(RestApi.edit).toHaveBeenCalledWith(123, config, data, Member);
+                    expect(RestApi.edit).toHaveBeenCalledWith(Member, 123, config, data);
                 });
 
                 it("BaseModel.edit should call RestApi.edit with provided config and predefined active record class", function () {
@@ -413,10 +413,10 @@ System.register(["../angular-cakephp"], function (_export) {
                     // call
                     var data = { "a": "A" };
                     var config = { "b": "B" };
-                    var a = BaseModel.edit(123, data, config);
+                    var a = BaseModel.edit(null, 123, data, config);
 
                     // assert
-                    expect(RestApi.edit).toHaveBeenCalledWith(123, config, data, Member);
+                    expect(RestApi.edit).toHaveBeenCalledWith(Member, 123, config, data);
                 });
 
                 //---------------------------------------------------
@@ -451,10 +451,10 @@ System.register(["../angular-cakephp"], function (_export) {
                     spyOn(RestApi, "delete");
 
                     // call
-                    var a = BaseModel["delete"](123, { "a": "A" }, Member);
+                    var a = BaseModel["delete"](Member, 123, { "a": "A" });
 
                     // assert
-                    expect(RestApi["delete"]).toHaveBeenCalledWith(123, { "a": "A" }, Member);
+                    expect(RestApi["delete"]).toHaveBeenCalledWith(Member, 123, { "a": "A" });
                 });
 
                 it("BaseModel.delete should call RestApi.delete with provided config and predefined active record class", function () {
@@ -479,10 +479,10 @@ System.register(["../angular-cakephp"], function (_export) {
                     spyOn(RestApi, "delete");
 
                     // call
-                    var a = BaseModel["delete"](123, { "a": "A" });
+                    var a = BaseModel["delete"](null, 123, { "a": "A" });
 
                     // assert
-                    expect(RestApi["delete"]).toHaveBeenCalledWith(123, { "a": "A" }, Member);
+                    expect(RestApi["delete"]).toHaveBeenCalledWith(Member, 123, { "a": "A" });
                 });
 
                 //---------------------------------------------------
@@ -509,10 +509,10 @@ System.register(["../angular-cakephp"], function (_export) {
                     spyOn(RestApi, "request");
 
                     // call
-                    var a = BaseModel.request({ "a": "A" }, Member);
+                    var a = BaseModel.request(Member, { "a": "A" });
 
                     // assert
-                    expect(RestApi.request).toHaveBeenCalledWith({ "a": "A" }, Member);
+                    expect(RestApi.request).toHaveBeenCalledWith(Member, { "a": "A" });
                 });
             });
         }

@@ -90,7 +90,7 @@ class RestApi {
      * if no path is available & active record class is set then pathGenerator will be used to generate API path
      */
     static get path() {
-        if ( _.isNull( this._path ) && !_.isNull( this.pathGenerator ) && !_.isNull( this.activeRecordClass ) ) {
+        if ( !_.isNull( this.pathGenerator ) && !_.isNull( this.activeRecordClass ) ) {
             let _name = !_.isUndefined( this.activeRecordClass.name ) ? this.activeRecordClass.name : this.activeRecordClass.constructor.name;
             this.path = this.pathGenerator( _.snakeCase( _name ) );
         }
@@ -157,17 +157,19 @@ class RestApi {
      */
     static get url() {
 
+        if ( !_.isNull( this._url ) && _.isNull( this.activeRecordClass ) ) {
+            return this._url;
+        }
+
         let hostname = this.hostname;
         let path = this.path;
 
-        if ( _.isNull( this._url ) && ( _.isNull( hostname ) || _.isNull( path ) ) ) {
+        if ( ( _.isNull( hostname ) || _.isNull( path ) ) ) {
             throw new Error( MESSAGE_HOSTNAME_AND_PATH_REQURIED );
         }
 
         // create url from hostname and path
-        if ( _.isNull( this._url ) ) {
-            this._url = hostname + path;
-        }
+        this._url = hostname + path;
 
         return this._url;
     }
@@ -178,12 +180,12 @@ class RestApi {
     /**
      * index
      *
+     * @param  {ActiveRecord Class} active_record_class
      * @param  {Object} request_config = {}
-     * @param  {ActiveRecord Class} active_record_class = null
      * @return {Promise}
      * @throws {Error}
      */
-    static index( request_config = {}, active_record_class = null ) {
+    static index( active_record_class, request_config = {} ) {
 
         // update class properties
 
@@ -198,19 +200,19 @@ class RestApi {
         request_config.headers = _.has( request_config, 'headers' ) ? _.merge( request_config.headers, this.headers ) : this.headers;
 
         // request ...
-        return this.request( request_config );
+        return this.request( this.activeRecordClass, request_config );
     }
 
     /**
      * view
      *
+     * @param  {ActiveRecord Class} active_record_class
      * @param  {Integer} id
      * @param  {Object} request_config = {}
-     * @param  {ActiveRecord Class} active_record_class = null
      * @return {Promise}
      * @throws {Error}
      */
-    static view( id, request_config = {}, active_record_class = null ) {
+    static view( active_record_class, id, request_config = {} ) {
 
         if ( _.isNull( id ) || _.isUndefined( id ) ) {
             throw new Error( MESSAGE_ID_IS_REQURIED );
@@ -229,19 +231,19 @@ class RestApi {
         request_config.headers = _.has( request_config, 'headers' ) ? _.merge( request_config.headers, this.headers ) : this.headers;
 
         // request ...
-        return this.request( request_config );
+        return this.request( this.activeRecordClass, request_config );
     }
 
     /**
      * add
      *
+     * @param  {ActiveRecord Class} active_record_class
      * @param  {Object} request_config = {}
      * @param  {Object} request_data = {}
-     * @param  {ActiveRecord Class} active_record_class = null
      * @return {Promise}
      * @throws {Error}
      */
-    static add( request_config = {}, request_data = {}, active_record_class = null ) {
+    static add( active_record_class, request_config = {}, request_data = {} ) {
 
         // update class properties
 
@@ -257,20 +259,20 @@ class RestApi {
         request_config.headers = _.has( request_config, 'headers' ) ? _.merge( request_config.headers, this.headers ) : this.headers;
 
         // request ...
-        return this.request( request_config );
+        return this.request( this.activeRecordClass, request_config );
     }
 
     /**
      * edit
      *
+     * @param  {ActiveRecord Class} active_record_class
      * @param  {Integer} id
      * @param  {Object} request_config = {}
      * @param  {Object} request_data = {}
-     * @param  {ActiveRecord Class} active_record_class = null
      * @return {Promise}
      * @throws {Error}
      */
-    static edit( id, request_config = {}, request_data = {}, active_record_class = null ) {
+    static edit( active_record_class, id, request_config = {}, request_data = {} ) {
 
         if ( _.isNull( id ) || _.isUndefined( id ) ) {
             throw new Error( MESSAGE_ID_IS_REQURIED );
@@ -290,19 +292,19 @@ class RestApi {
         request_config.headers = _.has( request_config, 'headers' ) ? _.merge( request_config.headers, this.headers ) : this.headers;
 
         // request ...
-        return this.request( request_config );
+        return this.request( this.activeRecordClass, request_config );
     }
 
     /**
      * delete
      *
+     * @param  {ActiveRecord Class} active_record_class
      * @param  {Integer} id
      * @param  {Object} request_config = {}
-     * @param  {ActiveRecord Class} active_record_class = null
      * @return {Promise}
      * @throws {Error}
      */
-    static delete( id, request_config = {}, active_record_class = null ) {
+    static delete( active_record_class, id, request_config = {} ) {
 
         if ( _.isNull( id ) || _.isUndefined( id ) ) {
             throw new Error( MESSAGE_ID_IS_REQURIED );
@@ -321,20 +323,18 @@ class RestApi {
         request_config.headers = _.has( request_config, 'headers' ) ? _.merge( request_config.headers, this.headers ) : this.headers;
 
         // request ...
-        return this.request( request_config );
+        return this.request( this.activeRecordClass, request_config );
     }
 
     /**
      * request
      *
+     * @param  {Function} active_record_class
      * @param  {Object} config
-     * @param  {Function} active_record_class = null
-     * @param  {Function} responseTransformer = null
-     * @param  {Function} errorHandler = null
      * @return {Promise}
      * @throws {Error}
      */
-    static request( config = {}, active_record_class = null ) {
+    static request( active_record_class, config = {} ) {
 
         if ( _.isNull( this.http ) ) {
             throw new Error( MESSAGE_HTTP_REQUIRED );

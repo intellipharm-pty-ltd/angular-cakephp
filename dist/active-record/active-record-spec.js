@@ -222,14 +222,14 @@ System.register(['../angular-cakephp'], function (_export) {
                     me.view();
 
                     // assert
-                    expect(me.model.view).toHaveBeenCalledWith(123, me);
+                    expect(me.model.view).toHaveBeenCalledWith(me, 123);
                 });
 
                 //---------------------------------------------------
                 // save
                 //---------------------------------------------------
 
-                it("view should call model.add if no id is set", function () {
+                it("save should call model.add if no id is set", function () {
 
                     // prepare
 
@@ -254,10 +254,10 @@ System.register(['../angular-cakephp'], function (_export) {
                     me.save();
 
                     // assert
-                    expect(me.model.add).toHaveBeenCalledWith(me);
+                    expect(me.model.add).toHaveBeenCalledWith(me, me);
                 });
 
-                it("view should call model.edit if id is set", function () {
+                it("save should call model.edit if id is set", function () {
 
                     // prepare
 
@@ -283,14 +283,14 @@ System.register(['../angular-cakephp'], function (_export) {
                     me.save();
 
                     // assert
-                    expect(me.model.edit).toHaveBeenCalledWith(123, me);
+                    expect(me.model.edit).toHaveBeenCalledWith(me, 123, me);
                 });
 
                 //---------------------------------------------------
                 // delete
                 //---------------------------------------------------
 
-                it("view should throw an error if id is not set", function () {
+                it("delete should throw an error if id is not set", function () {
 
                     // prepare
 
@@ -318,7 +318,7 @@ System.register(['../angular-cakephp'], function (_export) {
                     expect(error_message).toEqual(ActiveRecord.MESSAGE_DELETE_ERROR_NO_ID);
                 });
 
-                it("view should call model.delete", function () {
+                it("delete should call model.delete", function () {
 
                     // prepare
 
@@ -344,7 +344,7 @@ System.register(['../angular-cakephp'], function (_export) {
                     me['delete']();
 
                     // assert
-                    expect(me.model['delete']).toHaveBeenCalledWith(123);
+                    expect(me.model['delete']).toHaveBeenCalledWith(me, 123);
                 });
 
                 //---------------------------------------------------
@@ -423,7 +423,7 @@ System.register(['../angular-cakephp'], function (_export) {
                                     method: "GET",
                                     sub_path: "validation"
                                 };
-                                return this.model.request(request_config, this);
+                                return this.model.request(this, request_config);
                             }
                         }]);
 

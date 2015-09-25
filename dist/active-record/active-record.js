@@ -75,7 +75,7 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                         }
 
                         // edit
-                        return this.model.view(this.id, this);
+                        return this.model.view(this, this.id);
                     }
 
                     /**
@@ -90,11 +90,11 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
 
                         // add (no id)
                         if (!_.has(this, 'id') || _.isUndefined(this.id)) {
-                            return this.model.add(this);
+                            return this.model.add(this, this);
                         }
 
                         // edit
-                        return this.model.edit(this.id, this);
+                        return this.model.edit(this, this.id, this);
                     }
 
                     /**
@@ -111,7 +111,7 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                         }
 
                         // delete
-                        return this.model['delete'](this.id);
+                        return this.model['delete'](this, this.id);
                     }
                 }, {
                     key: 'mapData',

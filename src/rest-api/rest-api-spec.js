@@ -112,10 +112,11 @@ describe( "RestApi", () => {
 
         // prepare
         RestApi.http = http_mock;
-        RestApi.url = "AAA";
+        RestApi.hostname = "AAA";
+        RestApi.path = "AAA";
 
         // call
-        RestApi.request( {}, "BBB" );
+        RestApi.request( "BBB" );
 
         // assert
         expect( RestApi.activeRecordClass ).toEqual( "BBB" );
@@ -128,7 +129,7 @@ describe( "RestApi", () => {
         RestApi.url = "AAA";
 
         // call
-        RestApi.request( {'hostname': "BBB"} );
+        RestApi.request( null, {'hostname': "BBB"} );
 
         // assert
         expect( RestApi.hostname ).toEqual( "BBB" );
@@ -144,7 +145,7 @@ describe( "RestApi", () => {
         RestApi.url = "AAA";
 
         // call
-        RestApi.request( { 'hostname': "BBB" } );
+        RestApi.request( null, { 'hostname': "BBB" } );
 
         // assert
         expect( RestApi.http ).toHaveBeenCalledWith( { 'url': "AAA" } );
@@ -157,7 +158,7 @@ describe( "RestApi", () => {
         RestApi.url = "AAA";
 
         // call
-        RestApi.request( {'path': "BBB"} );
+        RestApi.request( null, {'path': "BBB"} );
 
         // assert
         expect( RestApi.path ).toEqual( "BBB" );
@@ -173,7 +174,7 @@ describe( "RestApi", () => {
         RestApi.url = "AAA";
 
         // call
-        RestApi.request( { 'path': "BBB" } );
+        RestApi.request( null, { 'path': "BBB" } );
 
         // assert
         expect( RestApi.http ).toHaveBeenCalledWith( { 'url': "AAA" } );
@@ -194,7 +195,7 @@ describe( "RestApi", () => {
         RestApi.url = "BBB";
 
         // call
-        RestApi.request( { 'a': "A" } );
+        RestApi.request( null, { 'a': "A" } );
 
         // assert
         expect( RestApi.http ).toHaveBeenCalledWith( { 'a': "A", 'paramSerializer': "AAA", 'url': "BBB" } );
@@ -211,7 +212,7 @@ describe( "RestApi", () => {
         RestApi.url = "BBB";
 
         // call
-        RestApi.request( { 'a': "A", 'sub_path': "CCC" } );
+        RestApi.request( null, { 'a': "A", 'sub_path': "CCC" } );
 
         // assert
         expect( RestApi.http ).toHaveBeenCalledWith( { 'a': "A", 'paramSerializer': "AAA", 'url': "BBB/CCC" } );
@@ -228,7 +229,7 @@ describe( "RestApi", () => {
         RestApi.url = "AAA";
 
         // call
-        var p = RestApi.request();
+        var p = RestApi.request( null );
 
         // assert
         expect( p.then ).toBeDefined();
@@ -244,7 +245,7 @@ describe( "RestApi", () => {
         RestApi.url = "AAA";
 
         // call
-        RestApi.request( { 'a': "A" } );
+        RestApi.request( null, { 'a': "A" } );
 
         // assert
         expect( RestApi.http ).toHaveBeenCalledWith( { 'a': "A", 'url': "AAA" } );
@@ -279,20 +280,21 @@ describe( "RestApi", () => {
                 } );
             };
             RestApi.activeRecordClass = "BBB";
-            RestApi.url = "CCC";
+            RestApi.hostname = "CCC";
+            RestApi.path = "CCC";
             RestApi.successHandler = successHandlerGlobal;
 
             // prepare assert
             let assert = ( state, response ) => {
                 expect( state ).toEqual( "PASS" );
                 expect( successHandler ).toHaveBeenCalledWith( "AAA" );
-                expect( successHandlerGlobal ).not.toHaveBeenCalled( );
-                expect( responseHandler ).not.toHaveBeenCalled( );
+                expect( successHandlerGlobal ).not.toHaveBeenCalled();
+                expect( responseHandler ).not.toHaveBeenCalled();
                 done();
             };
 
             // call
-            RestApi.request( {successHandler: successHandler, responseHandler: responseHandler} ).then(
+            RestApi.request( null, {successHandler: successHandler, responseHandler: responseHandler} ).then(
                 ( response ) => { assert( "PASS", response ); },
                 ( response ) => { assert( "FAIL", response ); }
             );
@@ -325,20 +327,21 @@ describe( "RestApi", () => {
                 } );
             };
             RestApi.activeRecordClass = "BBB";
-            RestApi.url = "CCC";
+            RestApi.hostname = "CCC";
+            RestApi.path = "CCC";
             RestApi.successTransformer = successTransformerGlobal;
 
             // prepare assert
             let assert = ( state, response ) => {
                 expect( state ).toEqual( "PASS" );
                 expect( successTransformer ).toHaveBeenCalledWith( "AAA", "BBB" );
-                expect( successTransformerGlobal ).not.toHaveBeenCalled( );
-                expect( responseTransformer ).not.toHaveBeenCalled( );
+                expect( successTransformerGlobal ).not.toHaveBeenCalled();
+                expect( responseTransformer ).not.toHaveBeenCalled();
                 done();
             };
 
             // call
-            RestApi.request( {successTransformer: successTransformer, responseTransformer: responseTransformer} ).then(
+            RestApi.request( null, {successTransformer: successTransformer, responseTransformer: responseTransformer} ).then(
                 ( response ) => { assert( "PASS", response ); },
                 ( response ) => { assert( "FAIL", response ); }
             );
@@ -374,20 +377,21 @@ describe( "RestApi", () => {
                 } );
             };
             RestApi.activeRecordClass = "BBB";
-            RestApi.url = "CCC";
+            RestApi.hostname = "CCC";
+            RestApi.path = "CCC";
             RestApi.errorHandler = errorHandlerGlobal;
 
             // prepare assert
             let assert = ( state, response ) => {
                 expect( state ).toEqual( "FAIL" );
                 expect( errorHandler ).toHaveBeenCalledWith( "AAA" );
-                expect( errorHandlerGlobal ).not.toHaveBeenCalled( );
-                expect( responseHandler ).not.toHaveBeenCalled( );
+                expect( errorHandlerGlobal ).not.toHaveBeenCalled();
+                expect( responseHandler ).not.toHaveBeenCalled();
                 done();
             };
 
             // call
-            RestApi.request( {errorHandler: errorHandler, responseHandler: responseHandler} ).then(
+            RestApi.request( null, {errorHandler: errorHandler, responseHandler: responseHandler} ).then(
                 ( response ) => { assert( "PASS", response ); },
                 ( response ) => { assert( "FAIL", response ); }
             );
@@ -420,20 +424,21 @@ describe( "RestApi", () => {
                 } );
             };
             RestApi.activeRecordClass = "BBB";
-            RestApi.url = "CCC";
+            RestApi.hostname = "CCC";
+            RestApi.path = "CCC";
             RestApi.errorTransformer = errorTransformerGlobal;
 
             // prepare assert
             let assert = ( state, response ) => {
                 expect( state ).toEqual( "FAIL" );
                 expect( errorTransformer ).toHaveBeenCalledWith( "AAA", "BBB" );
-                expect( errorTransformerGlobal ).not.toHaveBeenCalled( );
-                expect( responseTransformer ).not.toHaveBeenCalled( );
+                expect( errorTransformerGlobal ).not.toHaveBeenCalled();
+                expect( responseTransformer ).not.toHaveBeenCalled();
                 done();
             };
 
             // call
-            RestApi.request( {errorTransformer: errorTransformer, responseTransformer: responseTransformer} ).then(
+            RestApi.request( null, {errorTransformer: errorTransformer, responseTransformer: responseTransformer} ).then(
                 ( response ) => { assert( "PASS", response ); },
                 ( response ) => { assert( "FAIL", response ); }
             );
@@ -464,19 +469,20 @@ describe( "RestApi", () => {
                 } );
             };
             RestApi.activeRecordClass = "BBB";
-            RestApi.url = "CCC";
+            RestApi.hostname = "CCC";
+            RestApi.path = "CCC";
             RestApi.responseHandler = responseHandlerGlobal;
 
             // prepare assert
             let assert = ( state, response ) => {
                 expect( state ).toEqual( "PASS" );
                 expect( responseHandler ).toHaveBeenCalledWith( "AAA" );
-                expect( responseHandlerGlobal ).not.toHaveBeenCalled( );
+                expect( responseHandlerGlobal ).not.toHaveBeenCalled();
                 done();
             };
 
             // call
-            RestApi.request( {responseHandler: responseHandler} ).then(
+            RestApi.request( null, {responseHandler: responseHandler} ).then(
                 ( response ) => { assert( "PASS", response ); },
                 ( response ) => { assert( "FAIL", response ); }
             );
@@ -504,19 +510,20 @@ describe( "RestApi", () => {
                 } );
             };
             RestApi.activeRecordClass = "BBB";
-            RestApi.url = "CCC";
+            RestApi.hostname = "CCC";
+            RestApi.path = "CCC";
             RestApi.responseTransformer = responseTransformerGlobal;
 
             // prepare assert
             let assert = ( state, response ) => {
                 expect( state ).toEqual( "PASS" );
                 expect( responseTransformer ).toHaveBeenCalledWith( "AAA", "BBB" );
-                expect( responseTransformerGlobal ).not.toHaveBeenCalled( );
+                expect( responseTransformerGlobal ).not.toHaveBeenCalled();
                 done();
             };
 
             // call
-            RestApi.request( {responseTransformer: responseTransformer} ).then(
+            RestApi.request( null, {responseTransformer: responseTransformer} ).then(
                 ( response ) => { assert( "PASS", response ); },
                 ( response ) => { assert( "FAIL", response ); }
             );
@@ -544,19 +551,20 @@ describe( "RestApi", () => {
                 } );
             };
             RestApi.activeRecordClass = "BBB";
-            RestApi.url = "CCC";
+            RestApi.hostname = "CCC";
+            RestApi.path = "CCC";
             RestApi.responseHandler = responseHandlerGlobal;
 
             // prepare assert
             let assert = ( state, response ) => {
                 expect( state ).toEqual( "FAIL" );
                 expect( responseHandler ).toHaveBeenCalledWith( "AAA" );
-                expect( responseHandlerGlobal ).not.toHaveBeenCalled( );
+                expect( responseHandlerGlobal ).not.toHaveBeenCalled();
                 done();
             };
 
             // call
-            RestApi.request( {responseHandler: responseHandler} ).then(
+            RestApi.request( null, {responseHandler: responseHandler} ).then(
                 ( response ) => { assert( "PASS", response ); },
                 ( response ) => { assert( "FAIL", response ); }
             );
@@ -584,19 +592,20 @@ describe( "RestApi", () => {
                 } );
             };
             RestApi.activeRecordClass = "BBB";
-            RestApi.url = "CCC";
+            RestApi.hostname = "CCC";
+            RestApi.path = "CCC";
             RestApi.responseTransformer = responseTransformerGlobal;
 
             // prepare assert
             let assert = ( state, response ) => {
                 expect( state ).toEqual( "FAIL" );
                 expect( responseTransformer ).toHaveBeenCalledWith( "AAA", "BBB" );
-                expect( responseTransformerGlobal ).not.toHaveBeenCalled( );
+                expect( responseTransformerGlobal ).not.toHaveBeenCalled();
                 done();
             };
 
             // call
-            RestApi.request( {responseTransformer: responseTransformer} ).then(
+            RestApi.request( null, {responseTransformer: responseTransformer} ).then(
                 ( response ) => { assert( "PASS", response ); },
                 ( response ) => { assert( "FAIL", response ); }
             );
@@ -640,10 +649,11 @@ describe( "RestApi", () => {
 
         // prepare
         RestApi.http = http_mock;
-        RestApi.url = "AAA";
+        RestApi.hostname = "AAA";
+        RestApi.path = "AAA";
 
         // call
-        RestApi.index( {}, "BBB" );
+        RestApi.index( "BBB" );
 
         // assert
         expect( RestApi.activeRecordClass ).toEqual( "BBB" );
@@ -663,11 +673,11 @@ describe( "RestApi", () => {
         RestApi.headers = "BBB";
 
         // call
-        RestApi.index( {} );
+        RestApi.index( null );
 
         // assert
         let _expected = { 'method': "GET", 'url': "AAA", 'headers': "BBB" };
-        expect( RestApi.request ).toHaveBeenCalledWith( _expected );
+        expect( RestApi.request ).toHaveBeenCalledWith( null, _expected );
     });
 
     //---------------------------
@@ -681,7 +691,7 @@ describe( "RestApi", () => {
         RestApi.url = "AAA";
 
         // call
-        var p = RestApi.index( {} );
+        var p = RestApi.index( null );
 
         // assert
         expect( p.then ).toBeDefined();
@@ -727,7 +737,7 @@ describe( "RestApi", () => {
         // call & assert
 
         try {
-            let r = RestApi.view( 123 );
+            let r = RestApi.view( null, 123 );
         } catch ( error ) {
             var error_message = error.message;
         }
@@ -745,10 +755,11 @@ describe( "RestApi", () => {
 
         // prepare
         RestApi.http = http_mock;
-        RestApi.url = "AAA";
+        RestApi.hostname = "AAA";
+        RestApi.path = "AAA";
 
         // call
-        RestApi.view( 123, {}, "BBB" );
+        RestApi.view( "BBB", 123);
 
         // assert
         expect( RestApi.activeRecordClass ).toEqual( "BBB" );
@@ -768,107 +779,11 @@ describe( "RestApi", () => {
         RestApi.headers = "BBB";
 
         // call
-        RestApi.view( 123, {} );
+        RestApi.view( null, 123 );
 
         // assert
         let _expected = { 'method': "GET", 'url': "AAA/123", 'headers': "BBB" };
-        expect( RestApi.request ).toHaveBeenCalledWith( _expected );
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
-    });
-
-    it("description", function () {
-        expect("A").toEqual("A");
+        expect( RestApi.request ).toHaveBeenCalledWith( null, _expected );
     });
 
     //---------------------------
@@ -882,7 +797,7 @@ describe( "RestApi", () => {
         RestApi.url = "AAA";
 
         // call
-        var p = RestApi.view( 123, {} );
+        var p = RestApi.view( null, 123 );
 
         // assert
         expect( p.then ).toBeDefined();
@@ -925,10 +840,11 @@ describe( "RestApi", () => {
 
         // prepare
         RestApi.http = http_mock;
-        RestApi.url = "AAA";
+        RestApi.hostname = "AAA";
+        RestApi.path = "AAA";
 
         // call
-        RestApi.add( {}, {}, "BBB" );
+        RestApi.add( "BBB" );
 
         // assert
         expect( RestApi.activeRecordClass ).toEqual( "BBB" );
@@ -948,11 +864,11 @@ describe( "RestApi", () => {
         RestApi.headers = "BBB";
 
         // call
-        RestApi.add( {}, { 'a': "A" } );
+        RestApi.add( null, {}, { 'a': "A" } );
 
         // assert
         let _expected = { 'method': "POST", 'url': "AAA", 'data': { 'a': "A" }, 'headers': "BBB" };
-        expect( RestApi.request ).toHaveBeenCalledWith( _expected );
+        expect( RestApi.request ).toHaveBeenCalledWith( null, _expected );
     });
 
     //---------------------------
@@ -966,7 +882,7 @@ describe( "RestApi", () => {
         RestApi.url = "AAA";
 
         // call
-        var p = RestApi.add( {} );
+        var p = RestApi.add( null );
 
         // assert
         expect( p.then ).toBeDefined();
@@ -1012,7 +928,7 @@ describe( "RestApi", () => {
         // call & assert
 
         try {
-            let r = RestApi.edit( 123 );
+            let r = RestApi.edit( null, 123 );
         } catch ( error ) {
             var error_message = error.message;
         }
@@ -1030,10 +946,11 @@ describe( "RestApi", () => {
 
         // prepare
         RestApi.http = http_mock;
-        RestApi.url = "AAA";
+        RestApi.hostname = "AAA";
+        RestApi.path = "AAA";
 
         // call
-        RestApi.edit( 123, {}, {}, "BBB" );
+        RestApi.edit( "BBB", 123);
 
         // assert
         expect( RestApi.activeRecordClass ).toEqual( "BBB" );
@@ -1053,11 +970,11 @@ describe( "RestApi", () => {
         RestApi.headers = "BBB";
 
         // call
-        RestApi.edit( 123, {}, { 'a': "A" } );
+        RestApi.edit( null, 123, {}, { 'a': "A" } );
 
         // assert
         let _expected = { 'method': "PUT", 'url': "AAA/123", 'data': { 'a': "A" }, 'headers': "BBB" };
-        expect( RestApi.request ).toHaveBeenCalledWith( _expected );
+        expect( RestApi.request ).toHaveBeenCalledWith( null, _expected );
     });
 
     //---------------------------
@@ -1071,7 +988,7 @@ describe( "RestApi", () => {
         RestApi.url = "AAA";
 
         // call
-        var p = RestApi.edit( 123, {} );
+        var p = RestApi.edit( null, 123 );
 
         // assert
         expect( p.then ).toBeDefined();
@@ -1115,7 +1032,7 @@ describe( "RestApi", () => {
         // call & assert
 
         try {
-            let r = RestApi.delete( 123 );
+            let r = RestApi.delete( null, 123 );
         } catch ( error ) {
             var error_message = error.message;
         }
@@ -1134,10 +1051,11 @@ describe( "RestApi", () => {
 
         // prepare
         RestApi.http = http_mock;
-        RestApi.url = "AAA";
+        RestApi.hostname = "AAA";
+        RestApi.path = "AAA";
 
         // call
-        RestApi.delete( 123, {}, "BBB" );
+        RestApi.delete( "BBB", 123);
 
         // assert
         expect( RestApi.activeRecordClass ).toEqual( "BBB" );
@@ -1157,25 +1075,25 @@ describe( "RestApi", () => {
         RestApi.headers = "BBB";
 
         // call
-        RestApi.delete( 123, {} );
+        RestApi.delete( null, 123 );
 
         // assert
         let _expected = { 'method': "DELETE", 'url': "AAA/123", 'headers': "BBB" };
-        expect( RestApi.request ).toHaveBeenCalledWith( _expected );
+        expect( RestApi.request ).toHaveBeenCalledWith( null, _expected );
     });
 
     //---------------------------
     // Promise
     //---------------------------
 
-    it("RestApi.edit should return a promise", () => {
+    it("RestApi.delete should return a promise", () => {
 
         // prepare
         RestApi.http = http_mock;
         RestApi.url = "AAA";
 
         // call
-        var p = RestApi.edit( 123, {} );
+        var p = RestApi.delete( null, 123 );
 
         // assert
         expect( p.then ).toBeDefined();
