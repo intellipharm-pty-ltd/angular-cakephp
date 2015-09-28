@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { ActiveRecord } from '../angular-cakephp';
 
 const MESSAGE_HOSTNAME_AND_PATH_REQURIED = "Please configure an API hostname & path before making a request";
 const MESSAGE_HTTP_REQUIRED = "Please provide HTTP service";
@@ -90,9 +91,17 @@ class RestApi {
      * if no path is available & active record class is set then pathGenerator will be used to generate API path
      */
     static get path() {
-        if ( !_.isNull( this.pathGenerator ) && !_.isNull( this.activeRecordClass ) ) {
-            let _name = !_.isUndefined( this.activeRecordClass.name ) ? this.activeRecordClass.name : this.activeRecordClass.constructor.name;
-            this.path = this.pathGenerator( _.snakeCase( _name ) );
+
+        let active_record_class = this.activeRecordClass;
+
+        if ( !_.isNull( this.pathGenerator ) && !_.isNull( active_record_class ) ) {
+
+            // get Active Record class name from Class.constructor.name if it's not 'Function', otherwise  get from Class.name
+            let _name = active_record_class.constructor.name !== "Function" ? active_record_class.constructor.name : ( !_.isUndefined(active_record_class.name) ? active_record_class.name : null );
+
+            if ( !_.isNull( _name ) ) {
+                this.path = this.pathGenerator( _.snakeCase( _name ) );
+            }
         }
         return this._path;
     }

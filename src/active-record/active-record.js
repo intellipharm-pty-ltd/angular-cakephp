@@ -67,7 +67,7 @@ export default class ActiveRecord {
         }
 
         // edit
-        return this.model.view( this, this.id );
+        return this.model.view( this.constructor, this.id );
     }
 
     /**
@@ -80,11 +80,11 @@ export default class ActiveRecord {
 
         // add (no id)
         if ( !_.has( this, 'id' ) || _.isUndefined( this.id )) {
-            return this.model.add( this, this );
+            return this.model.add( this.constructor, this );
         }
 
         // edit
-        return this.model.edit( this, this.id, this );
+        return this.model.edit( this.constructor, this.id, this );
     }
 
     /**
@@ -99,7 +99,7 @@ export default class ActiveRecord {
         }
 
         // delete
-        return this.model.delete( this, this.id );
+        return this.model.delete( this.constructor, this.id );
     }
 }
 

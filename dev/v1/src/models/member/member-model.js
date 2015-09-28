@@ -11,10 +11,10 @@ export default class MemberModel extends BaseModel {
    // }
 
    static new( data ) {
-       return super.new( data, Member );
+       return super.new( Member, data );
    }
    static index( config ) {
-       return super.index( config, this.activeRecordClass );
+       return super.index( this.activeRecordClass, config );
    }
 }
 

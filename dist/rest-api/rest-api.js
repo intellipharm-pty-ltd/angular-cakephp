@@ -1,15 +1,17 @@
-System.register(["lodash"], function (_export) {
-    "use strict";
+System.register(['lodash', '../angular-cakephp'], function (_export) {
+    'use strict';
 
-    var _, MESSAGE_HOSTNAME_AND_PATH_REQURIED, MESSAGE_HTTP_REQUIRED, MESSAGE_ID_IS_REQURIED, MESSAGE_INVALID_HTTP_SERVICE, RestApi;
+    var _, ActiveRecord, MESSAGE_HOSTNAME_AND_PATH_REQURIED, MESSAGE_HTTP_REQUIRED, MESSAGE_ID_IS_REQURIED, MESSAGE_INVALID_HTTP_SERVICE, RestApi;
 
-    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
     return {
         setters: [function (_lodash) {
-            _ = _lodash["default"];
+            _ = _lodash['default'];
+        }, function (_angularCakephp) {
+            ActiveRecord = _angularCakephp.ActiveRecord;
         }],
         execute: function () {
             MESSAGE_HOSTNAME_AND_PATH_REQURIED = "Please configure an API hostname & path before making a request";
@@ -29,7 +31,7 @@ System.register(["lodash"], function (_export) {
                 // defaults
 
                 _createClass(RestApi, null, [{
-                    key: "index",
+                    key: 'index',
 
                     /**
                      * index
@@ -68,7 +70,7 @@ System.register(["lodash"], function (_export) {
                      * @throws {Error}
                      */
                 }, {
-                    key: "view",
+                    key: 'view',
                     value: function view(active_record_class, id) {
                         var request_config = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
@@ -102,7 +104,7 @@ System.register(["lodash"], function (_export) {
                      * @throws {Error}
                      */
                 }, {
-                    key: "add",
+                    key: 'add',
                     value: function add(active_record_class) {
                         var request_config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
                         var request_data = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -135,7 +137,7 @@ System.register(["lodash"], function (_export) {
                      * @throws {Error}
                      */
                 }, {
-                    key: "edit",
+                    key: 'edit',
                     value: function edit(active_record_class, id) {
                         var request_config = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
                         var request_data = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
@@ -171,7 +173,7 @@ System.register(["lodash"], function (_export) {
                      * @throws {Error}
                      */
                 }, {
-                    key: "delete",
+                    key: 'delete',
                     value: function _delete(active_record_class, id) {
                         var request_config = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
@@ -204,7 +206,7 @@ System.register(["lodash"], function (_export) {
                      * @throws {Error}
                      */
                 }, {
-                    key: "request",
+                    key: 'request',
                     value: function request(active_record_class) {
                         var _this = this;
 
@@ -339,7 +341,7 @@ System.register(["lodash"], function (_export) {
                      * reset
                      */
                 }, {
-                    key: "reset",
+                    key: 'reset',
                     value: function reset() {
 
                         // defaults
@@ -359,7 +361,7 @@ System.register(["lodash"], function (_export) {
                         this._url = null;
                     }
                 }, {
-                    key: "activeRecordClass",
+                    key: 'activeRecordClass',
 
                     /**
                      * activeRecordClass
@@ -375,7 +377,7 @@ System.register(["lodash"], function (_export) {
                      * errorHandler
                      */
                 }, {
-                    key: "errorHandler",
+                    key: 'errorHandler',
                     get: function get() {
                         return this._error_handler;
                     },
@@ -387,7 +389,7 @@ System.register(["lodash"], function (_export) {
                      * errorTransformer
                      */
                 }, {
-                    key: "errorTransformer",
+                    key: 'errorTransformer',
                     get: function get() {
                         return this._error_transformer;
                     },
@@ -400,7 +402,7 @@ System.register(["lodash"], function (_export) {
                      * HTTP request headers
                      */
                 }, {
-                    key: "headers",
+                    key: 'headers',
                     get: function get() {
                         return this._headers;
                     },
@@ -413,7 +415,7 @@ System.register(["lodash"], function (_export) {
                      * API hostname to use in HTTP requests
                      */
                 }, {
-                    key: "hostname",
+                    key: 'hostname',
                     get: function get() {
                         return this._hostname;
                     },
@@ -426,7 +428,7 @@ System.register(["lodash"], function (_export) {
                      * AngularJS $http service
                      */
                 }, {
-                    key: "http",
+                    key: 'http',
                     get: function get() {
                         return this._http;
                     },
@@ -439,7 +441,7 @@ System.register(["lodash"], function (_export) {
                      * will be attached to http.paramSerializer if none is provided with request config
                      */
                 }, {
-                    key: "paramSerializer",
+                    key: 'paramSerializer',
                     get: function get() {
                         return this._param_serializer;
                     },
@@ -453,11 +455,19 @@ System.register(["lodash"], function (_export) {
                      * if no path is available & active record class is set then pathGenerator will be used to generate API path
                      */
                 }, {
-                    key: "path",
+                    key: 'path',
                     get: function get() {
-                        if (!_.isNull(this.pathGenerator) && !_.isNull(this.activeRecordClass)) {
-                            var _name = !_.isUndefined(this.activeRecordClass.name) ? this.activeRecordClass.name : this.activeRecordClass.constructor.name;
-                            this.path = this.pathGenerator(_.snakeCase(_name));
+
+                        var active_record_class = this.activeRecordClass;
+
+                        if (!_.isNull(this.pathGenerator) && !_.isNull(active_record_class)) {
+
+                            // get Active Record class name from Class.constructor.name if it's not 'Function', otherwise  get from Class.name
+                            var _name = active_record_class.constructor.name !== "Function" ? active_record_class.constructor.name : !_.isUndefined(active_record_class.name) ? active_record_class.name : null;
+
+                            if (!_.isNull(_name)) {
+                                this.path = this.pathGenerator(_.snakeCase(_name));
+                            }
                         }
                         return this._path;
                     },
@@ -471,7 +481,7 @@ System.register(["lodash"], function (_export) {
                      * will be passed the _.snakeCase of the active record class name
                      */
                 }, {
-                    key: "pathGenerator",
+                    key: 'pathGenerator',
                     get: function get() {
                         return this._path_generator;
                     },
@@ -483,7 +493,7 @@ System.register(["lodash"], function (_export) {
                      * responseHandler
                      */
                 }, {
-                    key: "responseHandler",
+                    key: 'responseHandler',
                     get: function get() {
                         return this._response_handler;
                     },
@@ -495,7 +505,7 @@ System.register(["lodash"], function (_export) {
                      * responseTransformer
                      */
                 }, {
-                    key: "responseTransformer",
+                    key: 'responseTransformer',
                     get: function get() {
                         return this._response_transformer;
                     },
@@ -507,7 +517,7 @@ System.register(["lodash"], function (_export) {
                      * successHandler
                      */
                 }, {
-                    key: "successHandler",
+                    key: 'successHandler',
                     get: function get() {
                         return this._success_handler;
                     },
@@ -519,7 +529,7 @@ System.register(["lodash"], function (_export) {
                      * successTransformer
                      */
                 }, {
-                    key: "successTransformer",
+                    key: 'successTransformer',
                     get: function get() {
                         return this._success_transformer;
                     },
@@ -531,7 +541,7 @@ System.register(["lodash"], function (_export) {
                      * url
                      */
                 }, {
-                    key: "url",
+                    key: 'url',
                     get: function get() {
 
                         if (!_.isNull(this._url) && _.isNull(this.activeRecordClass)) {
@@ -565,7 +575,7 @@ System.register(["lodash"], function (_export) {
             RestApi.MESSAGE_HTTP_REQUIRED = MESSAGE_HTTP_REQUIRED;
             RestApi.MESSAGE_ID_IS_REQURIED = MESSAGE_ID_IS_REQURIED;
 
-            _export("default", RestApi);
+            _export('default', RestApi);
         }
     };
 });

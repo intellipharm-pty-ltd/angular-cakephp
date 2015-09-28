@@ -49,7 +49,8 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                         }
 
                         if (!_.isNull(this.activeRecordClass)) {
-                            return new this.activeRecordClass(data, this, map_data);
+                            var model = this.constructor.name !== "function" ? this.constructor : this;
+                            return new this.activeRecordClass(data, model, map_data);
                         }
 
                         return data;

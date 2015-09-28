@@ -74,7 +74,7 @@ export default class AppController {
             }
         };
 
-        RestApi.request( request_config ).then(
+        RestApi.request( null, request_config ).then(
             ( response ) => {
                 this.access_token = response.access_token;
                 console.log( response );
@@ -97,7 +97,7 @@ export default class AppController {
 
         RestApi.paramSerializer = HttpParamSerializer.serialize;
 
-        RestApi.index( config, User ).then(
+        RestApi.index( User, config ).then(
             ( response ) => {
                 console.log( response );
             }
@@ -117,7 +117,7 @@ export default class AppController {
             "paramSerializer": HttpParamSerializer.serialize
         };
 
-        RestApi.index( config, User ).then(
+        RestApi.index( User, config ).then(
             ( response ) => {
                 console.log( response );
             }
@@ -135,7 +135,7 @@ export default class AppController {
             "paramSerializer": HttpParamSerializer.serialize
         };
 
-        RestApi.view( 123, config, User ).then(
+        RestApi.view( User, 123, config ).then(
             ( response ) => {
                 console.log( response );
             }
@@ -155,7 +155,7 @@ export default class AppController {
             "paramSerializer": HttpParamSerializer.serialize
         };
 
-        RestApi.view( 123, config, User ).then(
+        RestApi.view( User, 123, config ).then(
             ( response ) => {
                 console.log( response );
             }
@@ -178,7 +178,7 @@ export default class AppController {
             "name": "New Store"
         };
 
-        RestApi.add( config, data, Store ).then(
+        RestApi.add( Store, config, data ).then(
             ( response ) => {
                 this.last_record = response;
                 console.log( response );
@@ -198,7 +198,7 @@ export default class AppController {
             sub_path: "enumerations"
         };
 
-        RestApi.request( request_config, Store ).then(
+        RestApi.request( Store, request_config ).then(
             ( response ) => {
                 console.log( response );
             }
@@ -219,7 +219,7 @@ export default class AppController {
             }
         };
 
-        RestApi.request( request_config, Store ).then(
+        RestApi.request( Store, request_config ).then(
             ( response ) => {
                 console.log( "VALID" );
                 console.log( response );
@@ -245,7 +245,7 @@ export default class AppController {
             }
         };
 
-        RestApi.request( request_config, Store ).then(
+        RestApi.request( Store, request_config ).then(
             ( response ) => {
                 console.log( "VALID" );
                 console.log( response );
@@ -273,7 +273,7 @@ export default class AppController {
             "name": "New Store Changed"
         };
 
-        RestApi.edit( this.last_record.id, config, data, Store ).then(
+        RestApi.edit( Store, this.last_record.id, config, data ).then(
             ( response ) => {
                 console.log( response );
             }
@@ -288,7 +288,7 @@ export default class AppController {
 
         let config = {};
 
-        RestApi.delete( this.last_record.id, config, Store ).then(
+        RestApi.delete( Store, this.last_record.id, config ).then(
             ( response ) => {
                 console.log( response );
             }
@@ -307,7 +307,7 @@ export default class AppController {
                 "client_id": 123
             };
 
-            RestApi.add( {}, data, Store ).then(
+            RestApi.add( Store, {}, data ).then(
                 ( response ) => {
                     resolve( response );
                 }
