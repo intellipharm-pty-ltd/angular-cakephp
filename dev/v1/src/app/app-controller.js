@@ -7,6 +7,10 @@ import HttpParamSerializer from 'modules/http/param-serializer/param-serializer'
 import HTTPResponseTransformer from 'modules/http/response-transformer/response-transformer';
 import pluralize from 'blakeembrey/pluralize';
 
+import MarketingFilter from 'models/marketing-filter';
+import MarketingFilterItem from 'models/marketing-filter-item';
+import MarketingFilterItemValue from 'models/marketing-filter-item-value';
+
 import credentials from './credentials.json!';
 
 export default class AppController {
@@ -108,7 +112,7 @@ export default class AppController {
 
         this.prepareRestApi();
 
-        RestApi.responseTransformer = HTTPResponseTransformer.transform;
+        RestApi.responseTransformer = HTTPResponseTrassociateClassesansformer.transform;
 
         let config = {
             "params": {
@@ -118,6 +122,27 @@ export default class AppController {
         };
 
         RestApi.index( User, config ).then(
+            ( response ) => {
+                console.log( response );
+            }
+        );
+    }
+
+    showcaseIndexAssociateTransform() {
+
+        this.prepareRestApi();
+
+        HTTPResponseTransformer.associateClasses = [ MarketingFilterItem, MarketingFilterItemValue ];
+        RestApi.responseTransformer = HTTPResponseTransformer.transform;
+        RestApi.paramSerializer = HttpParamSerializer.serialize;
+
+        let config = {
+            "params": {
+                "contain": { "MarketingFilterItem": [ "MarketingFilterItemValue" ] }
+            }
+        };
+
+        RestApi.index( MarketingFilter, config ).then(
             ( response ) => {
                 console.log( response );
             }
