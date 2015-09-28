@@ -1,5 +1,5 @@
-System.register(["../angular-cakephp"], function (_export) {
-    "use strict";
+System.register(['../angular-cakephp'], function (_export) {
+    'use strict';
 
     var ActiveRecord, BaseModel, RestApi, http_mock;
     return {
@@ -15,7 +15,7 @@ System.register(["../angular-cakephp"], function (_export) {
                 });
             };
 
-            describe("RestApi", function () {
+            describe('RestApi', function () {
 
                 beforeEach(function () {
                     RestApi.reset();
@@ -128,7 +128,6 @@ System.register(["../angular-cakephp"], function (_export) {
                     }));
                     RestApi.http = http_mock;
                     RestApi.hostname = "AAA";
-                    RestApi.path = "BBB";
                     RestApi.responseTransformer = responseTransformer;
                     RestApi.responseHandler = responseHandler;
 
@@ -142,7 +141,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     };
 
                     // call
-                    RestApi.request(null).then(function (response) {
+                    RestApi.request(null, { path: 'BBB' }).then(function (response) {
                         assert("PASS", response);
                     }, function (response) {
                         assert("FAIL", response);

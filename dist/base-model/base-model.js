@@ -15,8 +15,8 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
             _ = _lodash['default'];
         }],
         execute: function () {
-            MESSAGE_ID_REQURIED = "Please provide an ID";
-            MESSAGE_DATA_REQURIED = "Please provide data";
+            MESSAGE_ID_REQURIED = 'Please provide an ID';
+            MESSAGE_DATA_REQURIED = 'Please provide data';
 
             /**
              * Class BaseModel
@@ -40,17 +40,13 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                      * @param  {Boolean} map_data = null
                      * @return {Promise}
                      */
-                    value: function _new(active_record_class) {
+                    value: function _new(ActiveRecordClass) {
                         var data = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
                         var map_data = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
 
-                        if (!_.isNull(active_record_class)) {
-                            this.activeRecordClass = active_record_class;
-                        }
-
-                        if (!_.isNull(this.activeRecordClass)) {
-                            var model = this.constructor.name !== "function" ? this.constructor : this;
-                            return new this.activeRecordClass(data, model, map_data);
+                        if (!_.isNull(ActiveRecordClass)) {
+                            var model = this.constructor.name !== 'function' ? this.constructor : this;
+                            return new ActiveRecordClass(data, model, map_data);
                         }
 
                         return data;
@@ -68,11 +64,7 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                     value: function index(active_record_class) {
                         var config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-                        if (!_.isNull(active_record_class)) {
-                            this.activeRecordClass = active_record_class;
-                        }
-
-                        return RestApi.index(this.activeRecordClass, config);
+                        return RestApi.index(active_record_class, config);
                     }
 
                     /**
@@ -91,11 +83,7 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                             throw new Error(MESSAGE_ID_REQURIED);
                         }
 
-                        if (!_.isNull(active_record_class)) {
-                            this.activeRecordClass = active_record_class;
-                        }
-
-                        return RestApi.view(this.activeRecordClass, id, config);
+                        return RestApi.view(active_record_class, id, config);
                     }
 
                     /**
@@ -114,11 +102,7 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                             throw new Error(MESSAGE_DATA_REQURIED);
                         }
 
-                        if (!_.isNull(active_record_class)) {
-                            this.activeRecordClass = active_record_class;
-                        }
-
-                        return RestApi.add(this.activeRecordClass, config, data);
+                        return RestApi.add(active_record_class, config, data);
                     }
 
                     /**
@@ -142,11 +126,7 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                             throw new Error(MESSAGE_DATA_REQURIED);
                         }
 
-                        if (!_.isNull(active_record_class)) {
-                            this.activeRecordClass = active_record_class;
-                        }
-
-                        return RestApi.edit(this.activeRecordClass, id, config, data);
+                        return RestApi.edit(active_record_class, id, config, data);
                     }
 
                     /**
@@ -165,11 +145,7 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                             throw new Error(MESSAGE_ID_REQURIED);
                         }
 
-                        if (!_.isNull(active_record_class)) {
-                            this.activeRecordClass = active_record_class;
-                        }
-
-                        return RestApi['delete'](this.activeRecordClass, id, config);
+                        return RestApi['delete'](active_record_class, id, config);
                     }
 
                     /**
@@ -185,11 +161,7 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                     value: function request(active_record_class) {
                         var config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-                        if (!_.isNull(active_record_class)) {
-                            this.activeRecordClass = active_record_class;
-                        }
-
-                        return RestApi.request(this.activeRecordClass, config);
+                        return RestApi.request(active_record_class, config);
                     }
 
                     /**
@@ -201,19 +173,6 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
 
                         // defaults
                         this._active_record_class = null;
-                    }
-                }, {
-                    key: 'activeRecordClass',
-
-                    /**
-                     * activeRecordClass
-                     * class used to create active record instances from request results
-                     */
-                    get: function get() {
-                        return this._active_record_class;
-                    },
-                    set: function set(value) {
-                        this._active_record_class = value;
                     }
                 }]);
 

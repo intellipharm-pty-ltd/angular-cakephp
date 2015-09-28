@@ -17,11 +17,11 @@ class BaseModel {
      * @param  {Boolean} map_data = null
      * @return {Promise}
      */
-    static new( active_record_class, data = {}, map_data = null ) {
+    static new( ActiveRecordClass, data = {}, map_data = null ) {
 
-        if ( !_.isNull( active_record_class ) ) {
+        if ( !_.isNull( ActiveRecordClass ) ) {
             let model = this.constructor.name !== 'function' ? this.constructor : this;
-            return new active_record_class( data, model, map_data );
+            return new ActiveRecordClass( data, model, map_data );
         }
 
         return data;
