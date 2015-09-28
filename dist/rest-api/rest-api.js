@@ -307,7 +307,7 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                                 var transformed_response = response;
 
                                 if (!_.isNull(success_transformer) && typeof success_transformer === 'function') {
-                                    transformed_response = success_transformer(response, _this.activeRecordClass);
+                                    transformed_response = success_transformer(response, active_record_class);
                                 }
 
                                 if (!_.isNull(success_handler) && typeof success_handler === 'function') {
@@ -322,7 +322,7 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                                 var transformed_response = response;
 
                                 if (!_.isNull(error_transformer) && typeof error_transformer === 'function') {
-                                    transformed_response = error_transformer(response, _this.activeRecordClass);
+                                    transformed_response = error_transformer(response, active_record_class);
                                 }
 
                                 if (!_.isNull(error_handler) && typeof error_handler === 'function') {
