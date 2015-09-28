@@ -1,25 +1,15 @@
 import _ from 'lodash';
 import { ActiveRecord } from '../angular-cakephp';
 
-const MESSAGE_HOSTNAME_AND_PATH_REQURIED = "Please configure an API hostname & path before making a request";
-const MESSAGE_HTTP_REQUIRED = "Please provide HTTP service";
-const MESSAGE_ID_IS_REQURIED = "Please provide an ID with request";
-const MESSAGE_INVALID_HTTP_SERVICE = "http is invalid";
+const MESSAGE_HOSTNAME_AND_PATH_REQURIED = 'Please configure an API hostname & path before making a request';
+const MESSAGE_HTTP_REQUIRED = 'Please provide HTTP service';
+const MESSAGE_ID_IS_REQURIED = 'Please provide an ID with request';
+const MESSAGE_INVALID_HTTP_SERVICE = 'http is invalid';
 
 /**
  * Class RestApi
  */
 class RestApi {
-
-    /**
-     * activeRecordClass
-     */
-    static get activeRecordClass() {
-        return this._active_record_class;
-    }
-    static set activeRecordClass( value ) {
-        this._active_record_class = value;
-    }
 
     /**
      * errorHandler
@@ -85,31 +75,7 @@ class RestApi {
         this._param_serializer = value;
     }
 
-    /**
-     * path
-     * API path to use in HTTP requests
-     * if no path is available & active record class is set then pathGenerator will be used to generate API path
-     */
-    static get path() {
-
-        let active_record_class = this.activeRecordClass;
-
-        if ( !_.isNull( this.pathGenerator ) && !_.isNull( active_record_class ) ) {
-
-            // get Active Record class name from Class.constructor.name if it's not 'Function', otherwise  get from Class.name
-            let _name = active_record_class.constructor.name !== "Function" ? active_record_class.constructor.name : ( !_.isUndefined(active_record_class.name) ? active_record_class.name : null );
-
-            if ( !_.isNull( _name ) ) {
-                this.path = this.pathGenerator( _.snakeCase( _name ) );
-            }
-        }
-        return this._path;
-    }
-    static set path( value ) {
-        this._path = value;
-    }
-
-    /**
+    /*
      * pathGenerator
      * Used to generate API Path when no path is available & active record class is set,
      * will be passed the _.snakeCase of the active record class name
@@ -162,16 +128,36 @@ class RestApi {
     }
 
     /**
+     * path
+     * API path to use in HTTP requests
+     * if no path is available & active record class is set then pathGenerator will be used to generate API path
+     */
+    static path( active_record_class = null ) {
+
+        if ( !_.isNull( this.pathGenerator ) && !_.isNull( active_record_class ) ) {
+
+            // get Active Record class name from Class.constructor.name if it's not 'Function', otherwise  get from Class.name
+            let _name = active_record_class.constructor.name !== "Function" ? active_record_class.constructor.name : ( !_.isUndefined(active_record_class.name) ? active_record_class.name : null );
+
+            if ( !_.isNull( _name ) ) {
+                this._path = this.pathGenerator( _.snakeCase( _name ) );
+            }
+        }
+        return this._path;
+    }
+
+    /**
      * url
      */
-    static get url() {
+    static url( active_record_class = null ) {
 
-        if ( !_.isNull( this._url ) && _.isNull( this.activeRecordClass ) ) {
+        if ( !_.isNull( this._url ) && _.isNull( active_record_class ) ) {
             return this._url;
         }
 
         let hostname = this.hostname;
-        let path = this.path;
+
+        let path = this.path( active_record_class );
 
         if ( ( _.isNull( hostname ) || _.isNull( path ) ) ) {
             throw new Error( MESSAGE_HOSTNAME_AND_PATH_REQURIED );
@@ -181,9 +167,6 @@ class RestApi {
         this._url = hostname + path;
 
         return this._url;
-    }
-    static set url( value ) {
-        this._url = value;
     }
 
     /**
@@ -196,20 +179,11 @@ class RestApi {
      */
     static index( active_record_class, request_config = {} ) {
 
-        // update class properties
-
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
-
         // request config
-
-        request_config.method = "GET";
-        request_config.url = this.url;
-        request_config.headers = _.has( request_config, 'headers' ) ? _.merge( request_config.headers, this.headers ) : this.headers;
+        request_config.method = 'GET';
 
         // request ...
-        return this.request( this.activeRecordClass, request_config );
+        return this.request( active_record_class, request_config );
     }
 
     /**
@@ -227,20 +201,12 @@ class RestApi {
             throw new Error( MESSAGE_ID_IS_REQURIED );
         }
 
-        // update class properties
-
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
-
         // request config
-
-        request_config.method = "GET";
-        request_config.url = this.url + '/' + id;
-        request_config.headers = _.has( request_config, 'headers' ) ? _.merge( request_config.headers, this.headers ) : this.headers;
+        request_config.method = 'GET';
+        request_config.sub_path = id;
 
         // request ...
-        return this.request( this.activeRecordClass, request_config );
+        return this.request( active_record_class, request_config );
     }
 
     /**
@@ -248,27 +214,16 @@ class RestApi {
      *
      * @param  {ActiveRecord Class} active_record_class
      * @param  {Object} request_config = {}
-     * @param  {Object} request_data = {}
      * @return {Promise}
      * @throws {Error}
      */
-    static add( active_record_class, request_config = {}, request_data = {} ) {
-
-        // update class properties
-
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
+    static add( active_record_class, request_config = {} ) {
 
         // request config
-
-        request_config.method = "POST";
-        request_config.url = this.url;
-        request_config.data = request_data;
-        request_config.headers = _.has( request_config, 'headers' ) ? _.merge( request_config.headers, this.headers ) : this.headers;
+        request_config.method = 'POST';
 
         // request ...
-        return this.request( this.activeRecordClass, request_config );
+        return this.request( active_record_class, request_config );
     }
 
     /**
@@ -277,31 +232,21 @@ class RestApi {
      * @param  {ActiveRecord Class} active_record_class
      * @param  {Integer} id
      * @param  {Object} request_config = {}
-     * @param  {Object} request_data = {}
      * @return {Promise}
      * @throws {Error}
      */
-    static edit( active_record_class, id, request_config = {}, request_data = {} ) {
+    static edit( active_record_class, id, request_config = {} ) {
 
         if ( _.isNull( id ) || _.isUndefined( id ) ) {
             throw new Error( MESSAGE_ID_IS_REQURIED );
         }
 
-        // update class properties
-
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
-
         // request config
-
-        request_config.method = "PUT";
-        request_config.url = this.url + '/' + id;
-        request_config.data = request_data;
-        request_config.headers = _.has( request_config, 'headers' ) ? _.merge( request_config.headers, this.headers ) : this.headers;
+        request_config.method = 'PUT';
+        request_config.sub_path = id;
 
         // request ...
-        return this.request( this.activeRecordClass, request_config );
+        return this.request( active_record_class, request_config );
     }
 
     /**
@@ -319,20 +264,12 @@ class RestApi {
             throw new Error( MESSAGE_ID_IS_REQURIED );
         }
 
-        // update class properties
-
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
-
         // request config
-
-        request_config.method = "DELETE";
-        request_config.url = this.url + '/' + id;
-        request_config.headers = _.has( request_config, 'headers' ) ? _.merge( request_config.headers, this.headers ) : this.headers;
+        request_config.method = 'DELETE';
+        request_config.sub_path = id;
 
         // request ...
-        return this.request( this.activeRecordClass, request_config );
+        return this.request( active_record_class, request_config );
     }
 
     /**
@@ -354,44 +291,40 @@ class RestApi {
         let response_handler = this.responseHandler;
         if ( _.has( config, 'responseHandler' ) ) {
             response_handler = config.responseHandler;
-            delete config.responseHandler;
+            delete config.responseHandler; // clean config
         }
 
         let response_transformer = this.responseTransformer;
         if ( _.has( config, 'responseTransformer' ) ) {
             response_transformer = config.responseTransformer;
-            delete config.responseTransformer;
+            delete config.responseTransformer; // clean config
         }
 
         let success_handler = this.successHandler || response_handler;
         if ( _.has( config, 'successHandler' ) ) {
             success_handler = config.successHandler;
-            delete config.successHandler;
+            delete config.successHandler; // clean config
         }
 
         let success_transformer = this.successTransformer || response_transformer;
         if ( _.has( config, 'successTransformer' ) ) {
             success_transformer = config.successTransformer;
-            delete config.successTransformer;
+            delete config.successTransformer; // clean config
         }
 
         let error_handler = this.errorHandler || response_handler;
         if ( _.has( config, 'errorHandler' ) ) {
             error_handler = config.errorHandler;
-            delete config.errorHandler;
+            delete config.errorHandler; // clean config
         }
 
         let error_transformer = this.errorTransformer || response_transformer;
         if ( _.has( config, 'errorTransformer' ) ) {
             error_transformer = config.errorTransformer;
-            delete config.errorTransformer;
+            delete config.errorTransformer; // clean config
         }
 
         // update class properties
-
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
 
         if ( _.has( config, 'hostname' ) ) {
             this.hostname = config.hostname;
@@ -399,11 +332,13 @@ class RestApi {
         }
 
         if ( _.has( config, 'path' ) ) {
-            this.path = config.path;
+            this._path = config.path;
             delete config.path; // clean config
         }
 
         // update request config
+
+        config.headers = _.has( config, 'headers' ) ? _.merge( config.headers, this.headers ) : this.headers;
 
         if ( !_.has( config, 'paramSerializer' ) ) {
 
@@ -415,8 +350,7 @@ class RestApi {
         }
 
         if ( !_.has( config, 'url' ) ) {
-
-            let _url = this.url;
+            let _url = this.url( active_record_class );
 
             if ( !_.isNull( _url ) ) {
                 config.url = _url;
@@ -442,7 +376,7 @@ class RestApi {
                     let transformed_response = response;
 
                     if ( !_.isNull( success_transformer ) && typeof success_transformer === 'function' ) {
-                        transformed_response = success_transformer( response, this.activeRecordClass );
+                        transformed_response = success_transformer( response, active_record_class );
                     }
 
                     if ( !_.isNull( success_handler ) && typeof success_handler === 'function' ) {
@@ -458,7 +392,7 @@ class RestApi {
                     let transformed_response = response;
 
                     if ( !_.isNull( error_transformer ) && typeof error_transformer === 'function' ) {
-                        transformed_response = error_transformer( response, this.activeRecordClass );
+                        transformed_response = error_transformer( response, active_record_class );
                     }
 
                     if ( !_.isNull( error_handler ) && typeof error_handler === 'function' ) {
@@ -479,7 +413,6 @@ class RestApi {
     static reset() {
 
         // defaults
-        this._active_record_class    = null;
         this._error_handler          = null;
         this._error_transformer      = null;
         this._headers                = {};

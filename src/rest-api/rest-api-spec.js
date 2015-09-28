@@ -6,7 +6,7 @@ var http_mock = () => {
     } );
 };
 
-describe( "RestApi", () => {
+describe( 'RestApi', () => {
 
     beforeEach( () => {
         RestApi.reset();
@@ -123,7 +123,6 @@ describe( "RestApi", () => {
         );
         RestApi.http = http_mock;
         RestApi.hostname = "AAA";
-        RestApi.path = "BBB";
         RestApi.responseTransformer = responseTransformer;
         RestApi.responseHandler = responseHandler;
 
@@ -137,7 +136,7 @@ describe( "RestApi", () => {
         };
 
         // call
-        RestApi.request( null ).then(
+        RestApi.request( null, {path: 'BBB'} ).then(
             ( response ) => { assert( "PASS", response ); },
             ( response ) => { assert( "FAIL", response ); }
         );
