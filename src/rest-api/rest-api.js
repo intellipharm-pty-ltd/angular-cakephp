@@ -181,7 +181,6 @@ class RestApi {
 
         // request config
         request_config.method = 'GET';
-        request_config.url = this.url;
 
         // request ...
         return this.request( active_record_class, request_config );
@@ -222,7 +221,6 @@ class RestApi {
 
         // request config
         request_config.method = 'POST';
-        request_config.url = this.url;
 
         // request ...
         return this.request( active_record_class, request_config );
