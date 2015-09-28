@@ -1,24 +1,13 @@
 import { ActiveRecord, RestApi } from '../angular-cakephp';
 import _ from 'lodash';
 
-const MESSAGE_ID_REQURIED = "Please provide an ID";
-const MESSAGE_DATA_REQURIED = "Please provide data";
+const MESSAGE_ID_REQURIED = 'Please provide an ID';
+const MESSAGE_DATA_REQURIED = 'Please provide data';
 
 /**
  * Class BaseModel
  */
 class BaseModel {
-
-    /**
-     * activeRecordClass
-     * class used to create active record instances from request results
-     */
-    static get activeRecordClass() {
-        return this._active_record_class;
-    }
-    static set activeRecordClass( value ) {
-        this._active_record_class = value;
-    }
 
     /**
      * new
@@ -31,12 +20,8 @@ class BaseModel {
     static new( active_record_class, data = {}, map_data = null ) {
 
         if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
-
-        if ( !_.isNull( this.activeRecordClass ) ) {
-            let model = this.constructor.name !== "function" ? this.constructor : this;
-            return new this.activeRecordClass( data, model, map_data );
+            let model = this.constructor.name !== 'function' ? this.constructor : this;
+            return new active_record_class( data, model, map_data );
         }
 
         return data;
@@ -51,11 +36,7 @@ class BaseModel {
      */
     static index( active_record_class, config = {} ) {
 
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
-
-        return RestApi.index( this.activeRecordClass, config );
+        return RestApi.index( active_record_class, config );
     }
 
     /**
@@ -71,11 +52,7 @@ class BaseModel {
             throw new Error( MESSAGE_ID_REQURIED );
         }
 
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
-
-        return RestApi.view( this.activeRecordClass, id, config );
+        return RestApi.view( active_record_class, id, config );
     }
 
     /**
@@ -91,11 +68,7 @@ class BaseModel {
             throw new Error( MESSAGE_DATA_REQURIED );
         }
 
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
-
-        return RestApi.add( this.activeRecordClass, config, data );
+        return RestApi.add( active_record_class, config, data );
     }
 
     /**
@@ -116,11 +89,7 @@ class BaseModel {
             throw new Error( MESSAGE_DATA_REQURIED );
         }
 
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
-
-        return RestApi.edit( this.activeRecordClass, id, config, data );
+        return RestApi.edit( active_record_class, id, config, data );
     }
 
     /**
@@ -136,11 +105,7 @@ class BaseModel {
             throw new Error( MESSAGE_ID_REQURIED );
         }
 
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
-
-        return RestApi.delete( this.activeRecordClass, id, config );
+        return RestApi.delete( active_record_class, id, config );
     }
 
     /**
@@ -153,11 +118,7 @@ class BaseModel {
      */
     static request( active_record_class, config = {} ) {
 
-        if ( !_.isNull( active_record_class ) ) {
-            this.activeRecordClass = active_record_class;
-        }
-
-        return RestApi.request( this.activeRecordClass, config );
+        return RestApi.request( active_record_class, config );
     }
 
     /**
