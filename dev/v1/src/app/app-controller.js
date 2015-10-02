@@ -112,7 +112,7 @@ export default class AppController {
 
         this.prepareRestApi();
 
-        RestApi.responseTransformer = HTTPResponseTrassociateClassesansformer.transform;
+        RestApi.responseTransformer = HTTPResponseTransformer.transform;
 
         let config = {
             "params": {
