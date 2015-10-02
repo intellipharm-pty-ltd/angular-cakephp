@@ -65,9 +65,11 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
 
                     /**
                      * view
+                     * @param  {Object} config = {}
                      * @return {Promise}
                      */
                     value: function view() {
+                        var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
                         // view (no id)
                         if (!_.has(this, 'id') || _.isUndefined(this.id)) {
@@ -75,35 +77,40 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                         }
 
                         // edit
-                        return this.model.view(this.constructor, this.id);
+                        return this.model.view(this.constructor, this.id, config);
                     }
 
                     /**
                      * save
                      * runs RestApi save or edit depending on whether anid is set
                      *
+                     * @param  {Object} config = {}
                      * @return {Promise}
                      */
                 }, {
                     key: 'save',
                     value: function save() {
+                        var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
                         // add (no id)
                         if (!_.has(this, 'id') || _.isUndefined(this.id)) {
-                            return this.model.add(this.constructor, this);
+                            return this.model.add(this.constructor, this, config);
                         }
 
                         // edit
-                        return this.model.edit(this.constructor, this.id, this);
+                        return this.model.edit(this.constructor, this.id, this, config);
                     }
 
                     /**
                      * delete
+                     *
+                     * @param  {Object} config = {}
                      * @return {Promise}
                      */
                 }, {
                     key: 'delete',
                     value: function _delete() {
+                        var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
                         // no id
                         if (!_.has(this, 'id') || _.isUndefined(this.id)) {
@@ -111,7 +118,7 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                         }
 
                         // delete
-                        return this.model['delete'](this.constructor, this.id);
+                        return this.model['delete'](this.constructor, this.id, config);
                     }
                 }, {
                     key: 'mapData',

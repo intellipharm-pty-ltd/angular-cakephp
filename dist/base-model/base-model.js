@@ -102,7 +102,9 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                             throw new Error(MESSAGE_DATA_REQURIED);
                         }
 
-                        return RestApi.add(active_record_class, config, data);
+                        config.data = data;
+
+                        return RestApi.add(active_record_class, config);
                     }
 
                     /**
@@ -126,7 +128,9 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                             throw new Error(MESSAGE_DATA_REQURIED);
                         }
 
-                        return RestApi.edit(active_record_class, id, config, data);
+                        config.data = data;
+
+                        return RestApi.edit(active_record_class, id, config);
                     }
 
                     /**
