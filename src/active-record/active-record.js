@@ -57,9 +57,10 @@ export default class ActiveRecord {
 
     /**
      * view
+     * @param  {Object} config = {}
      * @return {Promise}
      */
-    view() {
+    view( config = {} ) {
 
         // view (no id)
         if ( !_.has( this, 'id' ) || _.isUndefined( this.id )) {
@@ -67,31 +68,34 @@ export default class ActiveRecord {
         }
 
         // edit
-        return this.model.view( this.constructor, this.id );
+        return this.model.view( this.constructor, this.id, config );
     }
 
     /**
      * save
      * runs RestApi save or edit depending on whether anid is set
      *
+     * @param  {Object} config = {}
      * @return {Promise}
      */
-    save() {
+    save( config = {} ) {
 
         // add (no id)
         if ( !_.has( this, 'id' ) || _.isUndefined( this.id )) {
-            return this.model.add( this.constructor, this );
+            return this.model.add( this.constructor, this, config );
         }
 
         // edit
-        return this.model.edit( this.constructor, this.id, this );
+        return this.model.edit( this.constructor, this.id, this, config );
     }
 
     /**
      * delete
+     *
+     * @param  {Object} config = {}
      * @return {Promise}
      */
-    delete() {
+    delete( config = {} ) {
 
         // no id
         if ( !_.has( this, 'id' ) || _.isUndefined( this.id )) {
@@ -99,7 +103,7 @@ export default class ActiveRecord {
         }
 
         // delete
-        return this.model.delete( this.constructor, this.id );
+        return this.model.delete( this.constructor, this.id, config );
     }
 }
 
