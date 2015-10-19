@@ -304,6 +304,10 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                                 // no success handler
                                 resolve(transformed_response);
+
+                                if (_this.scope) {
+                                    _this.scope.$apply();
+                                }
                             }, function (response) {
 
                                 var transformed_response = response;
@@ -319,6 +323,10 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                                 // no error handler
                                 reject(transformed_response);
+
+                                if (_this.scope) {
+                                    _this.scope.$apply();
+                                }
                             });
                         });
                     }
@@ -482,6 +490,19 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                     },
                     set: function set(value) {
                         this._success_transformer = value;
+                    }
+
+                    /**
+                     * scope
+                     * AngularJS $rootScope
+                     */
+                }, {
+                    key: 'scope',
+                    get: function get() {
+                        return this._scope;
+                    },
+                    set: function set(value) {
+                        this._scope = value;
                     }
                 }]);
 
