@@ -128,17 +128,6 @@ class RestApi {
     }
 
     /**
-     * scope
-     * AngularJS $rootScope
-     */
-    static get scope() {
-        return this._scope;
-    }
-    static set scope( value ) {
-        this._scope = value;
-    }
-
-    /**
      * path
      * API path to use in HTTP requests
      * if no path is available & active record class is set then pathGenerator will be used to generate API path
@@ -385,10 +374,6 @@ class RestApi {
 
                     // no success handler
                     resolve( transformed_response );
-
-                    if (this.scope) {
-                        this.scope.$apply();
-                    }
                 },
                 ( response ) => {
 
@@ -405,10 +390,6 @@ class RestApi {
 
                     // no error handler
                     reject( transformed_response );
-
-                    if (this.scope) {
-                        this.scope.$apply();
-                    }
                 }
             );
         });
