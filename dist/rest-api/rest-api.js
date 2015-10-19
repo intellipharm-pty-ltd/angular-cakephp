@@ -304,8 +304,10 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                                     resolve(transformed_response);
                                 }
 
-                                if (_this.scope && _this.scope.$$phase !== 'digest') {
-                                    _this.scope.$apply();
+                                if (_this.scope && _this.timeout) {
+                                    _this.timeout(function () {
+                                        _this.scope.$apply();
+                                    });
                                 }
                             }, function (response) {
 
@@ -322,8 +324,10 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                                     reject(transformed_response);
                                 }
 
-                                if (_this.scope && _this.scope.$$phase !== 'digest') {
-                                    _this.scope.$apply();
+                                if (_this.scope && _this.timeout) {
+                                    _this.timeout(function () {
+                                        _this.scope.$apply();
+                                    });
                                 }
                             });
                         });
@@ -349,8 +353,9 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                         this._response_transformer = null;
                         this._success_handler = null;
                         this._success_transformer = null;
-                        this._url = null;
                         this._scope = null;
+                        this._timeout = null;
+                        this._url = null;
                     }
                 }, {
                     key: 'errorHandler',
@@ -501,6 +506,18 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                     },
                     set: function set(value) {
                         this._scope = value;
+                    }
+
+                    /**
+                     * timeout
+                     */
+                }, {
+                    key: 'timeout',
+                    get: function get() {
+                        return this._timeout;
+                    },
+                    set: function set(value) {
+                        this._timeout = value;
                     }
                 }]);
 

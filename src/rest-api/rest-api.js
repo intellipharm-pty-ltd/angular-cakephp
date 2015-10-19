@@ -138,6 +138,16 @@ class RestApi {
     }
 
     /**
+     * timeout
+     */
+    static get timeout() {
+        return this._timeout;
+    }
+    static set timeout( value ) {
+        this._timeout = value;
+    }
+
+    /**
      * path
      * API path to use in HTTP requests
      * if no path is available & active record class is set then pathGenerator will be used to generate API path
@@ -384,8 +394,11 @@ class RestApi {
                         resolve( transformed_response );
                     }
 
-                    if (this.scope && this.scope.$$phase !== 'digest') {
-                        this.scope.$apply();
+                    // TODO: remove this to make is less angular and more vanilla javascripe
+                    if (this.scope && this.timeout) {
+                        this.timeout(() => {
+                            this.scope.$apply();
+                        })
                     }
                 },
                 ( response ) => {
@@ -403,8 +416,11 @@ class RestApi {
                         reject( transformed_response );
                     }
 
-                    if (this.scope && this.scope.$$phase !== 'digest') {
-                        this.scope.$apply();
+                    // TODO: remove this to make is less angular and more vanilla javascripe
+                    if (this.scope && this.timeout) {
+                        this.timeout(() => {
+                            this.scope.$apply();
+                        })
                     }
                 }
             );
@@ -429,8 +445,9 @@ class RestApi {
         this._response_transformer   = null;
         this._success_handler        = null;
         this._success_transformer    = null;
-        this._url                    = null;
         this._scope                  = null;
+        this._timeout                = null;
+        this._url                    = null;
     }
 }
 
