@@ -149,15 +149,15 @@ class RestApi {
     /**
      * url
      */
-    static url( active_record_class = null ) {
+    static url( active_record_class = null, config = {} ) {
 
         if ( !_.isNull( this._url ) && _.isNull( active_record_class ) ) {
             return this._url;
         }
 
-        let hostname = this.hostname;
+        let hostname = _.has( config, 'hostname' ) ? config.hostname : this.hostname;
 
-        let path = this.path( active_record_class );
+        let path = _.has( config, 'path' ) ? config.path : this.path( active_record_class );
 
         if ( ( _.isNull( hostname ) || _.isNull( path ) ) ) {
             throw new Error( MESSAGE_HOSTNAME_AND_PATH_REQURIED );
@@ -324,18 +324,6 @@ class RestApi {
             delete config.errorTransformer; // clean config
         }
 
-        // update class properties
-
-        if ( _.has( config, 'hostname' ) ) {
-            this.hostname = config.hostname;
-            delete config.hostname; // clean config
-        }
-
-        if ( _.has( config, 'path' ) ) {
-            this._path = config.path;
-            delete config.path; // clean config
-        }
-
         // update request config
 
         config.headers = _.has( config, 'headers' ) ? _.merge( config.headers, this.headers ) : this.headers;
@@ -350,7 +338,7 @@ class RestApi {
         }
 
         if ( !_.has( config, 'url' ) ) {
-            let _url = this.url( active_record_class );
+            let _url = this.url( active_record_class, config );
 
             if ( !_.isNull( _url ) ) {
                 config.url = _url;

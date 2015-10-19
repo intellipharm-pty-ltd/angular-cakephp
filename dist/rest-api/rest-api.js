@@ -60,14 +60,15 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                     key: 'url',
                     value: function url() {
                         var active_record_class = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+                        var config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
                         if (!_.isNull(this._url) && _.isNull(active_record_class)) {
                             return this._url;
                         }
 
-                        var hostname = this.hostname;
+                        var hostname = _.has(config, 'hostname') ? config.hostname : this.hostname;
 
-                        var path = this.path(active_record_class);
+                        var path = _.has(config, 'path') ? config.path : this.path(active_record_class);
 
                         if (_.isNull(hostname) || _.isNull(path)) {
                             throw new Error(MESSAGE_HOSTNAME_AND_PATH_REQURIED);
@@ -254,18 +255,6 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                             delete config.errorTransformer; // clean config
                         }
 
-                        // update class properties
-
-                        if (_.has(config, 'hostname')) {
-                            this.hostname = config.hostname;
-                            delete config.hostname; // clean config
-                        }
-
-                        if (_.has(config, 'path')) {
-                            this._path = config.path;
-                            delete config.path; // clean config
-                        }
-
                         // update request config
 
                         config.headers = _.has(config, 'headers') ? _.merge(config.headers, this.headers) : this.headers;
@@ -280,7 +269,7 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                         }
 
                         if (!_.has(config, 'url')) {
-                            var _url = this.url(active_record_class);
+                            var _url = this.url(active_record_class, config);
 
                             if (!_.isNull(_url)) {
                                 config.url = _url;
