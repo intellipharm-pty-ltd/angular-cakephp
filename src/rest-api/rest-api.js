@@ -128,6 +128,16 @@ class RestApi {
     }
 
     /**
+     * scope
+     */
+    static get scope() {
+        return this._scope;
+    }
+    static set scope( value ) {
+        this._scope = value;
+    }
+
+    /**
      * path
      * API path to use in HTTP requests
      * if no path is available & active record class is set then pathGenerator will be used to generate API path
@@ -369,11 +379,14 @@ class RestApi {
 
                     if ( !_.isNull( success_handler ) && typeof success_handler === 'function' ) {
                         success_handler( transformed_response ).then( resolve, reject );
-                        return;
+                    } else {
+                        // no success handler
+                        resolve( transformed_response );
                     }
 
-                    // no success handler
-                    resolve( transformed_response );
+                    if (this.scope && this.scope.$$phase !== 'digest') {
+                        this.scope.$apply();
+                    }
                 },
                 ( response ) => {
 
@@ -385,11 +398,14 @@ class RestApi {
 
                     if ( !_.isNull( error_handler ) && typeof error_handler === 'function' ) {
                         error_handler( transformed_response ).then( resolve, reject );
-                        return;
+                    } else {
+                        // no error handler
+                        reject( transformed_response );
                     }
 
-                    // no error handler
-                    reject( transformed_response );
+                    if (this.scope && this.scope.$$phase !== 'digest') {
+                        this.scope.$apply();
+                    }
                 }
             );
         });
@@ -414,6 +430,7 @@ class RestApi {
         this._success_handler        = null;
         this._success_transformer    = null;
         this._url                    = null;
+        this._scope                  = null;
     }
 }
 

@@ -299,11 +299,14 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                                 if (!_.isNull(success_handler) && typeof success_handler === 'function') {
                                     success_handler(transformed_response).then(resolve, reject);
-                                    return;
+                                } else {
+                                    // no success handler
+                                    resolve(transformed_response);
                                 }
 
-                                // no success handler
-                                resolve(transformed_response);
+                                if (_this.scope && _this.scope.$$phase !== 'digest') {
+                                    _this.scope.$apply();
+                                }
                             }, function (response) {
 
                                 var transformed_response = response;
@@ -314,11 +317,14 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                                 if (!_.isNull(error_handler) && typeof error_handler === 'function') {
                                     error_handler(transformed_response).then(resolve, reject);
-                                    return;
+                                } else {
+                                    // no error handler
+                                    reject(transformed_response);
                                 }
 
-                                // no error handler
-                                reject(transformed_response);
+                                if (_this.scope && _this.scope.$$phase !== 'digest') {
+                                    _this.scope.$apply();
+                                }
                             });
                         });
                     }
@@ -344,6 +350,7 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                         this._success_handler = null;
                         this._success_transformer = null;
                         this._url = null;
+                        this._scope = null;
                     }
                 }, {
                     key: 'errorHandler',
@@ -482,6 +489,18 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                     },
                     set: function set(value) {
                         this._success_transformer = value;
+                    }
+
+                    /**
+                     * scope
+                     */
+                }, {
+                    key: 'scope',
+                    get: function get() {
+                        return this._scope;
+                    },
+                    set: function set(value) {
+                        this._scope = value;
                     }
                 }]);
 
