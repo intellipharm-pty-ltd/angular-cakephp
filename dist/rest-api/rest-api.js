@@ -62,7 +62,7 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                         var active_record_class = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
                         var config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-                        if (!_.isNull(this._url) && _.isNull(active_record_class)) {
+                        if (!_.isNull(this._url) && _.isNull(active_record_class) && !_.has(config, 'path')) {
                             return this._url;
                         }
 

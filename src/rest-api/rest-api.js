@@ -151,7 +151,7 @@ class RestApi {
      */
     static url( active_record_class = null, config = {} ) {
 
-        if ( !_.isNull( this._url ) && _.isNull( active_record_class ) ) {
+        if ( !_.isNull( this._url ) && _.isNull( active_record_class ) && !_.has( config, 'path' ) ) {
             return this._url;
         }
 
