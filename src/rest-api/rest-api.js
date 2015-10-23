@@ -163,6 +163,7 @@ class RestApi {
                 this._path = this.pathGenerator( _.snakeCase( _name ) );
             }
         }
+
         return this._path;
     }
 
@@ -177,6 +178,8 @@ class RestApi {
 
         let hostname = _.has( config, 'hostname' ) ? config.hostname : this.hostname;
 
+        // if config has path then use that
+        // else try and set oath using active_record_class, then get path
         let path = _.has( config, 'path' ) ? config.path : this.path( active_record_class );
 
         if ( ( _.isNull( hostname ) || _.isNull( path ) ) ) {
@@ -346,15 +349,10 @@ class RestApi {
 
         // update request config
 
-        config.headers = _.has( config, 'headers' ) ? _.merge( config.headers, this.headers ) : this.headers;
+        config.headers = _.has( config, 'headers' ) ? _.merge( this.headers, config.headers ) : this.headers;
 
-        if ( !_.has( config, 'paramSerializer' ) ) {
-
-            let _param_serializer = this.paramSerializer;
-
-            if ( !_.isNull( _param_serializer ) ) {
-                config.paramSerializer = _param_serializer;
-            }
+        if ( !_.has( config, 'paramSerializer' ) && !_.isNull( this.paramSerializer ) ) {
+            config.paramSerializer = this.paramSerializer;
         }
 
         if ( !_.has( config, 'url' ) ) {
@@ -374,6 +372,7 @@ class RestApi {
 
             let _promise = this.http( config );
 
+            // if HTTP Service is invalid
             if ( _.isUndefined( _promise ) || typeof _promise !== 'object' || _.isUndefined( _promise.then ) ) {
                 throw new Error( MESSAGE_INVALID_HTTP_SERVICE );
             }
@@ -381,46 +380,71 @@ class RestApi {
             _promise.then(
                 ( response ) => {
 
-                    let transformed_response = response;
+                    let result = response;
 
+                    // transformer
                     if ( !_.isNull( success_transformer ) && typeof success_transformer === 'function' ) {
-                        transformed_response = success_transformer( response, active_record_class );
+
+                        result = success_transformer( response, active_record_class );
                     }
 
-                    if ( !_.isNull( success_handler ) && typeof success_handler === 'function' ) {
-                        success_handler( transformed_response ).then( resolve, reject );
-                    } else {
-                        // no success handler
-                        resolve( transformed_response );
+                    // if no handler
+                    if ( _.isNull( success_handler ) || typeof success_handler !== 'function' ) {
+
+                        resolve( result );
+
+                        // TODO: remove this to make is less angular and more vanilla javascript
+                        if (this.scope && this.timeout) {
+                            this.timeout(() => {
+                                this.scope.$apply();
+                            });
+                        }
+
+                        return;
                     }
 
-                    // TODO: remove this to make is less angular and more vanilla javascripe
+                    // handler
+                    success_handler( result ).then( resolve, reject );
+
+                    // TODO: remove this to make is less angular and more vanilla javascript
                     if (this.scope && this.timeout) {
                         this.timeout(() => {
                             this.scope.$apply();
-                        })
+                        });
                     }
                 },
                 ( response ) => {
 
-                    let transformed_response = response;
+                    let result = response;
 
+                    // transformer
                     if ( !_.isNull( error_transformer ) && typeof error_transformer === 'function' ) {
-                        transformed_response = error_transformer( response, active_record_class );
+                        result = error_transformer( response, active_record_class );
                     }
 
-                    if ( !_.isNull( error_handler ) && typeof error_handler === 'function' ) {
-                        error_handler( transformed_response ).then( resolve, reject );
-                    } else {
-                        // no error handler
-                        reject( transformed_response );
+                    // if no handler
+                    if ( _.isNull( error_handler ) || typeof error_handler !== 'function' ) {
+
+                        reject( result );
+
+                        // TODO: remove this to make is less angular and more vanilla javascript
+                        if (this.scope && this.timeout) {
+                            this.timeout(() => {
+                                this.scope.$apply();
+                            });
+                        }
+
+                        return;
                     }
 
-                    // TODO: remove this to make is less angular and more vanilla javascripe
+                    // handler
+                    error_handler( result ).then( resolve, reject );
+
+                    // TODO: remove this to make is less angular and more vanilla javascript
                     if (this.scope && this.timeout) {
                         this.timeout(() => {
                             this.scope.$apply();
-                        })
+                        });
                     }
                 }
             );
