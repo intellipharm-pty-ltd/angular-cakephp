@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import { ActiveRecord } from '../angular-cakephp';
 
-const MESSAGE_HOSTNAME_AND_PATH_REQURIED = 'Please configure an API hostname & path before making a request';
-const MESSAGE_HTTP_REQUIRED = 'Please provide HTTP service';
-const MESSAGE_ID_IS_REQURIED = 'Please provide an ID with request';
-const MESSAGE_INVALID_HTTP_SERVICE = 'http is invalid';
+const MESSAGE_HOSTNAME_AND_PATH_REQURIED    = 'Please configure an API hostname & path before making a request';
+const MESSAGE_HTTP_REQUIRED                 = 'Please provide HTTP service';
+const MESSAGE_ID_IS_REQURIED                = 'Please provide an ID with request';
+const MESSAGE_INVALID_HTTP_SERVICE          = 'http is invalid';
 
 /**
  * Class RestApi
@@ -484,9 +484,9 @@ class RestApi {
 RestApi.reset();
 
 // constants
-RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED = MESSAGE_HOSTNAME_AND_PATH_REQURIED;
-RestApi.MESSAGE_HTTP_REQUIRED = MESSAGE_HTTP_REQUIRED;
-RestApi.MESSAGE_ID_IS_REQURIED = MESSAGE_ID_IS_REQURIED;
-RestApi.MESSAGE_INVALID_HTTP_SERVICE = MESSAGE_INVALID_HTTP_SERVICE;
+RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED  = MESSAGE_HOSTNAME_AND_PATH_REQURIED;
+RestApi.MESSAGE_HTTP_REQUIRED               = MESSAGE_HTTP_REQUIRED;
+RestApi.MESSAGE_ID_IS_REQURIED              = MESSAGE_ID_IS_REQURIED;
+RestApi.MESSAGE_INVALID_HTTP_SERVICE        = MESSAGE_INVALID_HTTP_SERVICE;
 
 export default RestApi;

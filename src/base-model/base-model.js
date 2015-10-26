@@ -1,7 +1,7 @@
 import { ActiveRecord, RestApi } from '../angular-cakephp';
 import _ from 'lodash';
 
-const MESSAGE_ID_REQURIED = 'Please provide an ID';
+const MESSAGE_ID_REQURIED   = 'Please provide an ID';
 const MESSAGE_DATA_REQURIED = 'Please provide data';
 
 /**
