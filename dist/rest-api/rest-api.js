@@ -50,6 +50,7 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                                 this._path = this.pathGenerator(_.snakeCase(_name));
                             }
                         }
+
                         return this._path;
                     }
 
@@ -68,6 +69,8 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                         var hostname = _.has(config, 'hostname') ? config.hostname : this.hostname;
 
+                        // if config has path then use that
+                        // else try and set oath using active_record_class, then get path
                         var path = _.has(config, 'path') ? config.path : this.path(active_record_class);
 
                         if (_.isNull(hostname) || _.isNull(path)) {
@@ -213,8 +216,20 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                         var config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-                        if (_.isNull(this.http)) {
+                        // NOTE:
+                        // using RestApi instead of this for these checks because we can't test otherwise
+                        // and testing like this doesn't work (TODO: find out why):
+                        //   expect( RestApi.request.bind( RestApi ) ).toThrowError( ... );
+
+                        if (_.isNull(RestApi.http)) {
                             throw new Error(MESSAGE_HTTP_REQUIRED);
+                        }
+
+                        var http_promise = RestApi.http(config);
+
+                        // if HTTP Service is invalid
+                        if (_.isUndefined(http_promise) || typeof http_promise !== 'object' || _.isUndefined(http_promise.then)) {
+                            throw new Error(MESSAGE_INVALID_HTTP_SERVICE);
                         }
 
                         // update params
@@ -257,15 +272,10 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                         // update request config
 
-                        config.headers = _.has(config, 'headers') ? _.merge(config.headers, this.headers) : this.headers;
+                        config.headers = _.has(config, 'headers') ? _.merge(this.headers, config.headers) : this.headers;
 
-                        if (!_.has(config, 'paramSerializer')) {
-
-                            var _param_serializer = this.paramSerializer;
-
-                            if (!_.isNull(_param_serializer)) {
-                                config.paramSerializer = _param_serializer;
-                            }
+                        if (!_.has(config, 'paramSerializer') && !_.isNull(this.paramSerializer)) {
+                            config.paramSerializer = this.paramSerializer;
                         }
 
                         if (!_.has(config, 'url')) {
@@ -283,27 +293,35 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                         return new Promise(function (resolve, reject) {
 
-                            var _promise = _this.http(config);
+                            http_promise.then(function (response) {
 
-                            if (_.isUndefined(_promise) || typeof _promise !== 'object' || _.isUndefined(_promise.then)) {
-                                throw new Error(MESSAGE_INVALID_HTTP_SERVICE);
-                            }
+                                var result = response;
 
-                            _promise.then(function (response) {
-
-                                var transformed_response = response;
-
+                                // transformer
                                 if (!_.isNull(success_transformer) && typeof success_transformer === 'function') {
-                                    transformed_response = success_transformer(response, active_record_class);
+
+                                    result = success_transformer(response, active_record_class);
                                 }
 
-                                if (!_.isNull(success_handler) && typeof success_handler === 'function') {
-                                    success_handler(transformed_response).then(resolve, reject);
-                                } else {
-                                    // no success handler
-                                    resolve(transformed_response);
+                                // if no handler
+                                if (_.isNull(success_handler) || typeof success_handler !== 'function') {
+
+                                    resolve(result);
+
+                                    // TODO: remove this to make is less angular and more vanilla javascript
+                                    if (_this.scope && _this.timeout) {
+                                        _this.timeout(function () {
+                                            _this.scope.$apply();
+                                        });
+                                    }
+
+                                    return;
                                 }
 
+                                // handler
+                                success_handler(result).then(resolve, reject);
+
+                                // TODO: remove this to make is less angular and more vanilla javascript
                                 if (_this.scope && _this.timeout) {
                                     _this.timeout(function () {
                                         _this.scope.$apply();
@@ -311,19 +329,32 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                                 }
                             }, function (response) {
 
-                                var transformed_response = response;
+                                var result = response;
 
+                                // transformer
                                 if (!_.isNull(error_transformer) && typeof error_transformer === 'function') {
-                                    transformed_response = error_transformer(response, active_record_class);
+                                    result = error_transformer(response, active_record_class);
                                 }
 
-                                if (!_.isNull(error_handler) && typeof error_handler === 'function') {
-                                    error_handler(transformed_response).then(resolve, reject);
-                                } else {
-                                    // no error handler
-                                    reject(transformed_response);
+                                // if no handler
+                                if (_.isNull(error_handler) || typeof error_handler !== 'function') {
+
+                                    reject(result);
+
+                                    // TODO: remove this to make is less angular and more vanilla javascript
+                                    if (_this.scope && _this.timeout) {
+                                        _this.timeout(function () {
+                                            _this.scope.$apply();
+                                        });
+                                    }
+
+                                    return;
                                 }
 
+                                // handler
+                                error_handler(result).then(resolve, reject);
+
+                                // TODO: remove this to make is less angular and more vanilla javascript
                                 if (_this.scope && _this.timeout) {
                                     _this.timeout(function () {
                                         _this.scope.$apply();
@@ -530,6 +561,7 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
             RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED = MESSAGE_HOSTNAME_AND_PATH_REQURIED;
             RestApi.MESSAGE_HTTP_REQUIRED = MESSAGE_HTTP_REQUIRED;
             RestApi.MESSAGE_ID_IS_REQURIED = MESSAGE_ID_IS_REQURIED;
+            RestApi.MESSAGE_INVALID_HTTP_SERVICE = MESSAGE_INVALID_HTTP_SERVICE;
 
             _export('default', RestApi);
         }
