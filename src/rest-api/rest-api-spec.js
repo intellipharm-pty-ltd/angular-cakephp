@@ -17,76 +17,76 @@ describe( 'RestApi', () => {
         RestApi.reset();
     });
 
-    // //---------------------------------------------------
-    // // pathGenerator
-    // //---------------------------------------------------
-    //
-    // it("RestApi.path() should call RestApi.pathGenerator with the _.snakeCase of active_record_class name", () => {
-    //
-    //     // spy
-    //     RestApi.pathGenerator = jasmine.createSpy('pathGenerator');
-    //
-    //     // prepare
-    //     class AR extends ActiveRecord {}
-    //
-    //     // call
-    //     let r = RestApi.path( AR );
-    //
-    //     // assert
-    //     expect( RestApi.pathGenerator ).toHaveBeenCalledWith( 'ar' );
-    // });
-    //
-    // //---------------------------------------------------
-    // // path
-    // //---------------------------------------------------
-    //
-    // it("Given a Class: RestApi.path() should call RestApi.pathGenerator with the active_record_class class's name, and return the result", () => {
-    //
-    //     // spy
-    //     RestApi.pathGenerator = jasmine.createSpy('pathGenerator').and.returnValue( "AAA" );
-    //
-    //     // prepare
-    //     class AR extends ActiveRecord {}
-    //
-    //     // call
-    //     let r = RestApi.path( AR );
-    //
-    //     // assert
-    //     expect( RestApi.pathGenerator ).toHaveBeenCalledWith( 'ar' );
-    //     expect( r ).toEqual( "AAA" );
-    // });
-    //
-    // it("Given a Function: RestApi.path() should call RestApi.pathGenerator with the active_record_class function's name, and return the result", () => {
-    //
-    //     // spy
-    //     RestApi.pathGenerator = jasmine.createSpy( 'pathGenerator' ).and.returnValue( "AAA" );
-    //
-    //     // prepare
-    //     let AR = function() {};
-    //
-    //     // call
-    //     let r = RestApi.path( AR );
-    //
-    //     // assert
-    //     expect( RestApi.pathGenerator ).toHaveBeenCalledWith( 'ar' );
-    //     expect( r ).toEqual( "AAA" );
-    // });
+    //---------------------------------------------------
+    // pathGenerator
+    //---------------------------------------------------
+
+    it("RestApi.path() should call RestApi.pathGenerator with the _.snakeCase of active_record_class name", () => {
+
+        // spy
+        RestApi.pathGenerator = jasmine.createSpy('pathGenerator');
+
+        // prepare
+        class AR extends ActiveRecord {}
+
+        // call
+        let r = RestApi.path( AR );
+
+        // assert
+        expect( RestApi.pathGenerator ).toHaveBeenCalledWith( 'ar' );
+    });
+
+    //---------------------------------------------------
+    // path
+    //---------------------------------------------------
+
+    it("Given a Class: RestApi.path() should call RestApi.pathGenerator with the active_record_class class's name, and return the result", () => {
+
+        // spy
+        RestApi.pathGenerator = jasmine.createSpy('pathGenerator').and.returnValue( "AAA" );
+
+        // prepare
+        class AR extends ActiveRecord {}
+
+        // call
+        let r = RestApi.path( AR );
+
+        // assert
+        expect( RestApi.pathGenerator ).toHaveBeenCalledWith( 'ar' );
+        expect( r ).toEqual( "AAA" );
+    });
+
+    it("Given a Function: RestApi.path() should call RestApi.pathGenerator with the active_record_class function's name, and return the result", () => {
+
+        // spy
+        RestApi.pathGenerator = jasmine.createSpy( 'pathGenerator' ).and.returnValue( "AAA" );
+
+        // prepare
+        let AR = function() {};
+
+        // call
+        let r = RestApi.path( AR );
+
+        // assert
+        expect( RestApi.pathGenerator ).toHaveBeenCalledWith( 'ar' );
+        expect( r ).toEqual( "AAA" );
+    });
 
     //---------------------------------------------------
     // url
     //---------------------------------------------------
 
-    // it("RestApi.url() should url if already set and if both active_record_class & config.path are not provided", () => {
-    //
-    //     // prepare
-    //     RestApi._url = "AAA";
-    //
-    //     // call
-    //     let r = RestApi.url();
-    //
-    //     // assert
-    //     expect( r ).toEqual( "AAA" );
-    // });
+    it("RestApi.url() should url if already set and if both active_record_class & config.path are not provided", () => {
+
+        // prepare
+        RestApi._url = "AAA";
+
+        // call
+        let r = RestApi.url();
+
+        // assert
+        expect( r ).toEqual( "AAA" );
+    });
 
     it("get RestApi.url should throw an error if hostname is not set and is not provided via config.hostname", () => {
 
@@ -142,12 +142,7 @@ describe( 'RestApi', () => {
         RestApi._http = null;
 
         // call & assert
-        try {
-            let r = RestApi.request();
-        } catch ( error ) {
-            var error_message = error.message;
-        }
-        expect( error_message ).toEqual( RestApi.MESSAGE_HTTP_REQUIRED );
+        expect( RestApi.request ).toThrowError( RestApi.MESSAGE_HTTP_REQUIRED );
     });
 
     //----------------------------------------------------
@@ -414,25 +409,22 @@ describe( 'RestApi', () => {
     // HTTP Service
     //---------------------------
 
-    it("RestApi.request should throw an error HTTP Service does not return a promise", () => {
+    it("RestApi.request should throw an error if HTTP Service does not return a promise", () => {
 
+        // prepare
         RestApi.http = () => { return "AAA"; };
         RestApi._url = "BBB";
 
-        try {
-            let r = RestApi.request();
-        } catch ( error ) {
-            var error_message = error.message;
-        }
+        // call & assert
+        expect( RestApi.request ).toThrowError( RestApi.MESSAGE_INVALID_HTTP_SERVICE );
 
-        expect( error_message ).toEqual( RestApi.MESSAGE_INVALID_HTTP_SERVICE );
     });
 
     //---------------------------
     // Transformers
     //---------------------------
 
-    it("RestApi.request should (on success) call success_transformer with response & active_record_class", ( done ) => {
+    it("RestApi.request should (on success) call successTransformer with response & active_record_class. successTransformer should supersede responseTransformer.", ( done ) => {
 
         // prepare
         RestApi.http        = http_mock;
@@ -443,21 +435,28 @@ describe( 'RestApi', () => {
         class AR extends ActiveRecord {}
 
         // spy
+        spyOn( RestApi, 'responseTransformer' );
         spyOn( RestApi, 'successTransformer' );
 
         // call & assert
         RestApi.request( AR ).then(
             ( response ) => {
+                expect( RestApi.responseTransformer ).not.toHaveBeenCalled();
                 expect( RestApi.successTransformer ).toHaveBeenCalledWith( {}, AR );
                 done();
             }
         );
     });
 
-    it("RestApi.request should (on success) call response_transformer with response & active_record_class, if no success_transformer is provided", ( done ) => {
+    it("RestApi.request should (on success) call responseTransformer with response & active_record_class, if no successTransformer is provided", ( done ) => {
 
         // prepare
-        RestApi.http        = http_mock;
+        // RestApi.http        = http_mock;
+        RestApi.http        = () => {
+            return new Promise( ( resolve, reject ) => {
+                resolve( {} );
+            } );
+        };
         RestApi._headers    = {};
         RestApi._hostname   = "AAA";
         RestApi._path_generator   = () => {};
@@ -476,7 +475,7 @@ describe( 'RestApi', () => {
         );
     });
 
-    it("RestApi.request should (on error) call error_transformer with response & active_record_class", ( done ) => {
+    it("RestApi.request should (on error) call errorTransformer with response & active_record_class. errorTransformer should supersede responseTransformer.", ( done ) => {
 
         // prepare
         RestApi.http        = http_mock_reject;
@@ -487,19 +486,21 @@ describe( 'RestApi', () => {
         class AR extends ActiveRecord {}
 
         // spy
+        spyOn( RestApi, 'responseTransformer' );
         spyOn( RestApi, 'errorTransformer' );
 
         // call & assert
         RestApi.request( AR ).then(
             ( response ) => {},
             ( response ) => {
+                expect( RestApi.responseTransformer ).not.toHaveBeenCalled();
                 expect( RestApi.errorTransformer ).toHaveBeenCalledWith( {}, AR );
                 done();
             }
         );
     });
 
-    it("RestApi.request should (on error) call response_transformer with response & active_record_class, if no error_transformer is provided", ( done ) => {
+    it("RestApi.request should (on error) call responseTransformer with response & active_record_class, if no errorTransformer is provided", ( done ) => {
 
         // prepare
         RestApi.http        = http_mock_reject;
@@ -526,18 +527,19 @@ describe( 'RestApi', () => {
     // Handlers
     //---------------------------
 
-    it("RestApi.request should (on success) call success_handler with transformed response, and resolve only when success_handler resolves", ( done ) => {
+    it("RestApi.request should (on success) call successHandler with transformed response, and resolve only when successHandler resolves. successHandler should supersede responseHandler.", ( done ) => {
 
         // prepare
         RestApi.http        = http_mock;
         RestApi._headers    = {};
         RestApi._hostname   = "AAA";
-        RestApi._path_generator   = () => {};
+        RestApi._path_generator     = () => {};
         RestApi.responseTransformer = () => { return "BBB"; };
 
         class AR extends ActiveRecord {}
 
         // spy
+        RestApi.responseHandler = jasmine.createSpy( 'responseHandler' );
         RestApi.successHandler = jasmine.createSpy( 'successHandler' ).and.returnValue(
             new Promise( ( resolve, reject ) => {
                 resolve();
@@ -547,937 +549,319 @@ describe( 'RestApi', () => {
         // call & assert
         RestApi.request( AR ).then(
             ( response ) => {
+                expect( RestApi.responseHandler ).not.toHaveBeenCalled();
                 expect( RestApi.successHandler ).toHaveBeenCalledWith( "BBB" );
                 done();
             }
         );
     });
 
-    it("RestApi.request should (on success) call response_handler with response, if no success_handler is provided, and resolve only when response_handler resolves", () => {
-        // ...
+    it("RestApi.request should (on success) call responseHandler with response, if no successHandler is provided, and resolve only when responseHandler resolves", ( done ) => {
+
+        // prepare
+        RestApi.http        = http_mock;
+        RestApi._headers    = {};
+        RestApi._hostname   = "AAA";
+        RestApi._path_generator     = () => {};
+        RestApi.responseTransformer = () => { return "BBB"; };
+
+        class AR extends ActiveRecord {}
+
+        // spy
+        RestApi.responseHandler = jasmine.createSpy( 'responseHandler' ).and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                resolve();
+            } )
+        );
+
+        // call & assert
+        RestApi.request( AR ).then(
+            ( response ) => {
+                expect( RestApi.responseHandler ).toHaveBeenCalledWith( "BBB" );
+                done();
+            }
+        );
     });
 
-    it("RestApi.request should (on success) resolve immediately with response if neither response_handler nor success_handler are provided", () => {
-        // ...
+    it("RestApi.request should (on success) resolve immediately with response if neither responseHandler nor successHandler are provided", ( done ) => {
+
+        // prepare
+        RestApi.http        = http_mock;
+        RestApi._headers    = {};
+        RestApi._hostname   = "AAA";
+        RestApi._path_generator     = () => {};
+        RestApi.responseTransformer = () => { return "BBB"; };
+
+        class AR extends ActiveRecord {}
+
+        // call & assert
+        RestApi.request( AR ).then(
+            ( response ) => {
+                expect( response ).toEqual( "BBB" );
+                done();
+            }
+        );
     });
 
-    it("RestApi.request should (on error) call error_handler with transformed response, and resolve only when error_handler resolves", () => {
-        // ...
+    it("RestApi.request should (on error) call errorHandler with transformed response, and resolve only when errorHandler resolves", ( done ) => {
+
+        // prepare
+        RestApi.http        = http_mock_reject;
+        RestApi._headers    = {};
+        RestApi._hostname   = "AAA";
+        RestApi._path_generator     = () => {};
+        RestApi.responseTransformer = () => { return "BBB"; };
+
+        class AR extends ActiveRecord {}
+
+        // spy
+        RestApi.responseHandler = jasmine.createSpy( 'responseHandler' );
+        RestApi.errorHandler = jasmine.createSpy( 'errorHandler' ).and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                resolve();
+            } )
+        );
+
+        // call & assert
+        RestApi.request( AR ).then(
+            ( response ) => {
+                expect( RestApi.responseHandler ).not.toHaveBeenCalled();
+                expect( RestApi.errorHandler ).toHaveBeenCalledWith( "BBB" );
+                done();
+            }
+        );
     });
 
-    it("RestApi.request should (on error) call response_handler with response, if no error_handler is provided, and resolve only when response_handler resolves", () => {
-        // ...
+    it("RestApi.request should (on error) call response_handler with response, if no error_handler is provided, and resolve only when responseHandler resolves", ( done ) => {
+
+        // prepare
+        RestApi.http        = http_mock_reject;
+        RestApi._headers    = {};
+        RestApi._hostname   = "AAA";
+        RestApi._path_generator     = () => {};
+        RestApi.responseTransformer = () => { return "BBB"; };
+
+        class AR extends ActiveRecord {}
+
+        // spy
+        RestApi.responseHandler = jasmine.createSpy( 'responseHandler' ).and.returnValue(
+            new Promise( ( resolve, reject ) => {
+                resolve();
+            } )
+        );
+
+        // call & assert
+        RestApi.request( AR ).then(
+            ( response ) => {
+                expect( RestApi.responseHandler ).toHaveBeenCalledWith( "BBB" );
+                done();
+            }
+        );
     });
 
-    it("RestApi.request should (on error) reject immediately with response if neither response_handler nor error_handler are provided", () => {
-        // ...
+    it("RestApi.request should (on error) reject immediately with response if neither responseHandler nor error_handler are provided", ( done ) => {
+
+        // prepare
+        RestApi.http        = http_mock_reject;
+        RestApi._headers    = {};
+        RestApi._hostname   = "AAA";
+        RestApi._path_generator     = () => {};
+        RestApi.responseTransformer = () => { return "BBB"; };
+
+        class AR extends ActiveRecord {}
+
+        // call & assert
+        RestApi.request( AR ).then(
+            ( response ) => {},
+            ( response ) => {
+                expect( response ).toEqual( "BBB" );
+                done();
+            }
+        );
     });
 
-    //---------------------------
-    // HTTP Service
-    //---------------------------
-    //
-    // it("RestApi.request should call http with provided config", () => {
-    //
-    //     // // spy
-    //     // RestApi.http = http_mock;
-    //     // spyOn( RestApi, 'http' ).and.returnValue( http_mock() );
-    //     //
-    //     // // prepare
-    //     // RestApi._url = "AAA";
-    //
-    //     // spies
-    //     let successHandler = jasmine.createSpy('successHandler').and.returnValue(
-    //         new Promise( ( resolve, reject ) => {
-    //             resolve( "AAA" );
-    //         } )
-    //     );
-    //     let successHandlerGlobal = jasmine.createSpy('successHandler').and.returnValue(
-    //         new Promise( ( resolve, reject ) => {
-    //             resolve( "AAA" );
-    //         } )
-    //     );
-    //     let responseHandler = jasmine.createSpy('responseHandler').and.returnValue(
-    //         new Promise( ( resolve, reject ) => {
-    //             resolve( "AAA" );
-    //         } )
-    //     );
-    //
-    //     // prepare
-    //     RestApi.http = () => {
-    //         return new Promise( ( resolve, reject ) => {
-    //             resolve( "AAA" );
-    //         } );
-    //     };
-    //     RestApi._url = "CCC";
-    //     RestApi.successHandler = successHandlerGlobal;
-    //
-    //     // prepare assert
-    //     let assert = ( state, response ) => {
-    //         expect( state ).toEqual( "PASS" );
-    //         expect( successHandler ).toHaveBeenCalledWith( "AAA" );
-    //         expect( successHandlerGlobal ).not.toHaveBeenCalled();
-    //      response_transformer   expect( responseHandler ).not.toHaveBeenCalled();
-    //         done();
-    //     };
-    //
-    //     // call
-    //     RestApi.request( null, {successHandler: successHandler, responseHandler: responseHandler} ).then(
-    //         ( response ) => { assert( "PASS", response ); },
-    //         ( response ) => { assert( "FAIL", response ); }
-    //     );
-    //
-    //     RestApi.request( null, { 'a': "A" } );
-    //
-    //     // assert
-    //     expect( RestApi.http ).toHaveBeenCalledWith( { 'a': "A", 'url': "AAA" } );
-    // });
-    //
-    // describe("success", () => {
-    //
-    //     // ASYNC test
-    //     it("RestApi.request should (on pass) call success handler (if provided) not the global success handler or response handler", ( done ) => {
-    //
-    //         // spy
-    //         let successHandler = jasmine.createSpy('successHandler').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 resolve( "AAA" );
-    //             } )
-    //         );
-    //         let successHandlerGlobal = jasmine.createSpy('successHandler').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 resolve( "AAA" );
-    //             } )
-    //         );
-    //         let responseHandler = jasmine.createSpy('responseHandler').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 resolve( "AAA" );
-    //             } )
-    //         );
-    //
-    //         // prepare
-    //         RestApi.http = () => {
-    //             return new Promise( ( resolve, reject ) => {
-    //                 resolve( "AAA" );
-    //             } );
-    //         };
-    //         RestApi.activeRecordClass = "BBB";
-    //         RestApi.hostname = "CCC";
-    //         RestApi.path = "CCC";
-    //         RestApi.successHandler = successHandlerGlobal;
-    //
-    //         // prepare assert
-    //         let assert = ( state, response ) => {
-    //             expect( state ).toEqual( "PASS" );
-    //             expect( successHandler ).toHaveBeenCalledWith( "AAA" );
-    //             expect( successHandlerGlobal ).not.toHaveBeenCalled();
-    //             expect( responseHandler ).not.toHaveBeenCalled();
-    //             done();
-    //         };
-    //
-    //         // call
-    //         RestApi.request( null, {successHandler: successHandler, responseHandler: responseHandler} ).then(
-    //             ( response ) => { assert( "PASS", response ); },
-    //             ( response ) => { assert( "FAIL", response ); }
-    //         );
-    //     });
-    //
-    //     // ASYNC test
-    //     it("RestApi.request should (on pass) call success transformer (if provided) not the global success transformer or response transformer", ( done ) => {
-    //
-    //         // spy
-    //         let successTransformer = jasmine.createSpy('successTransformer').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 resolve( "DDDD" );
-    //             } )
-    //         );
-    //         let successTransformerGlobal = jasmine.createSpy('successTransformer').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 resolve( "EEEE" );
-    //             } )
-    //         );
-    //         let responseTransformer = jasmine.createSpy('responseTransformer').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 resolve( "FFFF" );
-    //             } )
-    //         );
-    //
-    //         // prepare
-    //         RestApi.http = () => {
-    //             return new Promise( ( resolve, reject ) => {
-    //                 resolve( "AAA" );
-    //             } );
-    //         };
-    //         RestApi.activeRecordClass = "BBB";
-    //         RestApi.hostname = "CCC";
-    //         RestApi.path = "CCC";
-    //         RestApi.successTransformer = successTransformerGlobal;
-    //
-    //         // prepare assert
-    //         let assert = ( state, response ) => {
-    //             expect( state ).toEqual( "PASS" );
-    //             expect( successTransformer ).toHaveBeenCalledWith( "AAA", "BBB" );
-    //             expect( successTransformerGlobal ).not.toHaveBeenCalled();
-    //             expect( responseTransformer ).not.toHaveBeenCalled();
-    //             done();
-    //         };
-    //
-    //         // call
-    //         RestApi.request( null, {successTransformer: successTransformer, responseTransformer: responseTransformer} ).then(
-    //             ( response ) => { assert( "PASS", response ); },
-    //             ( response ) => { assert( "FAIL", response ); }
-    //         );
-    //     });
-    // });
-    //
-    // describe("error", () => {
-    //
-    //     // ASYNC test
-    //     it("RestApi.request should (on fail) call error handler (if provided) not the global error handler or response handler", ( done ) => {
-    //
-    //         // spy
-    //         let errorHandler = jasmine.createSpy('errorHandler').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 reject( "AAA" );
-    //             } )
-    //         );
-    //         let errorHandlerGlobal = jasmine.createSpy('errorHandler').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 reject( "AAA" );
-    //             } )
-    //         );
-    //         let responseHandler = jasmine.createSpy('responseHandler').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 reject( "AAA" );
-    //             } )
-    //         );
-    //
-    //         // prepare
-    //         RestApi.http = () => {
-    //             return new Promise( ( resolve, reject ) => {
-    //                 reject( "AAA" );
-    //             } );
-    //         };
-    //         RestApi.activeRecordClass = "BBB";
-    //         RestApi.hostname = "CCC";
-    //         RestApi.path = "CCC";
-    //         RestApi.errorHandler = errorHandlerGlobal;
-    //
-    //         // prepare assert
-    //         let assert = ( state, response ) => {
-    //             expect( state ).toEqual( "FAIL" );
-    //             expect( errorHandler ).toHaveBeenCalledWith( "AAA" );
-    //             expect( errorHandlerGlobal ).not.toHaveBeenCalled();
-    //             expect( responseHandler ).not.toHaveBeenCalled();
-    //             done();
-    //         };
-    //
-    //         // call
-    //         RestApi.request( null, {errorHandler: errorHandler, responseHandler: responseHandler} ).then(
-    //             ( response ) => { assert( "PASS", response ); },
-    //             ( response ) => { assert( "FAIL", response ); }
-    //         );
-    //     });
-    //
-    //     // ASYNC test
-    //     it("RestApi.request should (on fail) call error transformer (if provided) not the global error transformer or response transformer", ( done ) => {
-    //
-    //         // spy
-    //         let errorTransformer = jasmine.createSpy('errorTransformer').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 reject( "DDDD" );
-    //             } )
-    //         );
-    //         let errorTransformerGlobal = jasmine.createSpy('errorTransformer').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 reject( "EEEE" );
-    //             } )
-    //         );
-    //         let responseTransformer = jasmine.createSpy('responseTransformer').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 reject( "FFFF" );
-    //             } )
-    //         );
-    //
-    //         // prepare
-    //         RestApi.http = () => {
-    //             return new Promise( ( resolve, reject ) => {
-    //                 reject( "AAA" );
-    //             } );
-    //         };
-    //         RestApi.activeRecordClass = "BBB";
-    //         RestApi.hostname = "CCC";
-    //         RestApi.path = "CCC";
-    //         RestApi.errorTransformer = errorTransformerGlobal;
-    //
-    //         // prepare assert
-    //         let assert = ( state, response ) => {
-    //             expect( state ).toEqual( "FAIL" );
-    //             expect( errorTransformer ).toHaveBeenCalledWith( "AAA", "BBB" );
-    //             expect( errorTransformerGlobal ).not.toHaveBeenCalled();
-    //             expect( responseTransformer ).not.toHaveBeenCalled();
-    //             done();
-    //         };
-    //
-    //         // call
-    //         RestApi.request( null, {errorTransformer: errorTransformer, responseTransformer: responseTransformer} ).then(
-    //             ( response ) => { assert( "PASS", response ); },
-    //             ( response ) => { assert( "FAIL", response ); }
-    //         );
-    //     });
-    // });
-    //
-    // describe("response", () => {
-    //
-    //     // ASYNC test
-    //     it("RestApi.request should (on pass) call response handler (if provided) not the global response handler", ( done ) => {
-    //
-    //         // spy
-    //         let responseHandler = jasmine.createSpy('responseHandler').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 resolve( "AAA" );
-    //             } )
-    //         );
-    //         let responseHandlerGlobal = jasmine.createSpy('responseHandler').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 resolve( "AAA" );
-    //             } )
-    //         );
-    //
-    //         // prepare
-    //         RestApi.http = () => {
-    //             return new Promise( ( resolve, reject ) => {
-    //                 resolve( "AAA" );
-    //             } );
-    //         };
-    //         RestApi.activeRecordClass = "BBB";
-    //         RestApi.hostname = "CCC";
-    //         RestApi.path = "CCC";
-    //         RestApi.responseHandler = responseHandlerGlobal;
-    //
-    //         // prepare assert
-    //         let assert = ( state, response ) => {
-    //             expect( state ).toEqual( "PASS" );
-    //             expect( responseHandler ).toHaveBeenCalledWith( "AAA" );
-    //             expect( responseHandlerGlobal ).not.toHaveBeenCalled();
-    //             done();
-    //         };
-    //
-    //         // call
-    //         RestApi.request( null, {responseHandler: responseHandler} ).then(
-    //             ( response ) => { assert( "PASS", response ); },
-    //             ( response ) => { assert( "FAIL", response ); }
-    //         );
-    //     });
-    //
-    //     // ASYNC test
-    //     it("RestApi.request should (on pass) call response transformer (if provided) not the global response transformer", ( done ) => {
-    //
-    //         // spy
-    //         let responseTransformer = jasmine.createSpy('responseTransformer').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 resolve( "DDDD" );
-    //             } )
-    //         );
-    //         let responseTransformerGlobal = jasmine.createSpy('responseTransformer').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 resolve( "EEEE" );
-    //             } )
-    //         );
-    //
-    //         // prepare
-    //         RestApi.http = () => {
-    //             return new Promise( ( resolve, reject ) => {
-    //                 resolve( "AAA" );
-    //             } );
-    //         };
-    //         RestApi.activeRecordClass = "BBB";
-    //         RestApi.hostname = "CCC";
-    //         RestApi.path = "CCC";
-    //         RestApi.responseTransformer = responseTransformerGlobal;
-    //
-    //         // prepare assert
-    //         let assert = ( state, response ) => {
-    //             expect( state ).toEqual( "PASS" );
-    //             expect( responseTransformer ).toHaveBeenCalledWith( "AAA", "BBB" );
-    //             expect( responseTransformerGlobal ).not.toHaveBeenCalled();
-    //             done();
-    //         };
-    //
-    //         // call
-    //         RestApi.request( null, {responseTransformer: responseTransformer} ).then(
-    //             ( response ) => { assert( "PASS", response ); },
-    //             ( response ) => { assert( "FAIL", response ); }
-    //         );
-    //     });
-    //
-    //     // ASYNC test
-    //     it("RestApi.request should (on error) call response handler (if provided) not the global response handler", ( done ) => {
-    //
-    //         // spy
-    //         let responseHandler = jasmine.createSpy('responseHandler').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 reject( "AAA" );
-    //             } )
-    //         );
-    //         let responseHandlerGlobal = jasmine.createSpy('responseHandler').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 reject( "AAA" );
-    //             } )
-    //         );
-    //
-    //         // prepare
-    //         RestApi.http = () => {
-    //             return new Promise( ( resolve, reject ) => {
-    //                 reject( "AAA" );
-    //             } );
-    //         };
-    //         RestApi.activeRecordClass = "BBB";
-    //         RestApi.hostname = "CCC";
-    //         RestApi.path = "CCC";
-    //         RestApi.responseHandler = responseHandlerGlobal;
-    //
-    //         // prepare assert
-    //         let assert = ( state, response ) => {
-    //             expect( state ).toEqual( "FAIL" );
-    //             expect( responseHandler ).toHaveBeenCalledWith( "AAA" );
-    //             expect( responseHandlerGlobal ).not.toHaveBeenCalled();
-    //             done();
-    //         };
-    //
-    //         // call
-    //         RestApi.request( null, {responseHandler: responseHandler} ).then(
-    //             ( response ) => { assert( "PASS", response ); },
-    //             ( response ) => { assert( "FAIL", response ); }
-    //         );
-    //     });
-    //
-    //     // ASYNC test
-    //     it("RestApi.request should (on error) call response transformer (if provided) not the global response transformer", ( done ) => {
-    //
-    //         // spy
-    //         let responseTransformer = jasmine.createSpy('responseTransformer').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 reject( "DDDD" );
-    //             } )
-    //         );
-    //         let responseTransformerGlobal = jasmine.createSpy('responseTransformer').and.returnValue(
-    //             new Promise( ( resolve, reject ) => {
-    //                 reject( "EEEE" );
-    //             } )
-    //         );
-    //
-    //         // prepare
-    //         RestApi.http = () => {
-    //             return new Promise( ( resolve, reject ) => {
-    //                 reject( "AAA" );
-    //             } );
-    //         };
-    //         RestApi.activeRecordClass = "BBB";
-    //         RestApi.hostname = "CCC";
-    //         RestApi.path = "CCC";
-    //         RestApi.responseTransformer = responseTransformerGlobal;
-    //
-    //         // prepare assert
-    //         let assert = ( state, response ) => {
-    //             expect( state ).toEqual( "FAIL" );
-    //             expect( responseTransformer ).toHaveBeenCalledWith( "AAA", "BBB" );
-    //             expect( responseTransformerGlobal ).not.toHaveBeenCalled();
-    //             done();
-    //         };
-    //
-    //         // call
-    //         RestApi.request( null, {responseTransformer: responseTransformer} ).then(
-    //             ( response ) => { assert( "PASS", response ); },
-    //             ( response ) => { assert( "FAIL", response ); }
-    //         );
-    //     });
-    // });
-    //
-    // //---------------------------------------------------
-    // // index
-    // //---------------------------------------------------
-    //
-    // //---------------------------
-    // // exceptions
-    // //---------------------------
-    //
-    // it("RestApi.index should throw an error if url is not set", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.hostname = null;
-    //     RestApi.path = null;
-    //     RestApi.url = null;
-    //
-    //     // call & assert
-    //
-    //     try {
-    //         let r = RestApi.index();
-    //     } catch ( error ) {
-    //         var error_message = error.message;
-    //     }
-    //     expect( error_message ).toEqual( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );
-    //
-    //     // TODO: not working because scope is lost
-    //     // expect( RestApi.index ).toThrowError( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );
-    // });
-    //
-    // //---------------------------
-    // // class property updates
-    // //---------------------------
-    //
-    // it("RestApi.index should set RestApi.activeRecordClass if a value is provided", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.hostname = "AAA";
-    //     RestApi.path = "AAA";
-    //
-    //     // call
-    //     RestApi.index( "BBB" );
-    //
-    //     // assert
-    //     expect( RestApi.activeRecordClass ).toEqual( "BBB" );
-    // });
-    //
-    // //---------------------------
-    // // config param updates
-    // //---------------------------
-    //
-    // it("RestApi.index should call RestApi.request with updated config", () => {
-    //
-    //     // spy
-    //     spyOn( RestApi, 'request' );
-    //
-    //     // prepare
-    //     RestApi.url = "AAA";
-    //     RestApi.headers = "BBB";
-    //
-    //     // call
-    //     RestApi.index( null );
-    //
-    //     // assert
-    //     let _expected = { 'method': "GET", 'url': "AAA", 'headers': "BBB" };
-    //     expect( RestApi.request ).toHaveBeenCalledWith( null, _expected );
-    // });
-    //
-    // //---------------------------
-    // // Promise
-    // //---------------------------
-    //
-    // it("RestApi.index should return a promise", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.url = "AAA";
-    //
-    //     // call
-    //     var p = RestApi.index( null );
-    //
-    //     // assert
-    //     expect( p.then ).toBeDefined();
-    // });
-    //
-    // //---------------------------------------------------
-    // // view
-    // //---------------------------------------------------
-    //
-    // //---------------------------
-    // // exceptions
-    // //---------------------------
-    //
-    // it("RestApi.view should throw an error if id is not provided", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.hostname = null;
-    //     RestApi.path = null;
-    //     RestApi.url = null;
-    //
-    //     // call & assert
-    //
-    //     try {
-    //         let r = RestApi.view();
-    //     } catch ( error ) {
-    //         var error_message = error.message;
-    //     }
-    //     expect( error_message ).toEqual( RestApi.MESSAGE_ID_IS_REQURIED );
-    //
-    //     // TODO: not working because scope is lost
-    //     // expect( () => { RestApi.view(); } ).toThrowError( RestApi.MESSAGE_ID_IS_REQURIED );
-    // });
-    //
-    // it("RestApi.view should throw an error if url is not set", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.hostname = null;
-    //     RestApi.path = null;
-    //     RestApi.url = null;
-    //
-    //     // call & assert
-    //
-    //     try {
-    //         let r = RestApi.view( null, 123 );
-    //     } catch ( error ) {
-    //         var error_message = error.message;
-    //     }
-    //     expect( error_message ).toEqual( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );
-    //
-    //     // TODO: not working because can't pass function to expect
-    //     // expect( () => { RestApi.view( 123 ); } ).toThrowError( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );
-    // });
-    //
-    // //---------------------------
-    // // class property updates
-    // //---------------------------
-    //
-    // it("RestApi.view should set RestApi.activeRecordClass if a value is provided", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.hostname = "AAA";
-    //     RestApi.path = "AAA";
-    //
-    //     // call
-    //     RestApi.view( "BBB", 123);
-    //
-    //     // assert
-    //     expect( RestApi.activeRecordClass ).toEqual( "BBB" );
-    // });
-    //
-    // //---------------------------
-    // // config param updates
-    // //---------------------------
-    //
-    // it("RestApi.view should call RestApi.request with updated config", () => {
-    //
-    //     // spy
-    //     spyOn(RestApi, 'request');
-    //
-    //     // prepare
-    //     RestApi.url = "AAA";
-    //     RestApi.headers = "BBB";
-    //
-    //     // call
-    //     RestApi.view( null, 123 );
-    //
-    //     // assert
-    //     let _expected = { 'method': "GET", 'url': "AAA/123", 'headers': "BBB" };
-    //     expect( RestApi.request ).toHaveBeenCalledWith( null, _expected );
-    // });
-    //
-    // //---------------------------
-    // // Promise
-    // //---------------------------
-    //
-    // it("RestApi.view should return a promise", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.url = "AAA";
-    //
-    //     // call
-    //     var p = RestApi.view( null, 123 );
-    //
-    //     // assert
-    //     expect( p.then ).toBeDefined();
-    // });
-    //
-    // //---------------------------------------------------
-    // // add
-    // //---------------------------------------------------
-    //
-    // //---------------------------
-    // // exceptions
-    // //---------------------------
-    //
-    // it("RestApi.add should throw an error if url is not set", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.hostname = null;
-    //     RestApi.path = null;
-    //     RestApi.url = null;
-    //
-    //     // call & assert
-    //
-    //     try {
-    //         let r = RestApi.add();
-    //     } catch ( error ) {
-    //         var error_message = error.message;
-    //     }
-    //     expect( error_message ).toEqual( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );
-    //
-    //     // TODO: not working because scope is lost
-    //     // expect( RestApi.add ).toThrowError( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );
-    // });
-    //
-    // //---------------------------
-    // // class property updates
-    // //---------------------------
-    //
-    // it("RestApi.add should set RestApi.activeRecordClass if a value is provided", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.hostname = "AAA";
-    //     RestApi.path = "AAA";
-    //
-    //     // call
-    //     RestApi.add( "BBB" );
-    //
-    //     // assert
-    //     expect( RestApi.activeRecordClass ).toEqual( "BBB" );
-    // });
-    //
-    // //---------------------------
-    // // config param updates
-    // //---------------------------
-    //
-    // it("RestApi.add should call RestApi.request with updated config", () => {
-    //
-    //     // spy
-    //     spyOn(RestApi, 'request');
-    //
-    //     // prepare
-    //     RestApi.url = "AAA";
-    //     RestApi.headers = "BBB";
-    //
-    //     // call
-    //     RestApi.add( null, {}, { 'a': "A" } );
-    //
-    //     // assert
-    //     let _expected = { 'method': "POST", 'url': "AAA", 'data': { 'a': "A" }, 'headers': "BBB" };
-    //     expect( RestApi.request ).toHaveBeenCalledWith( null, _expected );
-    // });
-    //
-    // //---------------------------
-    // // Promise
-    // //---------------------------
-    //
-    // it("RestApi.add should return a promise", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.url = "AAA";
-    //
-    //     // call
-    //     var p = RestApi.add( null );
-    //
-    //     // assert
-    //     expect( p.then ).toBeDefined();
-    // });
-    //
-    // //---------------------------------------------------
-    // // edit
-    // //---------------------------------------------------
-    //
-    // //---------------------------
-    // // exceptions
-    // //---------------------------
-    //
-    // it("RestApi.edit should throw an error if id is not provided", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.hostname = null;
-    //     RestApi.path = null;
-    //     RestApi.url = null;
-    //
-    //     // call & assert
-    //
-    //     try {
-    //         let r = RestApi.edit();
-    //     } catch ( error ) {
-    //         var error_message = error.message;
-    //     }
-    //     expect( error_message ).toEqual( RestApi.MESSAGE_ID_IS_REQURIED );
-    //
-    //     // TODO: not working because scope is lost
-    //     // expect( RestApi.edit ).toThrowError( RestApi.MESSAGE_ID_IS_REQURIED );
-    // });
-    //
-    // it("RestApi.edit should throw an error if url is not set", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.hostname = null;
-    //     RestApi.path = null;
-    //     RestApi.url = null;
-    //
-    //     // call & assert
-    //
-    //     try {
-    //         let r = RestApi.edit( null, 123 );
-    //     } catch ( error ) {
-    //         var error_message = error.message;
-    //     }
-    //     expect( error_message ).toEqual( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );
-    //
-    //     // TODO: not working because can't pass function to expect
-    //     // expect( () => { RestApi.edit( 123 ); } ).toThrowError( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );
-    // });
-    //
-    // //---------------------------
-    // // class property updates
-    // //---------------------------
-    //
-    // it("RestApi.edit should set RestApi.activeRecordClass if a value is provided", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.hostname = "AAA";
-    //     RestApi.path = "AAA";
-    //
-    //     // call
-    //     RestApi.edit( "BBB", 123);
-    //
-    //     // assert
-    //     expect( RestApi.activeRecordClass ).toEqual( "BBB" );
-    // });
-    //
-    // //---------------------------
-    // // config param updates
-    // //---------------------------
-    //
-    // it("RestApi.edit should call RestApi.request with updated config", () => {
-    //
-    //     // spy
-    //     spyOn(RestApi, 'request');
-    //
-    //     // prepare
-    //     RestApi.url = "AAA";
-    //     RestApi.headers = "BBB";
-    //
-    //     // call
-    //     RestApi.edit( null, 123, {}, { 'a': "A" } );
-    //
-    //     // assert
-    //     let _expected = { 'method': "PUT", 'url': "AAA/123", 'data': { 'a': "A" }, 'headers': "BBB" };
-    //     expect( RestApi.request ).toHaveBeenCalledWith( null, _expected );
-    // });
-    //
-    // //---------------------------
-    // // Promise
-    // //---------------------------
-    //
-    // it("RestApi.edit should return a promise", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.url = "AAA";
-    //
-    //     // call
-    //     var p = RestApi.edit( null, 123 );
-    //
-    //     // assert
-    //     expect( p.then ).toBeDefined();
-    // });
-    //
-    // //---------------------------------------------------
-    // // delete
-    // //---------------------------------------------------
-    //
-    // //---------------------------
-    // // exceptions
-    // //---------------------------
-    //
-    // it("RestApi.delete should throw an error if id is not provided", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.url = "AAA";
-    //
-    //     // call & assert
-    //
-    //     try {
-    //         let r = RestApi.delete();
-    //     } catch ( error ) {
-    //         var error_message = error.message;
-    //     }
-    //     expect( error_message ).toEqual( RestApi.MESSAGE_ID_IS_REQURIED );
-    //
-    //     // TODO: not working because scope is lost
-    //     // expect( RestApi.delete ).toThrowError( RestApi.MESSAGE_ID_IS_REQURIED );
-    // });
-    //
-    // it("RestApi.delete should throw an error if url is not set", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.url = null;
-    //     RestApi.hostname = null;
-    //     RestApi.path = null;
-    //
-    //     // call & assert
-    //
-    //     try {
-    //         let r = RestApi.delete( null, 123 );
-    //     } catch ( error ) {
-    //         var error_message = error.message;
-    //     }
-    //     expect( error_message ).toEqual( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );
-    //
-    //     // TODO: not working because scope is lost
-    //     // expect( RestApi.delete ).toThrowError( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );
-    // });
-    //
-    //
-    // //---------------------------
-    // // class property updates
-    // //---------------------------
-    //
-    // it("RestApi.delete should set RestApi.activeRecordClass if a value is provided", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.hostname = "AAA";
-    //     RestApi.path = "AAA";
-    //
-    //     // call
-    //     RestApi.delete( "BBB", 123);
-    //
-    //     // assert
-    //     expect( RestApi.activeRecordClass ).toEqual( "BBB" );
-    // });
-    //
-    // //---------------------------
-    // // config param updates
-    // //---------------------------
-    //
-    // it("RestApi.delete should call RestApi.request with updated config", () => {
-    //
-    //     // spy
-    //     spyOn(RestApi, 'request');
-    //
-    //     // prepare
-    //     RestApi.url = "AAA";
-    //     RestApi.headers = "BBB";
-    //
-    //     // call
-    //     RestApi.delete( null, 123 );
-    //
-    //     // assert
-    //     let _expected = { 'method': "DELETE", 'url': "AAA/123", 'headers': "BBB" };
-    //     expect( RestApi.request ).toHaveBeenCalledWith( null, _expected );
-    // });
-    //
-    // //---------------------------
-    // // Promise
-    // //---------------------------
-    //
-    // it("RestApi.delete should return a promise", () => {
-    //
-    //     // prepare
-    //     RestApi.http = http_mock;
-    //     RestApi.url = "AAA";
-    //
-    //     // call
-    //     var p = RestApi.delete( null, 123 );
-    //
-    //     // assert
-    //     expect( p.then ).toBeDefined();
-    // });
+    //---------------------------------------------------
+    // index
+    //---------------------------------------------------
+
+    it("RestApi.index should return the result of request", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // call
+        var r = RestApi.index( null );
+
+        // assert
+        expect( r ).toEqual( "BBB" );
+    });
+
+    it("RestApi.index should set request_config.method to GET", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // call
+        RestApi.index( "AAA" );
+
+        // assert
+        let expected_config = {
+            method: "GET"
+        };
+        expect( RestApi.request ).toHaveBeenCalledWith( "AAA", expected_config );
+    });
+
+    //---------------------------------------------------
+    // view
+    //---------------------------------------------------
+
+    it("RestApi.view should throw an error if id is not provided", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // assert
+        expect( RestApi.view ).toThrowError( RestApi.MESSAGE_ID_IS_REQURIED );
+    });
+
+    it("RestApi.view should return the result of request", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // call
+        var r = RestApi.view( null, 111 );
+
+        // assert
+        expect( r ).toEqual( "BBB" );
+    });
+
+    it("RestApi.view should set request_config.method to GET & sub_path to id parameters", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // call
+        RestApi.view( "AAA", 111 );
+
+        // assert
+        let expected_config = {
+            method: "GET",
+            sub_path: 111
+        };
+        expect( RestApi.request ).toHaveBeenCalledWith( "AAA", expected_config );
+    });
+
+    //---------------------------------------------------
+    // add
+    //---------------------------------------------------
+
+    it("RestApi.add should return the result of request", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // call
+        var r = RestApi.add( null );
+
+        // assert
+        expect( r ).toEqual( "BBB" );
+    });
+
+    it("RestApi.add should set request_config.method to POST", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // call
+        RestApi.add( "AAA" );
+
+        // assert
+        let expected_config = {
+            method: "POST"
+        };
+        expect( RestApi.request ).toHaveBeenCalledWith( "AAA", expected_config );
+    });
+
+    //---------------------------------------------------
+    // edit
+    //---------------------------------------------------
+
+    it("RestApi.edit should throw an error if id is not provided", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // assert
+        expect( RestApi.edit ).toThrowError( RestApi.MESSAGE_ID_IS_REQURIED );
+    });
+
+    it("RestApi.edit should return the result of request", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // call
+        var r = RestApi.edit( null, 111 );
+
+        // assert
+        expect( r ).toEqual( "BBB" );
+    });
+
+    it("RestApi.edit should set request_config.method to PUT & sub_path to id parameters", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // call
+        RestApi.edit( "AAA", 111 );
+
+        // assert
+        let expected_config = {
+            method: "PUT",
+            sub_path: 111
+        };
+        expect( RestApi.request ).toHaveBeenCalledWith( "AAA", expected_config );
+    });
+
+    //---------------------------------------------------
+    // delete
+    //---------------------------------------------------
+
+    it("RestApi.delete should throw an error if id is not provided", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // assert
+        expect( RestApi.delete ).toThrowError( RestApi.MESSAGE_ID_IS_REQURIED );
+    });
+
+    it("RestApi.delete should return the result of request", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // call
+        var r = RestApi.delete( null, 111 );
+
+        // assert
+        expect( r ).toEqual( "BBB" );
+    });
+
+    it("RestApi.delete should set request_config.method to PUT & sub_path to id parameters", () => {
+
+        // spies
+        spyOn( RestApi, "request" ).and.returnValue( "BBB" );
+
+        // call
+        RestApi.delete( "AAA", 111 );
+
+        // assert
+        let expected_config = {
+            method: "DELETE",
+            sub_path: 111
+        };
+        expect( RestApi.request ).toHaveBeenCalledWith( "AAA", expected_config );
+    });
 });

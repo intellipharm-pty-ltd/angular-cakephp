@@ -222,6 +222,7 @@ class RestApi {
 
         if ( _.isNull( id ) || _.isUndefined( id ) ) {
             throw new Error( MESSAGE_ID_IS_REQURIED );
+            return;
         }
 
         // request config
@@ -305,8 +306,20 @@ class RestApi {
      */
     static request( active_record_class, config = {} ) {
 
-        if ( _.isNull( this.http ) ) {
+        // NOTE:
+        // using RestApi instead of this for these checks because we can't test otherwise
+        // and testing like this doesn't work (TODO: find out why):
+        //   expect( RestApi.request.bind( RestApi ) ).toThrowError( ... );
+
+        if ( _.isNull( RestApi.http ) ) {
             throw new Error( MESSAGE_HTTP_REQUIRED );
+        }
+
+        let http_promise = RestApi.http( config );
+
+        // if HTTP Service is invalid
+        if ( _.isUndefined( http_promise ) || typeof http_promise !== 'object' || _.isUndefined( http_promise.then ) ) {
+            throw new Error( MESSAGE_INVALID_HTTP_SERVICE );
         }
 
         // update params
@@ -370,14 +383,7 @@ class RestApi {
 
         return new Promise( ( resolve, reject ) => {
 
-            let _promise = this.http( config );
-
-            // if HTTP Service is invalid
-            if ( _.isUndefined( _promise ) || typeof _promise !== 'object' || _.isUndefined( _promise.then ) ) {
-                throw new Error( MESSAGE_INVALID_HTTP_SERVICE );
-            }
-
-            _promise.then(
+            http_promise.then(
                 ( response ) => {
 
                     let result = response;
@@ -482,5 +488,6 @@ RestApi.reset();
 RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED = MESSAGE_HOSTNAME_AND_PATH_REQURIED;
 RestApi.MESSAGE_HTTP_REQUIRED = MESSAGE_HTTP_REQUIRED;
 RestApi.MESSAGE_ID_IS_REQURIED = MESSAGE_ID_IS_REQURIED;
+RestApi.MESSAGE_INVALID_HTTP_SERVICE = MESSAGE_INVALID_HTTP_SERVICE;
 
 export default RestApi;
