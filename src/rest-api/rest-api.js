@@ -222,7 +222,6 @@ class RestApi {
 
         if ( _.isNull( id ) || _.isUndefined( id ) ) {
             throw new Error( MESSAGE_ID_IS_REQURIED );
-            return;
         }
 
         // request config
