@@ -266,10 +266,30 @@ class RestApi {
 
         // request config
         request_config.method = 'PUT';
-        request_config.sub_path = id;
+        request_config.sub_path = this.formatSubPath( id, request_config );
 
         // request ...
         return this.request( active_record_class, request_config );
+    }
+
+    /**
+     * formatSubPath
+     *
+     * @param  {Integer}      id
+     * @param  {object}      config
+     * @return {String}
+     */
+    static formatSubPath( id, config ) {
+
+        let result = id.toString();
+
+        if ( _.has( config, "sub_path" ) && config.sub_path.length > 0 ) {
+
+            result += _.startsWith( config.sub_path, "/" ) ? "" : "/";
+            result += config.sub_path;
+        }
+
+        return result;
     }
 
     /**
@@ -289,7 +309,7 @@ class RestApi {
 
         // request config
         request_config.method = 'DELETE';
-        request_config.sub_path = id;
+        request_config.sub_path = this.formatSubPath( id, request_config );
 
         // request ...
         return this.request( active_record_class, request_config );
