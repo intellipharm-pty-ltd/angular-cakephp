@@ -334,13 +334,6 @@ class RestApi {
             throw new Error( MESSAGE_HTTP_REQUIRED );
         }
 
-        let http_promise = RestApi.http( config );
-
-        // if HTTP Service is invalid
-        if ( _.isUndefined( http_promise ) || typeof http_promise !== 'object' || _.isUndefined( http_promise.then ) ) {
-            throw new Error( MESSAGE_INVALID_HTTP_SERVICE );
-        }
-
         // update params
 
         let response_handler = this.responseHandler;
@@ -401,6 +394,13 @@ class RestApi {
         }
 
         return new Promise( ( resolve, reject ) => {
+
+            let http_promise = RestApi.http( config );
+
+            // if HTTP Service is invalid
+            if ( _.isUndefined( http_promise ) || typeof http_promise !== 'object' || _.isUndefined( http_promise.then ) ) {
+                throw new Error( MESSAGE_INVALID_HTTP_SERVICE );
+            }
 
             http_promise.then(
                 ( response ) => {

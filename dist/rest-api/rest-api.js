@@ -169,10 +169,32 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                         // request config
                         request_config.method = 'PUT';
-                        request_config.sub_path = id;
+                        request_config.sub_path = this.formatSubPath(id, request_config);
 
                         // request ...
                         return this.request(active_record_class, request_config);
+                    }
+
+                    /**
+                     * formatSubPath
+                     *
+                     * @param  {Integer}      id
+                     * @param  {object}      config
+                     * @return {String}
+                     */
+                }, {
+                    key: 'formatSubPath',
+                    value: function formatSubPath(id, config) {
+
+                        var result = id.toString();
+
+                        if (_.has(config, "sub_path") && config.sub_path.length > 0) {
+
+                            result += _.startsWith(config.sub_path, "/") ? "" : "/";
+                            result += config.sub_path;
+                        }
+
+                        return result;
                     }
 
                     /**
@@ -195,7 +217,7 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                         // request config
                         request_config.method = 'DELETE';
-                        request_config.sub_path = id;
+                        request_config.sub_path = this.formatSubPath(id, request_config);
 
                         // request ...
                         return this.request(active_record_class, request_config);
@@ -223,13 +245,6 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                         if (_.isNull(RestApi.http)) {
                             throw new Error(MESSAGE_HTTP_REQUIRED);
-                        }
-
-                        var http_promise = RestApi.http(config);
-
-                        // if HTTP Service is invalid
-                        if (_.isUndefined(http_promise) || typeof http_promise !== 'object' || _.isUndefined(http_promise.then)) {
-                            throw new Error(MESSAGE_INVALID_HTTP_SERVICE);
                         }
 
                         // update params
@@ -292,6 +307,13 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                         }
 
                         return new Promise(function (resolve, reject) {
+
+                            var http_promise = RestApi.http(config);
+
+                            // if HTTP Service is invalid
+                            if (_.isUndefined(http_promise) || typeof http_promise !== 'object' || _.isUndefined(http_promise.then)) {
+                                throw new Error(MESSAGE_INVALID_HTTP_SERVICE);
+                            }
 
                             http_promise.then(function (response) {
 

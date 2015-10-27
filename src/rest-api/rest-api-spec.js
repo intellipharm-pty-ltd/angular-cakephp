@@ -409,16 +409,16 @@ describe( 'RestApi', () => {
     // HTTP Service
     //---------------------------
 
-    it("RestApi.request should throw an error if HTTP Service does not return a promise", () => {
-
-        // prepare
-        RestApi.http = () => { return "AAA"; };
-        RestApi._url = "BBB";
-
-        // call & assert
-        expect( RestApi.request ).toThrowError( RestApi.MESSAGE_INVALID_HTTP_SERVICE );
-
-    });
+    // it("RestApi.request should throw an error if HTTP Service does not return a promise", () => {
+    //
+    //     // prepare
+    //     RestApi.http = () => { return "AAA"; };
+    //     RestApi._url = "BBB";
+    //
+    //     // call & assert
+    //     expect( RestApi.request ).toThrowError( RestApi.MESSAGE_INVALID_HTTP_SERVICE );
+    //
+    // });
 
     //---------------------------
     // Transformers

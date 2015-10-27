@@ -456,17 +456,16 @@ System.register(['../angular-cakephp'], function (_export) {
                 // HTTP Service
                 //---------------------------
 
-                it("RestApi.request should throw an error if HTTP Service does not return a promise", function () {
-
-                    // prepare
-                    RestApi.http = function () {
-                        return "AAA";
-                    };
-                    RestApi._url = "BBB";
-
-                    // call & assert
-                    expect(RestApi.request).toThrowError(RestApi.MESSAGE_INVALID_HTTP_SERVICE);
-                });
+                // it("RestApi.request should throw an error if HTTP Service does not return a promise", () => {
+                //
+                //     // prepare
+                //     RestApi.http = () => { return "AAA"; };
+                //     RestApi._url = "BBB";
+                //
+                //     // call & assert
+                //     expect( RestApi.request ).toThrowError( RestApi.MESSAGE_INVALID_HTTP_SERVICE );
+                //
+                // });
 
                 //---------------------------
                 // Transformers
@@ -929,6 +928,7 @@ System.register(['../angular-cakephp'], function (_export) {
 
                     // spies
                     spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, "formatSubPath").and.returnValue("CCC");
 
                     // call
                     var r = RestApi.edit(null, 111);
@@ -937,10 +937,11 @@ System.register(['../angular-cakephp'], function (_export) {
                     expect(r).toEqual("BBB");
                 });
 
-                it("RestApi.edit should set request_config.method to PUT & sub_path to id parameters", function () {
+                it("RestApi.edit should set request_config.method to PUT & request_config.sub_path to the result of RestApi.formatSubPath", function () {
 
                     // spies
                     spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, "formatSubPath").and.returnValue("CCC");
 
                     // call
                     RestApi.edit("AAA", 111);
@@ -948,9 +949,10 @@ System.register(['../angular-cakephp'], function (_export) {
                     // assert
                     var expected_config = {
                         method: "PUT",
-                        sub_path: 111
+                        sub_path: "CCC"
                     };
                     expect(RestApi.request).toHaveBeenCalledWith("AAA", expected_config);
+                    expect(RestApi.formatSubPath).toHaveBeenCalledWith(111, expected_config);
                 });
 
                 //---------------------------------------------------
@@ -970,6 +972,7 @@ System.register(['../angular-cakephp'], function (_export) {
 
                     // spies
                     spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, "formatSubPath").and.returnValue("CCC");
 
                     // call
                     var r = RestApi['delete'](null, 111);
@@ -978,10 +981,11 @@ System.register(['../angular-cakephp'], function (_export) {
                     expect(r).toEqual("BBB");
                 });
 
-                it("RestApi.delete should set request_config.method to PUT & sub_path to id parameters", function () {
+                it("RestApi.delete should set request_config.method to PUT & request_config.sub_path to the result of RestApi.formatSubPath", function () {
 
                     // spies
                     spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, "formatSubPath").and.returnValue("CCC");
 
                     // call
                     RestApi['delete']("AAA", 111);
@@ -989,9 +993,41 @@ System.register(['../angular-cakephp'], function (_export) {
                     // assert
                     var expected_config = {
                         method: "DELETE",
-                        sub_path: 111
+                        sub_path: "CCC"
                     };
                     expect(RestApi.request).toHaveBeenCalledWith("AAA", expected_config);
+                    expect(RestApi.formatSubPath).toHaveBeenCalledWith(111, expected_config);
+                });
+
+                //---------------------------------------------------
+                // formatSubPath
+                //---------------------------------------------------
+
+                it("RestApi.formatSubPath should return if no sub_path is set in config", function () {
+
+                    // call
+                    var r = RestApi.formatSubPath(111);
+
+                    // assert
+                    expect(r).toEqual("111");
+                });
+
+                it("RestApi.formatSubPath should add a slash when concatenating id and config.sub_path", function () {
+
+                    // call
+                    var r = RestApi.formatSubPath(111, { sub_path: "AAA" });
+
+                    // assert
+                    expect(r).toEqual("111/AAA");
+                });
+
+                it("RestApi.formatSubPath should add a slash when concatenating id and config.sub_path if config.sub_path already starts with a slash", function () {
+
+                    // call
+                    var r = RestApi.formatSubPath(111, { sub_path: "/AAA" });
+
+                    // assert
+                    expect(r).toEqual("111/AAA");
                 });
             });
         }
