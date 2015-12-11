@@ -12,6 +12,16 @@ const MESSAGE_INVALID_HTTP_SERVICE          = 'http is invalid';
 class RestApi {
 
     /**
+     * cacheControl
+     */
+    static get cacheControl() {
+        return this._cache_control;
+    }
+    static set cacheControl( value ) {
+        this._cache_control = value;
+    }
+
+    /**
      * errorHandler
      */
     static get errorHandler() {
@@ -393,6 +403,14 @@ class RestApi {
             delete config.sub_path; // clean config
         }
 
+        if ( this._cache_control && ( !_.has( config, 'method' ) || config.method === 'GET' ) ) {
+            if ( !_.has( config, 'params' ) ) {
+                config.params = {};
+            }
+
+            config.params.cache = new Date().getTime();
+        }
+
         return new Promise( ( resolve, reject ) => {
 
             let http_promise = RestApi.http( config );
@@ -482,6 +500,7 @@ class RestApi {
     static reset() {
 
         // defaults
+        this._cache_control          = null;
         this._error_handler          = null;
         this._error_transformer      = null;
         this._headers                = {};

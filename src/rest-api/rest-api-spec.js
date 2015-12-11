@@ -18,6 +18,34 @@ describe( 'RestApi', () => {
     });
 
     //---------------------------------------------------
+    // cache
+    //---------------------------------------------------
+
+    it("should not cache results", () => {
+
+        // prepare
+        RestApi.http                = http_mock;
+        RestApi._hostname           = "AAA";
+        RestApi._path               = "BBB";
+        RestApi.cacheControl        = true;
+
+        // spy
+        spyOn( RestApi, 'http' ).and.returnValue( http_mock() );
+
+        // call
+        RestApi.request();
+
+        let expected_result = {
+            headers: {},
+            params: { cache: new Date().getTime() },
+            url: "AAABBB"
+        };
+
+        // assert
+        expect( RestApi.http ).toHaveBeenCalledWith( expected_result );
+    });
+
+    //---------------------------------------------------
     // pathGenerator
     //---------------------------------------------------
 
