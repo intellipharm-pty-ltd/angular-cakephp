@@ -306,6 +306,14 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                             delete config.sub_path; // clean config
                         }
 
+                        if (this._cache_control && (!_.has(config, 'method') || config.method === 'GET')) {
+                            if (!_.has(config, 'params')) {
+                                config.params = {};
+                            }
+
+                            config.params.cache = new Date().getTime();
+                        }
+
                         return new Promise(function (resolve, reject) {
 
                             var http_promise = RestApi.http(config);
@@ -394,6 +402,7 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                     value: function reset() {
 
                         // defaults
+                        this._cache_control = null;
                         this._error_handler = null;
                         this._error_transformer = null;
                         this._headers = {};
@@ -411,11 +420,23 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                         this._url = null;
                     }
                 }, {
-                    key: 'errorHandler',
+                    key: 'cacheControl',
+
+                    /**
+                     * cacheControl
+                     */
+                    get: function get() {
+                        return this._cache_control;
+                    },
+                    set: function set(value) {
+                        this._cache_control = value;
+                    }
 
                     /**
                      * errorHandler
                      */
+                }, {
+                    key: 'errorHandler',
                     get: function get() {
                         return this._error_handler;
                     },
