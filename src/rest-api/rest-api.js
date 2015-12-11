@@ -404,7 +404,7 @@ class RestApi {
         }
 
         if ( this._cache_control && ( !_.has( config, 'method' ) || config.method === 'GET' ) ) {
-            if ( !_.has( config, 'params' ) ) {
+            if ( !_.isObject( config.params ) ) {
                 config.params = {};
             }
 
