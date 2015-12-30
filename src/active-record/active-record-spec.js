@@ -6,7 +6,7 @@ var http_mock = () => {
     } );
 };
 
-describe( "ActiveRecord", () => {
+describe( 'ActiveRecord', () => {
 
     //---------------------------------------------------
     // map data
@@ -34,10 +34,10 @@ describe( "ActiveRecord", () => {
         ActiveRecord.mapData = false;
 
         // call
-        let me = new Member({ "firstname": "John", "lastname": "Smith" });
+        let me = new Member({ 'firstname': 'John', 'lastname': 'Smith' });
 
         // assert
-        expect( me.firstname ).toBe( "John" );
+        expect( me.firstname ).toBe( 'John' );
         expect( me.lastname ).toBeUndefined();
     });
 
@@ -51,10 +51,10 @@ describe( "ActiveRecord", () => {
         }
 
         // call
-        let me = new Member({ "firstname": "John" });
+        let me = new Member({ 'firstname': 'John' });
 
         // assert
-        expect( me.firstname ).toBe( "John" );
+        expect( me.firstname ).toBe( 'John' );
     });
 
     //---------------------------------------------------
@@ -66,16 +66,16 @@ describe( "ActiveRecord", () => {
         // prepare
         class Member extends ActiveRecord {
             get name() {
-                return this.firstname + " " + this.lastname;
+                return this.firstname + ' ' + this.lastname;
             }
         }
         ActiveRecord.mapData = true;
 
         // call
-        let me = new Member({ "firstname": "John", "lastname": "Smith" });
+        let me = new Member({ 'firstname': 'John', 'lastname': 'Smith' });
 
         // assert
-        expect( me.name ).toBe( "John Smith" );
+        expect( me.name ).toBe( 'John Smith' );
     });
 
     //---------------------------------------------------
@@ -96,7 +96,7 @@ describe( "ActiveRecord", () => {
     // view
     //---------------------------------------------------
 
-    it("view should throw an error if id is not set", () => {
+    it('view should throw an error if id is not set', () => {
 
         // prepare
         class Member extends ActiveRecord {}
@@ -112,7 +112,7 @@ describe( "ActiveRecord", () => {
         expect( error_message ).toEqual( ActiveRecord.MESSAGE_VIEW_ERROR_NO_ID );
     });
 
-    it("view should call model.view", () => {
+    it('view should call model.view', () => {
 
         // prepare
         class Member extends ActiveRecord {}
@@ -133,7 +133,7 @@ describe( "ActiveRecord", () => {
     // save
     //---------------------------------------------------
 
-    it("save should call model.add if no id is set", () => {
+    it('save should call model.add if no id is set', () => {
 
         // prepare
         class Member extends ActiveRecord {}
@@ -149,7 +149,7 @@ describe( "ActiveRecord", () => {
         expect( me.model.add ).toHaveBeenCalledWith( me.constructor, me, {} );
     });
 
-    it("save should call model.edit if id is set", () => {
+    it('save should call model.edit if id is set', () => {
 
         // prepare
         class Member extends ActiveRecord {}
@@ -170,7 +170,7 @@ describe( "ActiveRecord", () => {
     // delete
     //---------------------------------------------------
 
-    it("delete should throw an error if id is not set", () => {
+    it('delete should throw an error if id is not set', () => {
 
         // prepare
         class Member extends ActiveRecord {}
@@ -186,7 +186,7 @@ describe( "ActiveRecord", () => {
         expect( error_message ).toEqual( ActiveRecord.MESSAGE_DELETE_ERROR_NO_ID );
     });
 
-    it("delete should call model.delete", () => {
+    it('delete should call model.delete', () => {
 
         // prepare
         class Member extends ActiveRecord {}
@@ -207,14 +207,14 @@ describe( "ActiveRecord", () => {
     // enumeration OR validation etc
     //---------------------------------------------------
 
-    it("enumeration should call model.request", () => {
+    it('enumeration should call model.request', () => {
 
         // prepare
         class Member extends ActiveRecord {
             enumeration() {
                 let request_config = {
-                    method: "GET",
-                    sub_path: "enumeration"
+                    method: 'GET',
+                    sub_path: 'enumeration'
                 };
                 return this.model.request( request_config );
             }
@@ -222,15 +222,15 @@ describe( "ActiveRecord", () => {
         let me = new Member();
 
         // spy
-        spyOn( me.model, "request" );
+        spyOn( me.model, 'request' );
 
         // call
         me.enumeration();
 
         // assert
         expect( me.model.request ).toHaveBeenCalledWith( {
-            method: "GET",
-            sub_path: "enumeration"
+            method: 'GET',
+            sub_path: 'enumeration'
         } );
     });
 
@@ -238,20 +238,20 @@ describe( "ActiveRecord", () => {
     // validate
     //---------------------------------------------------
 
-    it("validate should call http correctly", () => {
+    it('validate should call http correctly', () => {
 
         RestApi.http = http_mock;
-        RestApi.hostname = "myhost/";
+        RestApi.hostname = 'myhost/';
         RestApi.pathGenerator = ( ar ) => {
-            return ar + "s";
+            return ar + 's';
         };
 
         // prepare
         class Member extends ActiveRecord {
             validate() {
                 let request_config = {
-                    method: "GET",
-                    sub_path: "validation"
+                    method: 'GET',
+                    sub_path: 'validation'
                 };
                 return this.model.request( this, request_config );
             }

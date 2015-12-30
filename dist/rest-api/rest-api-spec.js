@@ -38,12 +38,12 @@ System.register(['../angular-cakephp'], function (_export) {
                 // cache
                 //---------------------------------------------------
 
-                it("should not cache results", function () {
+                it('should not cache results', function () {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi._hostname = "AAA";
-                    RestApi._path = "BBB";
+                    RestApi._hostname = 'AAA';
+                    RestApi._path = 'BBB';
                     RestApi.cacheControl = true;
 
                     // spy
@@ -55,7 +55,7 @@ System.register(['../angular-cakephp'], function (_export) {
                     var expected_result = {
                         headers: {},
                         params: { cache: new Date().getTime() },
-                        url: "AAABBB"
+                        url: 'AAABBB'
                     };
 
                     // assert
@@ -66,7 +66,7 @@ System.register(['../angular-cakephp'], function (_export) {
                 // pathGenerator
                 //---------------------------------------------------
 
-                it("RestApi.path() should call RestApi.pathGenerator with the _.snakeCase of active_record_class name", function () {
+                it('RestApi.path() should call RestApi.pathGenerator with the _.snakeCase of active_record_class name', function () {
 
                     // spy
                     RestApi.pathGenerator = jasmine.createSpy('pathGenerator');
@@ -86,7 +86,7 @@ System.register(['../angular-cakephp'], function (_export) {
                         return AR;
                     })(ActiveRecord);
 
-                    var r = RestApi.path(AR);
+                    var r = RestApi.path(new AR());
 
                     // assert
                     expect(RestApi.pathGenerator).toHaveBeenCalledWith('ar');
@@ -96,10 +96,10 @@ System.register(['../angular-cakephp'], function (_export) {
                 // path
                 //---------------------------------------------------
 
-                it("Given a Class: RestApi.path() should call RestApi.pathGenerator with the active_record_class class's name, and return the result", function () {
+                it('Given a Class: RestApi.path() should call RestApi.pathGenerator with the active_record_class class\'s name, and return the result', function () {
 
                     // spy
-                    RestApi.pathGenerator = jasmine.createSpy('pathGenerator').and.returnValue("AAA");
+                    RestApi.pathGenerator = jasmine.createSpy('pathGenerator').and.returnValue('AAA');
 
                     // prepare
 
@@ -116,17 +116,17 @@ System.register(['../angular-cakephp'], function (_export) {
                         return AR;
                     })(ActiveRecord);
 
-                    var r = RestApi.path(AR);
+                    var r = RestApi.path(new AR());
 
                     // assert
                     expect(RestApi.pathGenerator).toHaveBeenCalledWith('ar');
-                    expect(r).toEqual("AAA");
+                    expect(r).toEqual('AAA');
                 });
 
-                it("Given a Function: RestApi.path() should call RestApi.pathGenerator with the active_record_class function's name, and return the result", function () {
+                it('Given a Function: RestApi.path() should call RestApi.pathGenerator with the active_record_class function\'s name, and return the result', function () {
 
                     // spy
-                    RestApi.pathGenerator = jasmine.createSpy('pathGenerator').and.returnValue("AAA");
+                    RestApi.pathGenerator = jasmine.createSpy('pathGenerator').and.returnValue('AAA');
 
                     // prepare
                     var AR = function AR() {};
@@ -136,29 +136,29 @@ System.register(['../angular-cakephp'], function (_export) {
 
                     // assert
                     expect(RestApi.pathGenerator).toHaveBeenCalledWith('ar');
-                    expect(r).toEqual("AAA");
+                    expect(r).toEqual('AAA');
                 });
 
                 //---------------------------------------------------
                 // url
                 //---------------------------------------------------
 
-                it("RestApi.url() should url if already set and if both active_record_class & config.path are not provided", function () {
+                it('RestApi.url() should url if already set and if both active_record_class & config.path are not provided', function () {
 
                     // prepare
-                    RestApi._url = "AAA";
+                    RestApi._url = 'AAA';
 
                     // call
                     var r = RestApi.url();
 
                     // assert
-                    expect(r).toEqual("AAA");
+                    expect(r).toEqual('AAA');
                 });
 
-                it("get RestApi.url should throw an error if hostname is not set and is not provided via config.hostname", function () {
+                it('get RestApi.url should throw an error if hostname is not set and is not provided via config.hostname', function () {
 
                     RestApi._hostname = null;
-                    RestApi._path = "AAA";
+                    RestApi._path = 'AAA';
 
                     try {
                         var r = RestApi.url();
@@ -169,9 +169,9 @@ System.register(['../angular-cakephp'], function (_export) {
                     expect(error_message).toEqual(RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED);
                 });
 
-                it("get RestApi.url should throw an error if hostname is not set and is not provided via config.hostname", function () {
+                it('get RestApi.url should throw an error if hostname is not set and is not provided via config.hostname', function () {
 
-                    RestApi._hostname = "AAA";
+                    RestApi._hostname = 'AAA';
                     RestApi._path = null;
 
                     try {
@@ -183,16 +183,16 @@ System.register(['../angular-cakephp'], function (_export) {
                     expect(error_message).toEqual(RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED);
                 });
 
-                it("get RestApi.url should return combination of RestApi.hostname & RestApi.path", function () {
+                it('get RestApi.url should return combination of RestApi.hostname & RestApi.path', function () {
 
-                    RestApi._hostname = "AAA";
-                    RestApi._path = "BBB";
+                    RestApi._hostname = 'AAA';
+                    RestApi._path = 'BBB';
 
                     // call
                     var r = RestApi.url();
 
                     // assert
-                    expect(r).toEqual("AAABBB");
+                    expect(r).toEqual('AAABBB');
                 });
 
                 //----------------------------------------------------
@@ -203,7 +203,7 @@ System.register(['../angular-cakephp'], function (_export) {
                 // request :: exceptions
                 //----------------------------------------------------
 
-                it("RestApi.request should throw an error if http is not set", function () {
+                it('RestApi.request should throw an error if http is not set', function () {
 
                     // prepare
                     RestApi._http = null;
@@ -216,17 +216,17 @@ System.register(['../angular-cakephp'], function (_export) {
                 // request :: no ActiveRecord
                 //----------------------------------------------------
 
-                it("RestApi.request should return object if no ActiveRecord is set", function (done) {
+                it('RestApi.request should return object if no ActiveRecord is set', function (done) {
 
                     // prepare
                     var responseTransformer = jasmine.createSpy('responseTransformer').and.returnValue(new Promise(function (resolve, reject) {
-                        resolve("DDD");
+                        resolve('DDD');
                     }));
                     var responseHandler = jasmine.createSpy('responseHandler').and.returnValue(new Promise(function (resolve, reject) {
-                        resolve("CCC");
+                        resolve('CCC');
                     }));
                     RestApi.http = http_mock;
-                    RestApi.hostname = "AAA";
+                    RestApi.hostname = 'AAA';
                     RestApi.responseTransformer = responseTransformer;
                     RestApi.responseHandler = responseHandler;
 
@@ -235,15 +235,15 @@ System.register(['../angular-cakephp'], function (_export) {
 
                     // prepare assert
                     var assert = function assert(state, response) {
-                        expect(state).toEqual("PASS");
+                        expect(state).toEqual('PASS');
                         done();
                     };
 
                     // call
-                    RestApi.request(null, { path: "BBB" }).then(function (response) {
-                        assert("PASS", response);
+                    RestApi.request(null, { path: 'BBB' }).then(function (response) {
+                        assert('PASS', response);
                     }, function (response) {
-                        assert("FAIL", response);
+                        assert('FAIL', response);
                     });
                 });
 
@@ -251,12 +251,12 @@ System.register(['../angular-cakephp'], function (_export) {
                 // request :: args
                 //----------------------------------------------------
 
-                it("RestApi.request should ???? if a active_record_class is provided", function () {
+                it('RestApi.request should ???? if a active_record_class is provided', function () {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi._hostname = "AAA";
-                    RestApi._path = "AAA";
+                    RestApi._hostname = 'AAA';
+                    RestApi._path = 'AAA';
 
                     var AR = (function (_ActiveRecord3) {
                         _inherits(AR, _ActiveRecord3);
@@ -285,13 +285,13 @@ System.register(['../angular-cakephp'], function (_export) {
                 // headers
                 //---------------------------
 
-                it("RestApi.request should add headers request config", function () {
+                it('RestApi.request should add headers request config', function () {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi._hostname = "AAA";
-                    RestApi._path = "BBB";
-                    RestApi._headers = { a: "A" };
+                    RestApi._hostname = 'AAA';
+                    RestApi._path = 'BBB';
+                    RestApi._headers = { a: 'A' };
 
                     // spy
                     spyOn(RestApi, 'http').and.returnValue(http_mock());
@@ -300,31 +300,31 @@ System.register(['../angular-cakephp'], function (_export) {
                     RestApi.request();
 
                     var expected_result = {
-                        headers: { a: "A" },
-                        url: "AAABBB"
+                        headers: { a: 'A' },
+                        url: 'AAABBB'
                     };
 
                     // assert
                     expect(RestApi.http).toHaveBeenCalledWith(expected_result);
                 });
 
-                it("if config.headers is provided, then RestApi.request should set request config by merging config.headers and RestApi.headers, with config.headers taking priority", function () {
+                it('if config.headers is provided, then RestApi.request should set request config by merging config.headers and RestApi.headers, with config.headers taking priority', function () {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi._hostname = "AAA";
-                    RestApi._path = "BBB";
-                    RestApi._headers = { a: "A", c: "C1" };
+                    RestApi._hostname = 'AAA';
+                    RestApi._path = 'BBB';
+                    RestApi._headers = { a: 'A', c: 'C1' };
 
                     // spy
                     spyOn(RestApi, 'http').and.returnValue(http_mock());
 
                     // call
-                    RestApi.request(null, { "headers": { b: "B", c: "C2" } });
+                    RestApi.request(null, { 'headers': { b: 'B', c: 'C2' } });
 
                     var expected_result = {
-                        headers: { a: "A", c: "C2", b: "B" },
-                        url: "AAABBB"
+                        headers: { a: 'A', c: 'C2', b: 'B' },
+                        url: 'AAABBB'
                     };
 
                     // assert
@@ -335,15 +335,15 @@ System.register(['../angular-cakephp'], function (_export) {
                 // paramSerializer
                 //---------------------------
 
-                it("if paramSerializer is set, then RestApi.request should add it to request config", function () {
+                it('if paramSerializer is set, then RestApi.request should add it to request config', function () {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi._hostname = "AAA";
-                    RestApi._path = "BBB";
+                    RestApi._hostname = 'AAA';
+                    RestApi._path = 'BBB';
                     RestApi._headers = {};
 
-                    RestApi._param_serializer = "CCC";
+                    RestApi._param_serializer = 'CCC';
 
                     // spy
                     spyOn(RestApi, 'http').and.returnValue(http_mock());
@@ -352,35 +352,35 @@ System.register(['../angular-cakephp'], function (_export) {
                     RestApi.request();
 
                     var expected_result = {
-                        "headers": {},
-                        "paramSerializer": "CCC",
-                        "url": "AAABBB"
+                        'headers': {},
+                        'paramSerializer': 'CCC',
+                        'url': 'AAABBB'
                     };
 
                     // assert
                     expect(RestApi.http).toHaveBeenCalledWith(expected_result);
                 });
 
-                it("if config.paramSerializer is provided, then RestApi.request should add config.paramSerializer to request config", function () {
+                it('if config.paramSerializer is provided, then RestApi.request should add config.paramSerializer to request config', function () {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi._hostname = "AAA";
-                    RestApi._path = "BBB";
+                    RestApi._hostname = 'AAA';
+                    RestApi._path = 'BBB';
                     RestApi._headers = {};
 
-                    RestApi._param_serializer = "CCC";
+                    RestApi._param_serializer = 'CCC';
 
                     // spy
                     spyOn(RestApi, 'http').and.returnValue(http_mock());
 
                     // call
-                    RestApi.request(null, { paramSerializer: "DDD" });
+                    RestApi.request(null, { paramSerializer: 'DDD' });
 
                     var expected_result = {
-                        "headers": {},
-                        "paramSerializer": "DDD",
-                        "url": "AAABBB"
+                        'headers': {},
+                        'paramSerializer': 'DDD',
+                        'url': 'AAABBB'
                     };
 
                     // assert
@@ -391,13 +391,13 @@ System.register(['../angular-cakephp'], function (_export) {
                 // url
                 //---------------------------
 
-                it("if url is set, then RestApi.request should add it to request config, instead of concat'ing hostname & path", function () {
+                it('if url is set, then RestApi.request should add it to request config, instead of concating hostname & path', function () {
 
                     // prepare
                     RestApi.http = http_mock;
                     RestApi._headers = {};
 
-                    RestApi._url = "CCC";
+                    RestApi._url = 'CCC';
 
                     // spy
                     spyOn(RestApi, 'http').and.returnValue(http_mock());
@@ -406,31 +406,31 @@ System.register(['../angular-cakephp'], function (_export) {
                     RestApi.request();
 
                     var expected_result = {
-                        "headers": {},
-                        "url": "CCC"
+                        'headers': {},
+                        'url': 'CCC'
                     };
 
                     // assert
                     expect(RestApi.http).toHaveBeenCalledWith(expected_result);
                 });
 
-                it("if config.url is provided, then RestApi.request should add config.paramSerializer to request config", function () {
+                it('if config.url is provided, then RestApi.request should add config.paramSerializer to request config', function () {
 
                     // prepare
                     RestApi.http = http_mock;
                     RestApi._headers = {};
 
-                    RestApi._url = "CCC";
+                    RestApi._url = 'CCC';
 
                     // spy
                     spyOn(RestApi, 'http').and.returnValue(http_mock());
 
                     // call
-                    RestApi.request(null, { url: "DDD" });
+                    RestApi.request(null, { url: 'DDD' });
 
                     var expected_result = {
-                        "headers": {},
-                        "url": "DDD"
+                        'headers': {},
+                        'url': 'DDD'
                     };
 
                     // assert
@@ -441,22 +441,22 @@ System.register(['../angular-cakephp'], function (_export) {
                 // sub_path
                 //---------------------------
 
-                it("RestApi.request should append config.sub_path to config.url if set, and remove sub_path from config", function () {
+                it('RestApi.request should append config.sub_path to config.url if set, and remove sub_path from config', function () {
 
                     // prepare
                     RestApi.http = http_mock;
                     RestApi._headers = {};
-                    RestApi._url = "CCC";
+                    RestApi._url = 'CCC';
 
                     // spy
                     spyOn(RestApi, 'http').and.returnValue(http_mock());
 
                     // call
-                    RestApi.request(null, { sub_path: "DDD" });
+                    RestApi.request(null, { sub_path: 'DDD' });
 
                     var expected_result = {
-                        "headers": {},
-                        "url": "CCC/DDD"
+                        'headers': {},
+                        'url': 'CCC/DDD'
                     };
 
                     // assert
@@ -467,11 +467,11 @@ System.register(['../angular-cakephp'], function (_export) {
                 // Promise
                 //---------------------------
 
-                it("RestApi.request should return a promise", function () {
+                it('RestApi.request should return a promise', function () {
 
                     // prepare
                     RestApi.http = http_mock;
-                    RestApi._url = "AAA";
+                    RestApi._url = 'AAA';
 
                     // call
                     var p = RestApi.request();
@@ -484,11 +484,11 @@ System.register(['../angular-cakephp'], function (_export) {
                 // HTTP Service
                 //---------------------------
 
-                // it("RestApi.request should throw an error if HTTP Service does not return a promise", () => {
+                // it('RestApi.request should throw an error if HTTP Service does not return a promise', () => {
                 //
                 //     // prepare
-                //     RestApi.http = () => { return "AAA"; };
-                //     RestApi._url = "BBB";
+                //     RestApi.http = () => { return 'AAA'; };
+                //     RestApi._url = 'BBB';
                 //
                 //     // call & assert
                 //     expect( RestApi.request ).toThrowError( RestApi.MESSAGE_INVALID_HTTP_SERVICE );
@@ -499,12 +499,12 @@ System.register(['../angular-cakephp'], function (_export) {
                 // Transformers
                 //---------------------------
 
-                it("RestApi.request should (on success) call successTransformer with response & active_record_class. successTransformer should supersede responseTransformer.", function (done) {
+                it('RestApi.request should (on success) call successTransformer with response & active_record_class. successTransformer should supersede responseTransformer.', function (done) {
 
                     // prepare
                     RestApi.http = http_mock;
                     RestApi._headers = {};
-                    RestApi._hostname = "AAA";
+                    RestApi._hostname = 'AAA';
                     RestApi._path_generator = function () {};
 
                     var AR = (function (_ActiveRecord4) {
@@ -531,7 +531,7 @@ System.register(['../angular-cakephp'], function (_export) {
                     });
                 });
 
-                it("RestApi.request should (on success) call responseTransformer with response & active_record_class, if no successTransformer is provided", function (done) {
+                it('RestApi.request should (on success) call responseTransformer with response & active_record_class, if no successTransformer is provided', function (done) {
 
                     // prepare
                     // RestApi.http        = http_mock;
@@ -541,7 +541,7 @@ System.register(['../angular-cakephp'], function (_export) {
                         });
                     };
                     RestApi._headers = {};
-                    RestApi._hostname = "AAA";
+                    RestApi._hostname = 'AAA';
                     RestApi._path_generator = function () {};
 
                     var AR = (function (_ActiveRecord5) {
@@ -566,12 +566,12 @@ System.register(['../angular-cakephp'], function (_export) {
                     });
                 });
 
-                it("RestApi.request should (on error) call errorTransformer with response & active_record_class. errorTransformer should supersede responseTransformer.", function (done) {
+                it('RestApi.request should (on error) call errorTransformer with response & active_record_class. errorTransformer should supersede responseTransformer.', function (done) {
 
                     // prepare
                     RestApi.http = http_mock_reject;
                     RestApi._headers = {};
-                    RestApi._hostname = "AAA";
+                    RestApi._hostname = 'AAA';
                     RestApi._path_generator = function () {};
 
                     var AR = (function (_ActiveRecord6) {
@@ -598,12 +598,12 @@ System.register(['../angular-cakephp'], function (_export) {
                     });
                 });
 
-                it("RestApi.request should (on error) call responseTransformer with response & active_record_class, if no errorTransformer is provided", function (done) {
+                it('RestApi.request should (on error) call responseTransformer with response & active_record_class, if no errorTransformer is provided', function (done) {
 
                     // prepare
                     RestApi.http = http_mock_reject;
                     RestApi._headers = {};
-                    RestApi._hostname = "AAA";
+                    RestApi._hostname = 'AAA';
                     RestApi._path_generator = function () {};
 
                     var AR = (function (_ActiveRecord7) {
@@ -632,15 +632,15 @@ System.register(['../angular-cakephp'], function (_export) {
                 // Handlers
                 //---------------------------
 
-                it("RestApi.request should (on success) call successHandler with transformed response, and resolve only when successHandler resolves. successHandler should supersede responseHandler.", function (done) {
+                it('RestApi.request should (on success) call successHandler with transformed response, and resolve only when successHandler resolves. successHandler should supersede responseHandler.', function (done) {
 
                     // prepare
                     RestApi.http = http_mock;
                     RestApi._headers = {};
-                    RestApi._hostname = "AAA";
+                    RestApi._hostname = 'AAA';
                     RestApi._path_generator = function () {};
                     RestApi.responseTransformer = function () {
-                        return "BBB";
+                        return 'BBB';
                     };
 
                     var AR = (function (_ActiveRecord8) {
@@ -664,20 +664,20 @@ System.register(['../angular-cakephp'], function (_export) {
                     // call & assert
                     RestApi.request(AR).then(function (response) {
                         expect(RestApi.responseHandler).not.toHaveBeenCalled();
-                        expect(RestApi.successHandler).toHaveBeenCalledWith("BBB");
+                        expect(RestApi.successHandler).toHaveBeenCalledWith('BBB');
                         done();
                     });
                 });
 
-                it("RestApi.request should (on success) call responseHandler with response, if no successHandler is provided, and resolve only when responseHandler resolves", function (done) {
+                it('RestApi.request should (on success) call responseHandler with response, if no successHandler is provided, and resolve only when responseHandler resolves', function (done) {
 
                     // prepare
                     RestApi.http = http_mock;
                     RestApi._headers = {};
-                    RestApi._hostname = "AAA";
+                    RestApi._hostname = 'AAA';
                     RestApi._path_generator = function () {};
                     RestApi.responseTransformer = function () {
-                        return "BBB";
+                        return 'BBB';
                     };
 
                     var AR = (function (_ActiveRecord9) {
@@ -699,20 +699,20 @@ System.register(['../angular-cakephp'], function (_export) {
 
                     // call & assert
                     RestApi.request(AR).then(function (response) {
-                        expect(RestApi.responseHandler).toHaveBeenCalledWith("BBB");
+                        expect(RestApi.responseHandler).toHaveBeenCalledWith('BBB');
                         done();
                     });
                 });
 
-                it("RestApi.request should (on success) resolve immediately with response if neither responseHandler nor successHandler are provided", function (done) {
+                it('RestApi.request should (on success) resolve immediately with response if neither responseHandler nor successHandler are provided', function (done) {
 
                     // prepare
                     RestApi.http = http_mock;
                     RestApi._headers = {};
-                    RestApi._hostname = "AAA";
+                    RestApi._hostname = 'AAA';
                     RestApi._path_generator = function () {};
                     RestApi.responseTransformer = function () {
-                        return "BBB";
+                        return 'BBB';
                     };
 
                     var AR = (function (_ActiveRecord10) {
@@ -729,20 +729,20 @@ System.register(['../angular-cakephp'], function (_export) {
                     })(ActiveRecord);
 
                     RestApi.request(AR).then(function (response) {
-                        expect(response).toEqual("BBB");
+                        expect(response).toEqual('BBB');
                         done();
                     });
                 });
 
-                it("RestApi.request should (on error) call errorHandler with transformed response, and resolve only when errorHandler resolves", function (done) {
+                it('RestApi.request should (on error) call errorHandler with transformed response, and resolve only when errorHandler resolves', function (done) {
 
                     // prepare
                     RestApi.http = http_mock_reject;
                     RestApi._headers = {};
-                    RestApi._hostname = "AAA";
+                    RestApi._hostname = 'AAA';
                     RestApi._path_generator = function () {};
                     RestApi.responseTransformer = function () {
-                        return "BBB";
+                        return 'BBB';
                     };
 
                     var AR = (function (_ActiveRecord11) {
@@ -766,20 +766,20 @@ System.register(['../angular-cakephp'], function (_export) {
                     // call & assert
                     RestApi.request(AR).then(function (response) {
                         expect(RestApi.responseHandler).not.toHaveBeenCalled();
-                        expect(RestApi.errorHandler).toHaveBeenCalledWith("BBB");
+                        expect(RestApi.errorHandler).toHaveBeenCalledWith('BBB');
                         done();
                     });
                 });
 
-                it("RestApi.request should (on error) call response_handler with response, if no error_handler is provided, and resolve only when responseHandler resolves", function (done) {
+                it('RestApi.request should (on error) call response_handler with response, if no error_handler is provided, and resolve only when responseHandler resolves', function (done) {
 
                     // prepare
                     RestApi.http = http_mock_reject;
                     RestApi._headers = {};
-                    RestApi._hostname = "AAA";
+                    RestApi._hostname = 'AAA';
                     RestApi._path_generator = function () {};
                     RestApi.responseTransformer = function () {
-                        return "BBB";
+                        return 'BBB';
                     };
 
                     var AR = (function (_ActiveRecord12) {
@@ -801,20 +801,20 @@ System.register(['../angular-cakephp'], function (_export) {
 
                     // call & assert
                     RestApi.request(AR).then(function (response) {
-                        expect(RestApi.responseHandler).toHaveBeenCalledWith("BBB");
+                        expect(RestApi.responseHandler).toHaveBeenCalledWith('BBB');
                         done();
                     });
                 });
 
-                it("RestApi.request should (on error) reject immediately with response if neither responseHandler nor error_handler are provided", function (done) {
+                it('RestApi.request should (on error) reject immediately with response if neither responseHandler nor error_handler are provided', function (done) {
 
                     // prepare
                     RestApi.http = http_mock_reject;
                     RestApi._headers = {};
-                    RestApi._hostname = "AAA";
+                    RestApi._hostname = 'AAA';
                     RestApi._path_generator = function () {};
                     RestApi.responseTransformer = function () {
-                        return "BBB";
+                        return 'BBB';
                     };
 
                     var AR = (function (_ActiveRecord13) {
@@ -831,7 +831,7 @@ System.register(['../angular-cakephp'], function (_export) {
                     })(ActiveRecord);
 
                     RestApi.request(AR).then(function (response) {}, function (response) {
-                        expect(response).toEqual("BBB");
+                        expect(response).toEqual('BBB');
                         done();
                     });
                 });
@@ -840,146 +840,146 @@ System.register(['../angular-cakephp'], function (_export) {
                 // index
                 //---------------------------------------------------
 
-                it("RestApi.index should return the result of request", function () {
+                it('RestApi.index should return the result of request', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
 
                     // call
                     var r = RestApi.index(null);
 
                     // assert
-                    expect(r).toEqual("BBB");
+                    expect(r).toEqual('BBB');
                 });
 
-                it("RestApi.index should set request_config.method to GET", function () {
+                it('RestApi.index should set request_config.method to GET', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
 
                     // call
-                    RestApi.index("AAA");
+                    RestApi.index('AAA');
 
                     // assert
                     var expected_config = {
-                        method: "GET"
+                        method: 'GET'
                     };
-                    expect(RestApi.request).toHaveBeenCalledWith("AAA", expected_config);
+                    expect(RestApi.request).toHaveBeenCalledWith('AAA', expected_config);
                 });
 
                 //---------------------------------------------------
                 // view
                 //---------------------------------------------------
 
-                it("RestApi.view should throw an error if id is not provided", function () {
+                it('RestApi.view should throw an error if id is not provided', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
 
                     // assert
                     expect(RestApi.view).toThrowError(RestApi.MESSAGE_ID_IS_REQURIED);
                 });
 
-                it("RestApi.view should return the result of request", function () {
+                it('RestApi.view should return the result of request', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
 
                     // call
                     var r = RestApi.view(null, 111);
 
                     // assert
-                    expect(r).toEqual("BBB");
+                    expect(r).toEqual('BBB');
                 });
 
-                it("RestApi.view should set request_config.method to GET & sub_path to id parameters", function () {
+                it('RestApi.view should set request_config.method to GET & sub_path to id parameters', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
 
                     // call
-                    RestApi.view("AAA", 111);
+                    RestApi.view('AAA', 111);
 
                     // assert
                     var expected_config = {
-                        method: "GET",
+                        method: 'GET',
                         sub_path: 111
                     };
-                    expect(RestApi.request).toHaveBeenCalledWith("AAA", expected_config);
+                    expect(RestApi.request).toHaveBeenCalledWith('AAA', expected_config);
                 });
 
                 //---------------------------------------------------
                 // add
                 //---------------------------------------------------
 
-                it("RestApi.add should return the result of request", function () {
+                it('RestApi.add should return the result of request', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
 
                     // call
                     var r = RestApi.add(null);
 
                     // assert
-                    expect(r).toEqual("BBB");
+                    expect(r).toEqual('BBB');
                 });
 
-                it("RestApi.add should set request_config.method to POST", function () {
+                it('RestApi.add should set request_config.method to POST', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
 
                     // call
-                    RestApi.add("AAA");
+                    RestApi.add('AAA');
 
                     // assert
                     var expected_config = {
-                        method: "POST"
+                        method: 'POST'
                     };
-                    expect(RestApi.request).toHaveBeenCalledWith("AAA", expected_config);
+                    expect(RestApi.request).toHaveBeenCalledWith('AAA', expected_config);
                 });
 
                 //---------------------------------------------------
                 // edit
                 //---------------------------------------------------
 
-                it("RestApi.edit should throw an error if id is not provided", function () {
+                it('RestApi.edit should throw an error if id is not provided', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
 
                     // assert
                     expect(RestApi.edit).toThrowError(RestApi.MESSAGE_ID_IS_REQURIED);
                 });
 
-                it("RestApi.edit should return the result of request", function () {
+                it('RestApi.edit should return the result of request', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
-                    spyOn(RestApi, "formatSubPath").and.returnValue("CCC");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
+                    spyOn(RestApi, 'formatSubPath').and.returnValue('CCC');
 
                     // call
                     var r = RestApi.edit(null, 111);
 
                     // assert
-                    expect(r).toEqual("BBB");
+                    expect(r).toEqual('BBB');
                 });
 
-                it("RestApi.edit should set request_config.method to PUT & request_config.sub_path to the result of RestApi.formatSubPath", function () {
+                it('RestApi.edit should set request_config.method to PUT & request_config.sub_path to the result of RestApi.formatSubPath', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
-                    spyOn(RestApi, "formatSubPath").and.returnValue("CCC");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
+                    spyOn(RestApi, 'formatSubPath').and.returnValue('CCC');
 
                     // call
-                    RestApi.edit("AAA", 111);
+                    RestApi.edit('AAA', 111);
 
                     // assert
                     var expected_config = {
-                        method: "PUT",
-                        sub_path: "CCC"
+                        method: 'PUT',
+                        sub_path: 'CCC'
                     };
-                    expect(RestApi.request).toHaveBeenCalledWith("AAA", expected_config);
+                    expect(RestApi.request).toHaveBeenCalledWith('AAA', expected_config);
                     expect(RestApi.formatSubPath).toHaveBeenCalledWith(111, expected_config);
                 });
 
@@ -987,43 +987,43 @@ System.register(['../angular-cakephp'], function (_export) {
                 // delete
                 //---------------------------------------------------
 
-                it("RestApi.delete should throw an error if id is not provided", function () {
+                it('RestApi.delete should throw an error if id is not provided', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
 
                     // assert
                     expect(RestApi['delete']).toThrowError(RestApi.MESSAGE_ID_IS_REQURIED);
                 });
 
-                it("RestApi.delete should return the result of request", function () {
+                it('RestApi.delete should return the result of request', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
-                    spyOn(RestApi, "formatSubPath").and.returnValue("CCC");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
+                    spyOn(RestApi, 'formatSubPath').and.returnValue('CCC');
 
                     // call
                     var r = RestApi['delete'](null, 111);
 
                     // assert
-                    expect(r).toEqual("BBB");
+                    expect(r).toEqual('BBB');
                 });
 
-                it("RestApi.delete should set request_config.method to PUT & request_config.sub_path to the result of RestApi.formatSubPath", function () {
+                it('RestApi.delete should set request_config.method to PUT & request_config.sub_path to the result of RestApi.formatSubPath', function () {
 
                     // spies
-                    spyOn(RestApi, "request").and.returnValue("BBB");
-                    spyOn(RestApi, "formatSubPath").and.returnValue("CCC");
+                    spyOn(RestApi, 'request').and.returnValue('BBB');
+                    spyOn(RestApi, 'formatSubPath').and.returnValue('CCC');
 
                     // call
-                    RestApi['delete']("AAA", 111);
+                    RestApi['delete']('AAA', 111);
 
                     // assert
                     var expected_config = {
-                        method: "DELETE",
-                        sub_path: "CCC"
+                        method: 'DELETE',
+                        sub_path: 'CCC'
                     };
-                    expect(RestApi.request).toHaveBeenCalledWith("AAA", expected_config);
+                    expect(RestApi.request).toHaveBeenCalledWith('AAA', expected_config);
                     expect(RestApi.formatSubPath).toHaveBeenCalledWith(111, expected_config);
                 });
 
@@ -1031,31 +1031,31 @@ System.register(['../angular-cakephp'], function (_export) {
                 // formatSubPath
                 //---------------------------------------------------
 
-                it("RestApi.formatSubPath should return if no sub_path is set in config", function () {
+                it('RestApi.formatSubPath should return if no sub_path is set in config', function () {
 
                     // call
                     var r = RestApi.formatSubPath(111);
 
                     // assert
-                    expect(r).toEqual("111");
+                    expect(r).toEqual('111');
                 });
 
-                it("RestApi.formatSubPath should add a slash when concatenating id and config.sub_path", function () {
+                it('RestApi.formatSubPath should add a slash when concatenating id and config.sub_path', function () {
 
                     // call
-                    var r = RestApi.formatSubPath(111, { sub_path: "AAA" });
+                    var r = RestApi.formatSubPath(111, { sub_path: 'AAA' });
 
                     // assert
-                    expect(r).toEqual("111/AAA");
+                    expect(r).toEqual('111/AAA');
                 });
 
-                it("RestApi.formatSubPath should add a slash when concatenating id and config.sub_path if config.sub_path already starts with a slash", function () {
+                it('RestApi.formatSubPath should add a slash when concatenating id and config.sub_path if config.sub_path already starts with a slash', function () {
 
                     // call
-                    var r = RestApi.formatSubPath(111, { sub_path: "/AAA" });
+                    var r = RestApi.formatSubPath(111, { sub_path: '/AAA' });
 
                     // assert
-                    expect(r).toEqual("111/AAA");
+                    expect(r).toEqual('111/AAA');
                 });
             });
         }

@@ -24,7 +24,7 @@ System.register(['../angular-cakephp'], function (_export) {
                 });
             };
 
-            describe("ActiveRecord", function () {
+            describe('ActiveRecord', function () {
 
                 //---------------------------------------------------
                 // map data
@@ -72,10 +72,10 @@ System.register(['../angular-cakephp'], function (_export) {
                     ActiveRecord.mapData = false;
 
                     // call
-                    var me = new Member({ "firstname": "John", "lastname": "Smith" });
+                    var me = new Member({ 'firstname': 'John', 'lastname': 'Smith' });
 
                     // assert
-                    expect(me.firstname).toBe("John");
+                    expect(me.firstname).toBe('John');
                     expect(me.lastname).toBeUndefined();
                 });
 
@@ -96,10 +96,10 @@ System.register(['../angular-cakephp'], function (_export) {
                         return Member;
                     })(ActiveRecord);
 
-                    var me = new Member({ "firstname": "John" });
+                    var me = new Member({ 'firstname': 'John' });
 
                     // assert
-                    expect(me.firstname).toBe("John");
+                    expect(me.firstname).toBe('John');
                 });
 
                 //---------------------------------------------------
@@ -122,7 +122,7 @@ System.register(['../angular-cakephp'], function (_export) {
                         _createClass(Member, [{
                             key: 'name',
                             get: function get() {
-                                return this.firstname + " " + this.lastname;
+                                return this.firstname + ' ' + this.lastname;
                             }
                         }]);
 
@@ -132,10 +132,10 @@ System.register(['../angular-cakephp'], function (_export) {
                     ActiveRecord.mapData = true;
 
                     // call
-                    var me = new Member({ "firstname": "John", "lastname": "Smith" });
+                    var me = new Member({ 'firstname': 'John', 'lastname': 'Smith' });
 
                     // assert
-                    expect(me.name).toBe("John Smith");
+                    expect(me.name).toBe('John Smith');
                 });
 
                 //---------------------------------------------------
@@ -168,7 +168,7 @@ System.register(['../angular-cakephp'], function (_export) {
                 // view
                 //---------------------------------------------------
 
-                it("view should throw an error if id is not set", function () {
+                it('view should throw an error if id is not set', function () {
 
                     // prepare
 
@@ -196,7 +196,7 @@ System.register(['../angular-cakephp'], function (_export) {
                     expect(error_message).toEqual(ActiveRecord.MESSAGE_VIEW_ERROR_NO_ID);
                 });
 
-                it("view should call model.view", function () {
+                it('view should call model.view', function () {
 
                     // prepare
 
@@ -229,7 +229,7 @@ System.register(['../angular-cakephp'], function (_export) {
                 // save
                 //---------------------------------------------------
 
-                it("save should call model.add if no id is set", function () {
+                it('save should call model.add if no id is set', function () {
 
                     // prepare
 
@@ -257,7 +257,7 @@ System.register(['../angular-cakephp'], function (_export) {
                     expect(me.model.add).toHaveBeenCalledWith(me.constructor, me, {});
                 });
 
-                it("save should call model.edit if id is set", function () {
+                it('save should call model.edit if id is set', function () {
 
                     // prepare
 
@@ -290,7 +290,7 @@ System.register(['../angular-cakephp'], function (_export) {
                 // delete
                 //---------------------------------------------------
 
-                it("delete should throw an error if id is not set", function () {
+                it('delete should throw an error if id is not set', function () {
 
                     // prepare
 
@@ -318,7 +318,7 @@ System.register(['../angular-cakephp'], function (_export) {
                     expect(error_message).toEqual(ActiveRecord.MESSAGE_DELETE_ERROR_NO_ID);
                 });
 
-                it("delete should call model.delete", function () {
+                it('delete should call model.delete', function () {
 
                     // prepare
 
@@ -351,7 +351,7 @@ System.register(['../angular-cakephp'], function (_export) {
                 // enumeration OR validation etc
                 //---------------------------------------------------
 
-                it("enumeration should call model.request", function () {
+                it('enumeration should call model.request', function () {
 
                     // prepare
 
@@ -368,8 +368,8 @@ System.register(['../angular-cakephp'], function (_export) {
                             key: 'enumeration',
                             value: function enumeration() {
                                 var request_config = {
-                                    method: "GET",
-                                    sub_path: "enumeration"
+                                    method: 'GET',
+                                    sub_path: 'enumeration'
                                 };
                                 return this.model.request(request_config);
                             }
@@ -381,15 +381,15 @@ System.register(['../angular-cakephp'], function (_export) {
                     var me = new Member();
 
                     // spy
-                    spyOn(me.model, "request");
+                    spyOn(me.model, 'request');
 
                     // call
                     me.enumeration();
 
                     // assert
                     expect(me.model.request).toHaveBeenCalledWith({
-                        method: "GET",
-                        sub_path: "enumeration"
+                        method: 'GET',
+                        sub_path: 'enumeration'
                     });
                 });
 
@@ -397,12 +397,12 @@ System.register(['../angular-cakephp'], function (_export) {
                 // validate
                 //---------------------------------------------------
 
-                it("validate should call http correctly", function () {
+                it('validate should call http correctly', function () {
 
                     RestApi.http = http_mock;
-                    RestApi.hostname = "myhost/";
+                    RestApi.hostname = 'myhost/';
                     RestApi.pathGenerator = function (ar) {
-                        return ar + "s";
+                        return ar + 's';
                     };
 
                     // prepare
@@ -420,8 +420,8 @@ System.register(['../angular-cakephp'], function (_export) {
                             key: 'validate',
                             value: function validate() {
                                 var request_config = {
-                                    method: "GET",
-                                    sub_path: "validation"
+                                    method: 'GET',
+                                    sub_path: 'validation'
                                 };
                                 return this.model.request(this, request_config);
                             }

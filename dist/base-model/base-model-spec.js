@@ -1,13 +1,13 @@
-System.register(["../angular-cakephp"], function (_export) {
-    "use strict";
+System.register(['../angular-cakephp'], function (_export) {
+    'use strict';
 
     var RestApi, BaseModel, ActiveRecord;
 
-    var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+    var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-    function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+    function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
     return {
         setters: [function (_angularCakephp) {
@@ -17,7 +17,7 @@ System.register(["../angular-cakephp"], function (_export) {
         }],
         execute: function () {
 
-            describe("BaseModel", function () {
+            describe('BaseModel', function () {
 
                 beforeEach(function () {
                     BaseModel.reset();
@@ -27,24 +27,24 @@ System.register(["../angular-cakephp"], function (_export) {
                 // new
                 //---------------------------------------------------
 
-                it("BaseModel.new should create a new object instance if no active record class is provided", function () {
+                it('BaseModel.new should create a new object instance if no active record class is provided', function () {
 
                     // call
-                    var a = BaseModel["new"](null, { "firstname": "John" });
+                    var a = BaseModel['new'](null, { 'firstname': 'John' });
 
                     // assert
-                    expect(a.firstname).toEqual("John");
+                    expect(a.firstname).toEqual('John');
                     expect(a instanceof Object).toBeTruthy();
                     expect(a instanceof ActiveRecord).toBeFalsy();
                 });
 
-                it("BaseModel.new should create a new instance of provided active record class", function () {
+                it('BaseModel.new should create a new instance of provided active record class', function () {
 
                     // call
-                    var a = BaseModel["new"](ActiveRecord, { "firstname": "John" });
+                    var a = BaseModel['new'](ActiveRecord, { 'firstname': 'John' });
 
                     // assert
-                    expect(a.firstname).toEqual("John");
+                    expect(a.firstname).toEqual('John');
                     expect(a instanceof ActiveRecord).toBeTruthy();
 
                     // prepare
@@ -55,21 +55,21 @@ System.register(["../angular-cakephp"], function (_export) {
                         function Member() {
                             _classCallCheck(this, Member);
 
-                            _get(Object.getPrototypeOf(Member.prototype), "constructor", this).apply(this, arguments);
+                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
                         }
 
                         // call
                         return Member;
                     })(ActiveRecord);
 
-                    var b = BaseModel["new"](Member, { "firstname": "John", "lastname": "Smith" }, true);
+                    var b = BaseModel['new'](Member, { 'firstname': 'John', 'lastname': 'Smith' }, true);
 
                     // assert
-                    expect(b.firstname).toEqual("John");
+                    expect(b.firstname).toEqual('John');
                     expect(b instanceof Member).toBeTruthy();
                 });
 
-                it("BaseModel.new should not map data if so specified in provided active record class", function () {
+                it('BaseModel.new should not map data if so specified in provided active record class', function () {
 
                     // prepare
 
@@ -79,7 +79,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         function Member(data) {
                             _classCallCheck(this, Member);
 
-                            _get(Object.getPrototypeOf(Member.prototype), "constructor", this).call(this, data, Member, false);
+                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).call(this, data, Member, false);
                             this.firstname = data.firstname;
                         }
 
@@ -87,10 +87,10 @@ System.register(["../angular-cakephp"], function (_export) {
                         return Member;
                     })(ActiveRecord);
 
-                    var a = BaseModel["new"](Member, { "firstname": "John", "lastname": "Smith" });
+                    var a = BaseModel['new'](Member, { 'firstname': 'John', 'lastname': 'Smith' });
 
                     // assert
-                    expect(a.firstname).toEqual("John");
+                    expect(a.firstname).toEqual('John');
                     expect(a.lastname).toBeUndefined();
                     expect(a instanceof Member).toBeTruthy();
                 });
@@ -99,7 +99,7 @@ System.register(["../angular-cakephp"], function (_export) {
                 // index
                 //---------------------------------------------------
 
-                it("BaseModel.index should call RestApi.index with provided config and active record class", function () {
+                it('BaseModel.index should call RestApi.index with provided config and active record class', function () {
 
                     // prepare
 
@@ -109,27 +109,27 @@ System.register(["../angular-cakephp"], function (_export) {
                         function Member() {
                             _classCallCheck(this, Member);
 
-                            _get(Object.getPrototypeOf(Member.prototype), "constructor", this).apply(this, arguments);
+                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
                         }
 
                         // spies
                         return Member;
                     })(ActiveRecord);
 
-                    spyOn(RestApi, "index");
+                    spyOn(RestApi, 'index');
 
                     // call
-                    var a = BaseModel.index(Member, { "a": "A" });
+                    var a = BaseModel.index(Member, { 'a': 'A' });
 
                     // assert
-                    expect(RestApi.index).toHaveBeenCalledWith(Member, { "a": "A" });
+                    expect(RestApi.index).toHaveBeenCalledWith(Member, { 'a': 'A' });
                 });
 
                 //---------------------------------------------------
                 // view
                 //---------------------------------------------------
 
-                it("BaseModel.view should throw an error if no id is provided", function () {
+                it('BaseModel.view should throw an error if no id is provided', function () {
 
                     // assert
                     expect(function () {
@@ -137,7 +137,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     }).toThrow();
                 });
 
-                it("BaseModel.view should call RestApi.view with provided id, config and active record class", function () {
+                it('BaseModel.view should call RestApi.view with provided id, config and active record class', function () {
 
                     // prepare
 
@@ -147,27 +147,27 @@ System.register(["../angular-cakephp"], function (_export) {
                         function Member() {
                             _classCallCheck(this, Member);
 
-                            _get(Object.getPrototypeOf(Member.prototype), "constructor", this).apply(this, arguments);
+                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
                         }
 
                         // spies
                         return Member;
                     })(ActiveRecord);
 
-                    spyOn(RestApi, "view");
+                    spyOn(RestApi, 'view');
 
                     // call
-                    var a = BaseModel.view(Member, 123, { "a": "A" });
+                    var a = BaseModel.view(Member, 123, { 'a': 'A' });
 
                     // assert
-                    expect(RestApi.view).toHaveBeenCalledWith(Member, 123, { "a": "A" });
+                    expect(RestApi.view).toHaveBeenCalledWith(Member, 123, { 'a': 'A' });
                 });
 
                 //---------------------------------------------------
                 // add
                 //---------------------------------------------------
 
-                it("BaseModel.add should throw an error if no data is provided", function () {
+                it('BaseModel.add should throw an error if no data is provided', function () {
 
                     // assert
                     expect(function () {
@@ -175,7 +175,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     }).toThrow();
                 });
 
-                it("BaseModel.add should call RestApi.add with provided active record class and config, and should append data to config", function () {
+                it('BaseModel.add should call RestApi.add with provided active record class and config, and should append data to config', function () {
 
                     // prepare
 
@@ -185,24 +185,24 @@ System.register(["../angular-cakephp"], function (_export) {
                         function Member() {
                             _classCallCheck(this, Member);
 
-                            _get(Object.getPrototypeOf(Member.prototype), "constructor", this).apply(this, arguments);
+                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
                         }
 
                         // spies
                         return Member;
                     })(ActiveRecord);
 
-                    spyOn(RestApi, "add");
+                    spyOn(RestApi, 'add');
 
                     // call
-                    var data = { "a": "A" };
-                    var config = { "b": "B" };
+                    var data = { 'a': 'A' };
+                    var config = { 'b': 'B' };
                     var a = BaseModel.add(Member, data, config);
 
                     // assert
                     var expected_config = {
-                        "b": "B",
-                        "data": data
+                        'b': 'B',
+                        'data': data
                     };
                     expect(RestApi.add).toHaveBeenCalledWith(Member, expected_config);
                 });
@@ -211,7 +211,7 @@ System.register(["../angular-cakephp"], function (_export) {
                 // edit
                 //---------------------------------------------------
 
-                it("BaseModel.edit should throw an error if no id is provided", function () {
+                it('BaseModel.edit should throw an error if no id is provided', function () {
 
                     // assert
                     expect(function () {
@@ -219,7 +219,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     }).toThrow();
                 });
 
-                it("BaseModel.edit should throw an error if no data is provided", function () {
+                it('BaseModel.edit should throw an error if no data is provided', function () {
 
                     // assert
                     expect(function () {
@@ -227,7 +227,7 @@ System.register(["../angular-cakephp"], function (_export) {
                     }).toThrow();
                 });
 
-                it("BaseModel.edit should call RestApi.edit with provided id, config and active record class, id and should append data to config", function () {
+                it('BaseModel.edit should call RestApi.edit with provided id, config and active record class, id and should append data to config', function () {
 
                     // prepare
 
@@ -237,7 +237,7 @@ System.register(["../angular-cakephp"], function (_export) {
                         function Member() {
                             _classCallCheck(this, Member);
 
-                            _get(Object.getPrototypeOf(Member.prototype), "constructor", this).apply(this, arguments);
+                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
                         }
 
                         return Member;
@@ -246,17 +246,17 @@ System.register(["../angular-cakephp"], function (_export) {
                     BaseModel.activeRecordClass = Member;
 
                     // spies
-                    spyOn(RestApi, "edit");
+                    spyOn(RestApi, 'edit');
 
                     // call
-                    var data = { "a": "A" };
-                    var config = { "b": "B" };
+                    var data = { 'a': 'A' };
+                    var config = { 'b': 'B' };
                     var a = BaseModel.edit(Member, 123, data, config);
 
                     // assert
                     var expected_config = {
-                        "b": "B",
-                        "data": data
+                        'b': 'B',
+                        'data': data
                     };
                     expect(RestApi.edit).toHaveBeenCalledWith(Member, 123, expected_config);
                 });
@@ -265,15 +265,15 @@ System.register(["../angular-cakephp"], function (_export) {
                 // delete
                 //---------------------------------------------------
 
-                it("BaseModel.delete should throw an error if no id is provided", function () {
+                it('BaseModel.delete should throw an error if no id is provided', function () {
 
                     // assert
                     expect(function () {
-                        BaseModel["delete"]();
+                        BaseModel['delete']();
                     }).toThrow();
                 });
 
-                it("BaseModel.delete should call RestApi.delete with provided id, config and active record class", function () {
+                it('BaseModel.delete should call RestApi.delete with provided id, config and active record class', function () {
 
                     // prepare
 
@@ -283,27 +283,27 @@ System.register(["../angular-cakephp"], function (_export) {
                         function Member() {
                             _classCallCheck(this, Member);
 
-                            _get(Object.getPrototypeOf(Member.prototype), "constructor", this).apply(this, arguments);
+                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
                         }
 
                         // spies
                         return Member;
                     })(ActiveRecord);
 
-                    spyOn(RestApi, "delete");
+                    spyOn(RestApi, 'delete');
 
                     // call
-                    var a = BaseModel["delete"](Member, 123, { "a": "A" });
+                    var a = BaseModel['delete'](Member, 123, { 'a': 'A' });
 
                     // assert
-                    expect(RestApi["delete"]).toHaveBeenCalledWith(Member, 123, { "a": "A" });
+                    expect(RestApi['delete']).toHaveBeenCalledWith(Member, 123, { 'a': 'A' });
                 });
 
                 //---------------------------------------------------
                 // request
                 //---------------------------------------------------
 
-                it("BaseModel.request should call RestApi.request with provided config and active record class", function () {
+                it('BaseModel.request should call RestApi.request with provided config and active record class', function () {
 
                     // prepare
 
@@ -313,20 +313,20 @@ System.register(["../angular-cakephp"], function (_export) {
                         function Member() {
                             _classCallCheck(this, Member);
 
-                            _get(Object.getPrototypeOf(Member.prototype), "constructor", this).apply(this, arguments);
+                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
                         }
 
                         // spies
                         return Member;
                     })(ActiveRecord);
 
-                    spyOn(RestApi, "request");
+                    spyOn(RestApi, 'request');
 
                     // call
-                    var a = BaseModel.request(Member, { "a": "A" });
+                    var a = BaseModel.request(Member, { 'a': 'A' });
 
                     // assert
-                    expect(RestApi.request).toHaveBeenCalledWith(Member, { "a": "A" });
+                    expect(RestApi.request).toHaveBeenCalledWith(Member, { 'a': 'A' });
                 });
             });
         }

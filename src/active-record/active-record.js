@@ -1,8 +1,8 @@
 import { RestApi, BaseModel } from '../angular-cakephp';
 import _ from 'lodash';
 
-const MESSAGE_DELETE_ERROR_NO_ID    = "Can not delete record with no ID";
-const MESSAGE_VIEW_ERROR_NO_ID      = "Can not view record with no ID";
+const MESSAGE_DELETE_ERROR_NO_ID    = 'Can not delete record with no ID';
+const MESSAGE_VIEW_ERROR_NO_ID      = 'Can not view record with no ID';
 
 /**
  * Class ActiveRecord
@@ -49,6 +49,14 @@ export default class ActiveRecord {
 
     set model( value ) {
         this._model = value;
+    }
+
+    /**
+     * getClassName
+     */
+    getClassName() {
+        // get Active Record class name from Class.constructor.name if it's not 'Function', otherwise  get from Class.name
+        return this.constructor.name !== 'Function' ? this.constructor.name : ( !_.isUndefined(this.name) ? this.name : null );
     }
 
     //-----------------------

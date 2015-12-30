@@ -15,8 +15,8 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
             _ = _lodash['default'];
         }],
         execute: function () {
-            MESSAGE_DELETE_ERROR_NO_ID = "Can not delete record with no ID";
-            MESSAGE_VIEW_ERROR_NO_ID = "Can not view record with no ID";
+            MESSAGE_DELETE_ERROR_NO_ID = 'Can not delete record with no ID';
+            MESSAGE_VIEW_ERROR_NO_ID = 'Can not view record with no ID';
 
             /**
              * Class ActiveRecord
@@ -57,7 +57,15 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                  */
 
                 _createClass(ActiveRecord, [{
-                    key: 'view',
+                    key: 'getClassName',
+
+                    /**
+                     * getClassName
+                     */
+                    value: function getClassName() {
+                        // get Active Record class name from Class.constructor.name if it's not 'Function', otherwise  get from Class.name
+                        return this.constructor.name !== 'Function' ? this.constructor.name : !_.isUndefined(this.name) ? this.name : null;
+                    }
 
                     //-----------------------
                     // methods
@@ -68,6 +76,8 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                      * @param  {Object} config = {}
                      * @return {Promise}
                      */
+                }, {
+                    key: 'view',
                     value: function view() {
                         var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 

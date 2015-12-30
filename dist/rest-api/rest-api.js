@@ -42,9 +42,14 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                         var active_record_class = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
                         if (!_.isNull(this.pathGenerator) && !_.isNull(active_record_class)) {
+                            var _name = '';
 
-                            // get Active Record class name from Class.constructor.name if it's not 'Function', otherwise  get from Class.name
-                            var _name = active_record_class.constructor.name !== "Function" ? active_record_class.constructor.name : !_.isUndefined(active_record_class.name) ? active_record_class.name : null;
+                            if (active_record_class.getClassName) {
+                                _name = active_record_class.getClassName();
+                                // fallback if not a proper active record class
+                            } else {
+                                    _name = active_record_class.constructor.name !== 'Function' ? active_record_class.constructor.name : !_.isUndefined(active_record_class.name) ? active_record_class.name : null;
+                                }
 
                             if (!_.isNull(_name)) {
                                 this._path = this.pathGenerator(_.snakeCase(_name));
@@ -188,9 +193,9 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
 
                         var result = id.toString();
 
-                        if (_.has(config, "sub_path") && config.sub_path.length > 0) {
+                        if (_.has(config, 'sub_path') && config.sub_path.length > 0) {
 
-                            result += _.startsWith(config.sub_path, "/") ? "" : "/";
+                            result += _.startsWith(config.sub_path, '/') ? '' : '/';
                             result += config.sub_path;
                         }
 
