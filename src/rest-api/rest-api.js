@@ -241,7 +241,7 @@ class RestApi {
 
         // request config
         request_config.method = 'GET';
-        request_config.sub_path = id;
+        request_config.sub_path = _.has( request_config, 'sub_path' ) ? id + '/' + request_config.sub_path : id;
 
         // request ...
         return this.request( active_record_class, request_config );
