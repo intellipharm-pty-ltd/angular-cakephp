@@ -113,6 +113,10 @@ export default class ActiveRecord {
         // delete
         return this.model.delete( this.constructor, this.id, config );
     }
+
+    clone() {
+        return new this.constructor(this, this.model, this.mapData);
+    }
 }
 
 // constants

@@ -131,6 +131,11 @@ System.register(['../angular-cakephp', 'lodash'], function (_export) {
                         return this.model['delete'](this.constructor, this.id, config);
                     }
                 }, {
+                    key: 'clone',
+                    value: function clone() {
+                        return new this.constructor(this, this.model, this.mapData);
+                    }
+                }, {
                     key: 'mapData',
                     get: function get() {
                         return this._map_data;
