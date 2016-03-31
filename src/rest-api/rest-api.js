@@ -421,82 +421,98 @@ class RestApi {
             let http_promise = RestApi.http( config );
 
             // if HTTP Service is invalid
-            if ( _.isUndefined( http_promise ) || typeof http_promise !== 'object' || _.isUndefined( http_promise.then ) ) {
+            if (
+                _.isUndefined( http_promise ) ||
+                typeof http_promise !== 'object' ||
+                ( _.isUndefined( http_promise.then ) && _.isUndefined( http_promise.subscribe ) )
+            ) {
                 throw new Error( MESSAGE_INVALID_HTTP_SERVICE );
             }
 
-            http_promise.then(
-                ( response ) => {
+            if (typeof http_promise.then === 'function') {
+                http_promise.then((response) => {
+                    return this.onSuccess(response, active_record_class, resolve, reject, success_transformer, success_handler);
+                }, (response) => {
+                    return this.onError(response, active_record_class, resolve, reject, error_transformer, error_handler);
+                });
+            } else if (typeof http_promise.subscribe === 'function') {
+                http_promise.subscribe((response) => {
+                    return this.onSuccess(response.json(), active_record_class, resolve, reject, success_transformer, success_handler);
+                }, (response) => {
+                    return this.onError(response.json(), active_record_class, resolve, reject, error_transformer, error_handler);
+                });
+            }
 
-                    let result = response;
-
-                    // transformer
-                    if ( !_.isNull( success_transformer ) && typeof success_transformer === 'function' ) {
-
-                        result = success_transformer( response, active_record_class );
-                    }
-
-                    // if no handler
-                    if ( _.isNull( success_handler ) || typeof success_handler !== 'function' ) {
-
-                        resolve( result );
-
-                        // TODO: remove this to make is less angular and more vanilla javascript
-                        if (this.scope && this.timeout) {
-                            this.timeout(() => {
-                                this.scope.$apply();
-                            });
-                        }
-
-                        return;
-                    }
-
-                    // handler
-                    success_handler( result ).then( resolve, reject );
-
-                    // TODO: remove this to make is less angular and more vanilla javascript
-                    if (this.scope && this.timeout) {
-                        this.timeout(() => {
-                            this.scope.$apply();
-                        });
-                    }
-                },
-                ( response ) => {
-
-                    let result = response;
-
-                    // transformer
-                    if ( !_.isNull( error_transformer ) && typeof error_transformer === 'function' ) {
-                        result = error_transformer( response, active_record_class );
-                    }
-
-                    // if no handler
-                    if ( _.isNull( error_handler ) || typeof error_handler !== 'function' ) {
-
-                        reject( result );
-
-                        // TODO: remove this to make is less angular and more vanilla javascript
-                        if (this.scope && this.timeout) {
-                            this.timeout(() => {
-                                this.scope.$apply();
-                            });
-                        }
-
-                        return;
-                    }
-
-                    // handler
-                    error_handler( result ).then( resolve, reject );
-
-                    // TODO: remove this to make is less angular and more vanilla javascript
-                    if (this.scope && this.timeout) {
-                        this.timeout(() => {
-                            this.scope.$apply();
-                        });
-                    }
-                }
-            );
         });
+    }
+
+    static onSuccess(response, active_record_class, resolve, reject, success_transformer, success_handler) {
+        let result = response;
+
+        // transformer
+        if ( !_.isNull( success_transformer ) && typeof success_transformer === 'function' ) {
+
+            result = success_transformer( response, active_record_class );
+        }
+
+        // if no handler
+        if ( _.isNull( success_handler ) || typeof success_handler !== 'function' ) {
+
+            resolve( result );
+
+            // TODO: remove this to make is less angular and more vanilla javascript
+            if (this.scope && this.timeout) {
+                this.timeout(() => {
+                    this.scope.$apply();
+                });
+            }
+
+            return true;
+        }
+
+        // handler
+        success_handler( result ).then( resolve, reject );
+
+        // TODO: remove this to make is less angular and more vanilla javascript
+        if (this.scope && this.timeout) {
+            this.timeout(() => {
+                this.scope.$apply();
+            });
+        }
+    }
+
+    static onError(response, active_record_class, resolve, reject, error_transformer, error_handler) {
+        let result = response;
+
+        // transformer
+        if ( !_.isNull( error_transformer ) && typeof error_transformer === 'function' ) {
+            result = error_transformer( response, active_record_class );
+        }
+
+        // if no handler
+        if ( _.isNull( error_handler ) || typeof error_handler !== 'function' ) {
+
+            reject( result );
+
+            // TODO: remove this to make is less angular and more vanilla javascript
+            if (this.scope && this.timeout) {
+                this.timeout(() => {
+                    this.scope.$apply();
+                });
+            }
+
+            return false;
+        }
+
+        // handler
+        error_handler( result ).then( resolve, reject );
+
+        // TODO: remove this to make is less angular and more vanilla javascript
+        if (this.scope && this.timeout) {
+            this.timeout(() => {
+                this.scope.$apply();
+            });
+        }
     }
 
     /**

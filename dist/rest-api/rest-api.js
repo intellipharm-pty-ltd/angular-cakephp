@@ -324,79 +324,99 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                             var http_promise = RestApi.http(config);
 
                             // if HTTP Service is invalid
-                            if (_.isUndefined(http_promise) || typeof http_promise !== 'object' || _.isUndefined(http_promise.then)) {
+                            if (_.isUndefined(http_promise) || typeof http_promise !== 'object' || _.isUndefined(http_promise.then) && _.isUndefined(http_promise.subscribe)) {
                                 throw new Error(MESSAGE_INVALID_HTTP_SERVICE);
                             }
 
-                            http_promise.then(function (response) {
-
-                                var result = response;
-
-                                // transformer
-                                if (!_.isNull(success_transformer) && typeof success_transformer === 'function') {
-
-                                    result = success_transformer(response, active_record_class);
-                                }
-
-                                // if no handler
-                                if (_.isNull(success_handler) || typeof success_handler !== 'function') {
-
-                                    resolve(result);
-
-                                    // TODO: remove this to make is less angular and more vanilla javascript
-                                    if (_this.scope && _this.timeout) {
-                                        _this.timeout(function () {
-                                            _this.scope.$apply();
-                                        });
-                                    }
-
-                                    return;
-                                }
-
-                                // handler
-                                success_handler(result).then(resolve, reject);
-
-                                // TODO: remove this to make is less angular and more vanilla javascript
-                                if (_this.scope && _this.timeout) {
-                                    _this.timeout(function () {
-                                        _this.scope.$apply();
-                                    });
-                                }
-                            }, function (response) {
-
-                                var result = response;
-
-                                // transformer
-                                if (!_.isNull(error_transformer) && typeof error_transformer === 'function') {
-                                    result = error_transformer(response, active_record_class);
-                                }
-
-                                // if no handler
-                                if (_.isNull(error_handler) || typeof error_handler !== 'function') {
-
-                                    reject(result);
-
-                                    // TODO: remove this to make is less angular and more vanilla javascript
-                                    if (_this.scope && _this.timeout) {
-                                        _this.timeout(function () {
-                                            _this.scope.$apply();
-                                        });
-                                    }
-
-                                    return;
-                                }
-
-                                // handler
-                                error_handler(result).then(resolve, reject);
-
-                                // TODO: remove this to make is less angular and more vanilla javascript
-                                if (_this.scope && _this.timeout) {
-                                    _this.timeout(function () {
-                                        _this.scope.$apply();
-                                    });
-                                }
-                            });
+                            if (typeof http_promise.then === 'function') {
+                                http_promise.then(function (response) {
+                                    return _this.onSuccess(response, active_record_class, resolve, reject, success_transformer, success_handler);
+                                }, function (response) {
+                                    return _this.onError(response, active_record_class, resolve, reject, error_transformer, error_handler);
+                                });
+                            } else if (typeof http_promise.subscribe === 'function') {
+                                http_promise.subscribe(function (response) {
+                                    return _this.onSuccess(response.json(), active_record_class, resolve, reject, success_transformer, success_handler);
+                                }, function (response) {
+                                    return _this.onError(response.json(), active_record_class, resolve, reject, error_transformer, error_handler);
+                                });
+                            }
                         });
+                    }
+                }, {
+                    key: 'onSuccess',
+                    value: function onSuccess(response, active_record_class, resolve, reject, success_transformer, success_handler) {
+                        var _this2 = this;
+
+                        var result = response;
+
+                        // transformer
+                        if (!_.isNull(success_transformer) && typeof success_transformer === 'function') {
+
+                            result = success_transformer(response, active_record_class);
+                        }
+
+                        // if no handler
+                        if (_.isNull(success_handler) || typeof success_handler !== 'function') {
+
+                            resolve(result);
+
+                            // TODO: remove this to make is less angular and more vanilla javascript
+                            if (this.scope && this.timeout) {
+                                this.timeout(function () {
+                                    _this2.scope.$apply();
+                                });
+                            }
+
+                            return true;
+                        }
+
+                        // handler
+                        success_handler(result).then(resolve, reject);
+
+                        // TODO: remove this to make is less angular and more vanilla javascript
+                        if (this.scope && this.timeout) {
+                            this.timeout(function () {
+                                _this2.scope.$apply();
+                            });
+                        }
+                    }
+                }, {
+                    key: 'onError',
+                    value: function onError(response, active_record_class, resolve, reject, error_transformer, error_handler) {
+                        var _this3 = this;
+
+                        var result = response;
+
+                        // transformer
+                        if (!_.isNull(error_transformer) && typeof error_transformer === 'function') {
+                            result = error_transformer(response, active_record_class);
+                        }
+
+                        // if no handler
+                        if (_.isNull(error_handler) || typeof error_handler !== 'function') {
+
+                            reject(result);
+
+                            // TODO: remove this to make is less angular and more vanilla javascript
+                            if (this.scope && this.timeout) {
+                                this.timeout(function () {
+                                    _this3.scope.$apply();
+                                });
+                            }
+
+                            return false;
+                        }
+
+                        // handler
+                        error_handler(result).then(resolve, reject);
+
+                        // TODO: remove this to make is less angular and more vanilla javascript
+                        if (this.scope && this.timeout) {
+                            this.timeout(function () {
+                                _this3.scope.$apply();
+                            });
+                        }
                     }
 
                     /**
