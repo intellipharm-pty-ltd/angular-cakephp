@@ -320,25 +320,30 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                         }
 
                         return new Promise(function (resolve, reject) {
+                            var http_promise = undefined;
 
-                            var http_promise = RestApi.http(config);
+                            if (_this.isAngular2()) {
+                                http_promise = RestApi.http.request(config.url);
+                            } else {
+                                http_promise = RestApi.http(config);
+                            }
 
                             // if HTTP Service is invalid
                             if (_.isUndefined(http_promise) || typeof http_promise !== 'object' || _.isUndefined(http_promise.then) && _.isUndefined(http_promise.subscribe)) {
                                 throw new Error(MESSAGE_INVALID_HTTP_SERVICE);
                             }
 
-                            if (typeof http_promise.then === 'function') {
-                                http_promise.then(function (response) {
-                                    return _this.onSuccess(response, active_record_class, resolve, reject, success_transformer, success_handler);
-                                }, function (response) {
-                                    return _this.onError(response, active_record_class, resolve, reject, error_transformer, error_handler);
-                                });
-                            } else if (typeof http_promise.subscribe === 'function') {
+                            if (_this.isAngular2()) {
                                 http_promise.subscribe(function (response) {
                                     return _this.onSuccess(response.json(), active_record_class, resolve, reject, success_transformer, success_handler);
                                 }, function (response) {
                                     return _this.onError(response.json(), active_record_class, resolve, reject, error_transformer, error_handler);
+                                });
+                            } else {
+                                http_promise.then(function (response) {
+                                    return _this.onSuccess(response, active_record_class, resolve, reject, success_transformer, success_handler);
+                                }, function (response) {
+                                    return _this.onError(response, active_record_class, resolve, reject, error_transformer, error_handler);
                                 });
                             }
                         });
@@ -417,6 +422,11 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                                 _this3.scope.$apply();
                             });
                         }
+                    }
+                }, {
+                    key: 'isAngular2',
+                    value: function isAngular2() {
+                        return typeof RestApi.http.request === 'function';
                     }
 
                     /**

@@ -417,8 +417,13 @@ class RestApi {
         }
 
         return new Promise( ( resolve, reject ) => {
+            let http_promise;
 
-            let http_promise = RestApi.http( config );
+            if (this.isAngular2()) {
+                http_promise = RestApi.http.request( config.url );
+            } else {
+                http_promise = RestApi.http( config );
+            }
 
             // if HTTP Service is invalid
             if (
@@ -429,17 +434,17 @@ class RestApi {
                 throw new Error( MESSAGE_INVALID_HTTP_SERVICE );
             }
 
-            if (typeof http_promise.then === 'function') {
-                http_promise.then((response) => {
-                    return this.onSuccess(response, active_record_class, resolve, reject, success_transformer, success_handler);
-                }, (response) => {
-                    return this.onError(response, active_record_class, resolve, reject, error_transformer, error_handler);
-                });
-            } else if (typeof http_promise.subscribe === 'function') {
+            if (this.isAngular2()) {
                 http_promise.subscribe((response) => {
                     return this.onSuccess(response.json(), active_record_class, resolve, reject, success_transformer, success_handler);
                 }, (response) => {
                     return this.onError(response.json(), active_record_class, resolve, reject, error_transformer, error_handler);
+                });
+            } else {
+                http_promise.then((response) => {
+                    return this.onSuccess(response, active_record_class, resolve, reject, success_transformer, success_handler);
+                }, (response) => {
+                    return this.onError(response, active_record_class, resolve, reject, error_transformer, error_handler);
                 });
             }
 
@@ -513,6 +518,10 @@ class RestApi {
                 this.scope.$apply();
             });
         }
+    }
+
+    static isAngular2() {
+        return typeof RestApi.http.request === 'function';
     }
 
     /**
