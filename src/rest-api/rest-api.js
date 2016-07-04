@@ -420,7 +420,7 @@ class RestApi {
             let http_promise;
 
             if (this.isAngular2()) {
-                http_promise = RestApi.http.request( config.url );
+                http_promise = RestApi.http.request( config.url, config );
             } else {
                 http_promise = RestApi.http( config );
             }

@@ -323,7 +323,7 @@ System.register(['lodash', '../angular-cakephp'], function (_export) {
                             var http_promise = undefined;
 
                             if (_this.isAngular2()) {
-                                http_promise = RestApi.http.request(config.url);
+                                http_promise = RestApi.http.request(config.url, config);
                             } else {
                                 http_promise = RestApi.http(config);
                             }
