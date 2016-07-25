@@ -1,5 +1,5 @@
 module.exports = {
-    modules: 'system',
+    // modules: 'system',
     // moduleIds: false,
     // comments: true,
     // compact: false,
@@ -9,4 +9,6 @@ module.exports = {
     //   "es7.decorators",
     //   "es7.classProperties"
     // ]
+    // sourceType: 'module'
+    presets: ['es2015']
 };

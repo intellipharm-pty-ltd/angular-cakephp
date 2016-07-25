@@ -389,7 +389,7 @@ class RestApi {
 
         // update request config
 
-        config.headers = _.has( config, 'headers' ) ? _.merge( config.headers, this.headers ) : this.headers;
+        config.headers = _.has( config, 'headers' ) ? _.merge( {}, this.headers, config.headers ) : this.headers;
 
         if ( !_.has( config, 'paramSerializer' ) && !_.isNull( this.paramSerializer ) ) {
             config.paramSerializer = this.paramSerializer;

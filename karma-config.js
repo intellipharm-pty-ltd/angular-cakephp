@@ -30,8 +30,9 @@ var _config = {
     preprocessors: {}, // set below
     babelPreprocessor: {
         options: {
-            sourceMap: 'inline',
-            modules: 'system'
+            // sourceMap: 'inline',
+            // modules: 'system'
+            presets: ['es2015']
         }
     },
     // coverageReporter: {

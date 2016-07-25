@@ -121,10 +121,12 @@ describe( 'RestApi', () => {
         RestApi._hostname = null;
         RestApi._path = 'AAA';
 
+        var error_message = null;
+
         try {
             let r = RestApi.url();
         } catch ( error ) {
-            var error_message = error.message;
+            error_message = error.message;
         }
 
         expect( error_message ).toEqual( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );
@@ -135,10 +137,12 @@ describe( 'RestApi', () => {
         RestApi._hostname = 'AAA';
         RestApi._path = null;
 
+        var error_message = null;
+
         try {
             let r = RestApi.url();
         } catch ( error ) {
-            var error_message = error.message;
+            error_message = error.message;
         }
 
         expect( error_message ).toEqual( RestApi.MESSAGE_HOSTNAME_AND_PATH_REQURIED );

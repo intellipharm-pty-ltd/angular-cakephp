@@ -104,10 +104,12 @@ describe( 'ActiveRecord', () => {
 
         // call & assert
 
+        var error_message = null;
+
         try {
             let r = me.view();
         } catch ( error ) {
-            var error_message = error.message;
+            error_message = error.message;
         }
         expect( error_message ).toEqual( ActiveRecord.MESSAGE_VIEW_ERROR_NO_ID );
     });
@@ -176,12 +178,14 @@ describe( 'ActiveRecord', () => {
         class Member extends ActiveRecord {}
         let me = new Member();
 
+        var error_message = null;
+
         // call & assert
 
         try {
             let r = me.delete();
         } catch ( error ) {
-            var error_message = error.message;
+            error_message = error.message;
         }
         expect( error_message ).toEqual( ActiveRecord.MESSAGE_DELETE_ERROR_NO_ID );
     });

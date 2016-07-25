@@ -1,452 +1,437 @@
-System.register(['../angular-cakephp'], function (_export) {
-    'use strict';
+'use strict';
 
-    var ActiveRecord, BaseModel, RestApi, http_mock;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _angularCakephp = require('../angular-cakephp');
 
-    var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-    function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-    return {
-        setters: [function (_angularCakephp) {
-            ActiveRecord = _angularCakephp.ActiveRecord;
-            BaseModel = _angularCakephp.BaseModel;
-            RestApi = _angularCakephp.RestApi;
-        }],
-        execute: function () {
-            http_mock = function http_mock() {
-                return new Promise(function (resolve, reject) {
-                    resolve({});
-                });
-            };
+var http_mock = function http_mock() {
+    return new Promise(function (resolve, reject) {
+        resolve({});
+    });
+};
 
-            describe('ActiveRecord', function () {
+describe('ActiveRecord', function () {
 
-                //---------------------------------------------------
-                // map data
-                //---------------------------------------------------
+    //---------------------------------------------------
+    // map data
+    //---------------------------------------------------
 
-                it('mapData property should default to true', function () {
+    it('mapData property should default to true', function () {
 
-                    // prepare
+        // prepare
+        var Member = function (_ActiveRecord) {
+            _inherits(Member, _ActiveRecord);
 
-                    var Member = (function (_ActiveRecord) {
-                        _inherits(Member, _ActiveRecord);
+            function Member() {
+                _classCallCheck(this, Member);
 
-                        function Member() {
-                            _classCallCheck(this, Member);
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+            }
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
-                        }
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                        return Member;
-                    })(ActiveRecord);
+        var me = new Member({});
 
-                    var me = new Member({});
+        // assert
+        expect(me.mapData).toBeTruthy();
+    });
 
-                    // assert
-                    expect(me.mapData).toBeTruthy();
-                });
+    it('should map data to specified properties only if ActiveRecord.mapData is set to false', function () {
 
-                it('should map data to specified properties only if ActiveRecord.mapData is set to false', function () {
+        // prepare
+        var Member = function (_ActiveRecord2) {
+            _inherits(Member, _ActiveRecord2);
 
-                    // prepare
+            function Member(data) {
+                _classCallCheck(this, Member);
 
-                    var Member = (function (_ActiveRecord2) {
-                        _inherits(Member, _ActiveRecord2);
+                var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Member).call(this, data, Member, false));
 
-                        function Member(data) {
-                            _classCallCheck(this, Member);
+                _this2.firstname = data.firstname;
+                return _this2;
+            }
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).call(this, data, Member, false);
-                            this.firstname = data.firstname;
-                        }
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                        return Member;
-                    })(ActiveRecord);
+        _angularCakephp.ActiveRecord.mapData = false;
 
-                    ActiveRecord.mapData = false;
+        // call
+        var me = new Member({ 'firstname': 'John', 'lastname': 'Smith' });
 
-                    // call
-                    var me = new Member({ 'firstname': 'John', 'lastname': 'Smith' });
+        // assert
+        expect(me.firstname).toBe('John');
+        expect(me.lastname).toBeUndefined();
+    });
 
-                    // assert
-                    expect(me.firstname).toBe('John');
-                    expect(me.lastname).toBeUndefined();
-                });
+    it('should map data if ActiveRecord.mapData is set to true', function () {
 
-                it('should map data if ActiveRecord.mapData is set to true', function () {
+        // prepare
+        var Member = function (_ActiveRecord3) {
+            _inherits(Member, _ActiveRecord3);
 
-                    // prepare
+            function Member(data) {
+                _classCallCheck(this, Member);
 
-                    var Member = (function (_ActiveRecord3) {
-                        _inherits(Member, _ActiveRecord3);
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).call(this, data, Member, true));
+            }
 
-                        function Member(data) {
-                            _classCallCheck(this, Member);
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).call(this, data, Member, true);
-                        }
+        // call
 
-                        // call
-                        return Member;
-                    })(ActiveRecord);
 
-                    var me = new Member({ 'firstname': 'John' });
+        var me = new Member({ 'firstname': 'John' });
 
-                    // assert
-                    expect(me.firstname).toBe('John');
-                });
+        // assert
+        expect(me.firstname).toBe('John');
+    });
 
-                //---------------------------------------------------
-                // computed properties
-                //---------------------------------------------------
+    //---------------------------------------------------
+    // computed properties
+    //---------------------------------------------------
 
-                it('should return computed property', function () {
+    it('should return computed property', function () {
 
-                    // prepare
+        // prepare
+        var Member = function (_ActiveRecord4) {
+            _inherits(Member, _ActiveRecord4);
 
-                    var Member = (function (_ActiveRecord4) {
-                        _inherits(Member, _ActiveRecord4);
+            function Member() {
+                _classCallCheck(this, Member);
 
-                        function Member() {
-                            _classCallCheck(this, Member);
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+            }
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
-                        }
+            _createClass(Member, [{
+                key: 'name',
+                get: function get() {
+                    return this.firstname + ' ' + this.lastname;
+                }
+            }]);
 
-                        _createClass(Member, [{
-                            key: 'name',
-                            get: function get() {
-                                return this.firstname + ' ' + this.lastname;
-                            }
-                        }]);
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                        return Member;
-                    })(ActiveRecord);
+        _angularCakephp.ActiveRecord.mapData = true;
 
-                    ActiveRecord.mapData = true;
+        // call
+        var me = new Member({ 'firstname': 'John', 'lastname': 'Smith' });
 
-                    // call
-                    var me = new Member({ 'firstname': 'John', 'lastname': 'Smith' });
+        // assert
+        expect(me.name).toBe('John Smith');
+    });
 
-                    // assert
-                    expect(me.name).toBe('John Smith');
-                });
+    //---------------------------------------------------
+    // model
+    //---------------------------------------------------
 
-                //---------------------------------------------------
-                // model
-                //---------------------------------------------------
+    it('model property should default to BaseModel', function () {
 
-                it('model property should default to BaseModel', function () {
+        // prepare
+        var Member = function (_ActiveRecord5) {
+            _inherits(Member, _ActiveRecord5);
 
-                    // prepare
+            function Member() {
+                _classCallCheck(this, Member);
 
-                    var Member = (function (_ActiveRecord5) {
-                        _inherits(Member, _ActiveRecord5);
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+            }
 
-                        function Member() {
-                            _classCallCheck(this, Member);
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
-                        }
+        var me = new Member({});
 
-                        return Member;
-                    })(ActiveRecord);
+        // assert
+        expect(me.model instanceof _angularCakephp.BaseModel.constructor).toBeTruthy();
+    });
 
-                    var me = new Member({});
+    //---------------------------------------------------
+    // view
+    //---------------------------------------------------
 
-                    // assert
-                    expect(me.model instanceof BaseModel.constructor).toBeTruthy();
-                });
+    it('view should throw an error if id is not set', function () {
 
-                //---------------------------------------------------
-                // view
-                //---------------------------------------------------
+        // prepare
+        var Member = function (_ActiveRecord6) {
+            _inherits(Member, _ActiveRecord6);
 
-                it('view should throw an error if id is not set', function () {
+            function Member() {
+                _classCallCheck(this, Member);
 
-                    // prepare
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+            }
 
-                    var Member = (function (_ActiveRecord6) {
-                        _inherits(Member, _ActiveRecord6);
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                        function Member() {
-                            _classCallCheck(this, Member);
+        var me = new Member();
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
-                        }
+        // call & assert
 
-                        return Member;
-                    })(ActiveRecord);
+        var error_message = null;
 
-                    var me = new Member();
+        try {
+            var r = me.view();
+        } catch (error) {
+            error_message = error.message;
+        }
+        expect(error_message).toEqual(_angularCakephp.ActiveRecord.MESSAGE_VIEW_ERROR_NO_ID);
+    });
 
-                    // call & assert
+    it('view should call model.view', function () {
 
-                    try {
-                        var r = me.view();
-                    } catch (error) {
-                        var error_message = error.message;
-                    }
-                    expect(error_message).toEqual(ActiveRecord.MESSAGE_VIEW_ERROR_NO_ID);
-                });
+        // prepare
+        var Member = function (_ActiveRecord7) {
+            _inherits(Member, _ActiveRecord7);
 
-                it('view should call model.view', function () {
+            function Member() {
+                _classCallCheck(this, Member);
 
-                    // prepare
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+            }
 
-                    var Member = (function (_ActiveRecord7) {
-                        _inherits(Member, _ActiveRecord7);
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                        function Member() {
-                            _classCallCheck(this, Member);
+        var me = new Member();
+        me.id = 123;
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
-                        }
+        // spy
+        spyOn(me.model, 'view');
 
-                        return Member;
-                    })(ActiveRecord);
+        // call
+        me.view();
 
-                    var me = new Member();
-                    me.id = 123;
+        // assert
+        expect(me.model.view).toHaveBeenCalledWith(me.constructor, 123, {});
+    });
 
-                    // spy
-                    spyOn(me.model, 'view');
+    //---------------------------------------------------
+    // save
+    //---------------------------------------------------
 
-                    // call
-                    me.view();
+    it('save should call model.add if no id is set', function () {
 
-                    // assert
-                    expect(me.model.view).toHaveBeenCalledWith(me.constructor, 123, {});
-                });
+        // prepare
+        var Member = function (_ActiveRecord8) {
+            _inherits(Member, _ActiveRecord8);
 
-                //---------------------------------------------------
-                // save
-                //---------------------------------------------------
+            function Member() {
+                _classCallCheck(this, Member);
 
-                it('save should call model.add if no id is set', function () {
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+            }
 
-                    // prepare
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                    var Member = (function (_ActiveRecord8) {
-                        _inherits(Member, _ActiveRecord8);
+        var me = new Member();
 
-                        function Member() {
-                            _classCallCheck(this, Member);
+        // spy
+        spyOn(me.model, 'add');
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
-                        }
+        // call
+        me.save();
 
-                        return Member;
-                    })(ActiveRecord);
+        // assert
+        expect(me.model.add).toHaveBeenCalledWith(me.constructor, me, {});
+    });
 
-                    var me = new Member();
+    it('save should call model.edit if id is set', function () {
 
-                    // spy
-                    spyOn(me.model, 'add');
+        // prepare
+        var Member = function (_ActiveRecord9) {
+            _inherits(Member, _ActiveRecord9);
 
-                    // call
-                    me.save();
+            function Member() {
+                _classCallCheck(this, Member);
 
-                    // assert
-                    expect(me.model.add).toHaveBeenCalledWith(me.constructor, me, {});
-                });
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+            }
 
-                it('save should call model.edit if id is set', function () {
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                    // prepare
+        var me = new Member();
+        me.id = 123;
 
-                    var Member = (function (_ActiveRecord9) {
-                        _inherits(Member, _ActiveRecord9);
+        // spy
+        spyOn(me.model, 'edit');
 
-                        function Member() {
-                            _classCallCheck(this, Member);
+        // call
+        me.save();
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
-                        }
+        // assert
+        expect(me.model.edit).toHaveBeenCalledWith(me.constructor, 123, me, {});
+    });
 
-                        return Member;
-                    })(ActiveRecord);
+    //---------------------------------------------------
+    // delete
+    //---------------------------------------------------
 
-                    var me = new Member();
-                    me.id = 123;
+    it('delete should throw an error if id is not set', function () {
 
-                    // spy
-                    spyOn(me.model, 'edit');
+        // prepare
+        var Member = function (_ActiveRecord10) {
+            _inherits(Member, _ActiveRecord10);
 
-                    // call
-                    me.save();
+            function Member() {
+                _classCallCheck(this, Member);
 
-                    // assert
-                    expect(me.model.edit).toHaveBeenCalledWith(me.constructor, 123, me, {});
-                });
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+            }
 
-                //---------------------------------------------------
-                // delete
-                //---------------------------------------------------
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                it('delete should throw an error if id is not set', function () {
+        var me = new Member();
 
-                    // prepare
+        var error_message = null;
 
-                    var Member = (function (_ActiveRecord10) {
-                        _inherits(Member, _ActiveRecord10);
+        // call & assert
 
-                        function Member() {
-                            _classCallCheck(this, Member);
+        try {
+            var r = me.delete();
+        } catch (error) {
+            error_message = error.message;
+        }
+        expect(error_message).toEqual(_angularCakephp.ActiveRecord.MESSAGE_DELETE_ERROR_NO_ID);
+    });
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
-                        }
+    it('delete should call model.delete', function () {
 
-                        return Member;
-                    })(ActiveRecord);
+        // prepare
+        var Member = function (_ActiveRecord11) {
+            _inherits(Member, _ActiveRecord11);
 
-                    var me = new Member();
+            function Member() {
+                _classCallCheck(this, Member);
 
-                    // call & assert
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+            }
 
-                    try {
-                        var r = me['delete']();
-                    } catch (error) {
-                        var error_message = error.message;
-                    }
-                    expect(error_message).toEqual(ActiveRecord.MESSAGE_DELETE_ERROR_NO_ID);
-                });
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                it('delete should call model.delete', function () {
+        var me = new Member();
+        me.id = 123;
 
-                    // prepare
+        // spy
+        spyOn(me.model, 'delete');
 
-                    var Member = (function (_ActiveRecord11) {
-                        _inherits(Member, _ActiveRecord11);
+        // call
+        me.delete();
 
-                        function Member() {
-                            _classCallCheck(this, Member);
+        // assert
+        expect(me.model.delete).toHaveBeenCalledWith(me.constructor, 123, {});
+    });
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
-                        }
+    //---------------------------------------------------
+    // enumeration OR validation etc
+    //---------------------------------------------------
 
-                        return Member;
-                    })(ActiveRecord);
+    it('enumeration should call model.request', function () {
 
-                    var me = new Member();
-                    me.id = 123;
+        // prepare
+        var Member = function (_ActiveRecord12) {
+            _inherits(Member, _ActiveRecord12);
 
-                    // spy
-                    spyOn(me.model, 'delete');
+            function Member() {
+                _classCallCheck(this, Member);
 
-                    // call
-                    me['delete']();
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+            }
 
-                    // assert
-                    expect(me.model['delete']).toHaveBeenCalledWith(me.constructor, 123, {});
-                });
-
-                //---------------------------------------------------
-                // enumeration OR validation etc
-                //---------------------------------------------------
-
-                it('enumeration should call model.request', function () {
-
-                    // prepare
-
-                    var Member = (function (_ActiveRecord12) {
-                        _inherits(Member, _ActiveRecord12);
-
-                        function Member() {
-                            _classCallCheck(this, Member);
-
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
-                        }
-
-                        _createClass(Member, [{
-                            key: 'enumeration',
-                            value: function enumeration() {
-                                var request_config = {
-                                    method: 'GET',
-                                    sub_path: 'enumeration'
-                                };
-                                return this.model.request(request_config);
-                            }
-                        }]);
-
-                        return Member;
-                    })(ActiveRecord);
-
-                    var me = new Member();
-
-                    // spy
-                    spyOn(me.model, 'request');
-
-                    // call
-                    me.enumeration();
-
-                    // assert
-                    expect(me.model.request).toHaveBeenCalledWith({
+            _createClass(Member, [{
+                key: 'enumeration',
+                value: function enumeration() {
+                    var request_config = {
                         method: 'GET',
                         sub_path: 'enumeration'
-                    });
-                });
-
-                //---------------------------------------------------
-                // validate
-                //---------------------------------------------------
-
-                it('validate should call http correctly', function () {
-
-                    RestApi.http = http_mock;
-                    RestApi.hostname = 'myhost/';
-                    RestApi.pathGenerator = function (ar) {
-                        return ar + 's';
                     };
+                    return this.model.request(request_config);
+                }
+            }]);
 
-                    // prepare
+            return Member;
+        }(_angularCakephp.ActiveRecord);
 
-                    var Member = (function (_ActiveRecord13) {
-                        _inherits(Member, _ActiveRecord13);
+        var me = new Member();
 
-                        function Member() {
-                            _classCallCheck(this, Member);
+        // spy
+        spyOn(me.model, 'request');
 
-                            _get(Object.getPrototypeOf(Member.prototype), 'constructor', this).apply(this, arguments);
-                        }
+        // call
+        me.enumeration();
 
-                        _createClass(Member, [{
-                            key: 'validate',
-                            value: function validate() {
-                                var request_config = {
-                                    method: 'GET',
-                                    sub_path: 'validation'
-                                };
-                                return this.model.request(this, request_config);
-                            }
-                        }]);
+        // assert
+        expect(me.model.request).toHaveBeenCalledWith({
+            method: 'GET',
+            sub_path: 'enumeration'
+        });
+    });
 
-                        return Member;
-                    })(ActiveRecord);
+    //---------------------------------------------------
+    // validate
+    //---------------------------------------------------
 
-                    var me = new Member();
+    it('validate should call http correctly', function () {
 
-                    // spy
-                    spyOn(RestApi, 'http').and.returnValue(http_mock());
+        _angularCakephp.RestApi.http = http_mock;
+        _angularCakephp.RestApi.hostname = 'myhost/';
+        _angularCakephp.RestApi.pathGenerator = function (ar) {
+            return ar + 's';
+        };
 
-                    // call
-                    me.validate();
+        // prepare
 
-                    // assert
-                    var expeted_arg = {
+        var Member = function (_ActiveRecord13) {
+            _inherits(Member, _ActiveRecord13);
+
+            function Member() {
+                _classCallCheck(this, Member);
+
+                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+            }
+
+            _createClass(Member, [{
+                key: 'validate',
+                value: function validate() {
+                    var request_config = {
                         method: 'GET',
-                        headers: {},
-                        url: 'myhost/members/validation'
+                        sub_path: 'validation'
                     };
-                    expect(RestApi.http).toHaveBeenCalledWith(expeted_arg);
-                });
-            });
-        }
-    };
+                    return this.model.request(this, request_config);
+                }
+            }]);
+
+            return Member;
+        }(_angularCakephp.ActiveRecord);
+
+        var me = new Member();
+
+        // spy
+        spyOn(_angularCakephp.RestApi, 'http').and.returnValue(http_mock());
+
+        // call
+        me.validate();
+
+        // assert
+        var expeted_arg = {
+            method: 'GET',
+            headers: {},
+            url: 'myhost/members/validation'
+        };
+        expect(_angularCakephp.RestApi.http).toHaveBeenCalledWith(expeted_arg);
+    });
 });
