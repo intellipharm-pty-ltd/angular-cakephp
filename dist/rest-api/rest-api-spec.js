@@ -70,7 +70,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -102,7 +102,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -263,7 +263,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -514,7 +514,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -553,7 +553,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -585,7 +585,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -619,7 +619,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -658,7 +658,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -697,7 +697,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -734,7 +734,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -766,7 +766,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -805,7 +805,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;
@@ -842,7 +842,7 @@ describe('RestApi', function () {
             function AR() {
                 _classCallCheck(this, AR);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(AR).apply(this, arguments));
+                return _possibleConstructorReturn(this, (AR.__proto__ || Object.getPrototypeOf(AR)).apply(this, arguments));
             }
 
             return AR;

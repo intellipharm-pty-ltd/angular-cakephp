@@ -46,7 +46,7 @@ describe('BaseModel', function () {
             function Member() {
                 _classCallCheck(this, Member);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+                return _possibleConstructorReturn(this, (Member.__proto__ || Object.getPrototypeOf(Member)).apply(this, arguments));
             }
 
             return Member;
@@ -71,7 +71,7 @@ describe('BaseModel', function () {
             function Member(data) {
                 _classCallCheck(this, Member);
 
-                var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Member).call(this, data, Member, false));
+                var _this2 = _possibleConstructorReturn(this, (Member.__proto__ || Object.getPrototypeOf(Member)).call(this, data, Member, false));
 
                 _this2.firstname = data.firstname;
                 return _this2;
@@ -104,7 +104,7 @@ describe('BaseModel', function () {
             function Member() {
                 _classCallCheck(this, Member);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+                return _possibleConstructorReturn(this, (Member.__proto__ || Object.getPrototypeOf(Member)).apply(this, arguments));
             }
 
             return Member;
@@ -143,7 +143,7 @@ describe('BaseModel', function () {
             function Member() {
                 _classCallCheck(this, Member);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+                return _possibleConstructorReturn(this, (Member.__proto__ || Object.getPrototypeOf(Member)).apply(this, arguments));
             }
 
             return Member;
@@ -182,7 +182,7 @@ describe('BaseModel', function () {
             function Member() {
                 _classCallCheck(this, Member);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+                return _possibleConstructorReturn(this, (Member.__proto__ || Object.getPrototypeOf(Member)).apply(this, arguments));
             }
 
             return Member;
@@ -235,7 +235,7 @@ describe('BaseModel', function () {
             function Member() {
                 _classCallCheck(this, Member);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+                return _possibleConstructorReturn(this, (Member.__proto__ || Object.getPrototypeOf(Member)).apply(this, arguments));
             }
 
             return Member;
@@ -280,7 +280,7 @@ describe('BaseModel', function () {
             function Member() {
                 _classCallCheck(this, Member);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+                return _possibleConstructorReturn(this, (Member.__proto__ || Object.getPrototypeOf(Member)).apply(this, arguments));
             }
 
             return Member;
@@ -311,7 +311,7 @@ describe('BaseModel', function () {
             function Member() {
                 _classCallCheck(this, Member);
 
-                return _possibleConstructorReturn(this, Object.getPrototypeOf(Member).apply(this, arguments));
+                return _possibleConstructorReturn(this, (Member.__proto__ || Object.getPrototypeOf(Member)).apply(this, arguments));
             }
 
             return Member;
